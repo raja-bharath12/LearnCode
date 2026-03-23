@@ -16,7 +16,7 @@ function saveProfileData(extra) {
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('academic');
+  const [activeTab, setActiveTab] = useState('settings');
   const [statusMsg, setStatusMsg] = useState({ msg: '', type: '' });
   const [saving, setSaving] = useState(false);
 
@@ -25,11 +25,6 @@ export default function Profile() {
   const [sPhone, setSPhone] = useState('');
   const [sGender, setSGender] = useState('');
   const [sDob, setSDob] = useState('');
-  const [s10th, setS10th] = useState('');
-  const [s12th, setS12th] = useState('');
-  const [sBacklogs, setSBacklogs] = useState('');
-  const [sCurrBacklogs, setSCurrBacklogs] = useState('');
-  const [sPlacement, setSPlacement] = useState('');
   const [sSkills, setSSkills] = useState('');
   const [sLinkedin, setSLinkedin] = useState('');
   const [sGithub, setSGithub] = useState('');
@@ -48,11 +43,6 @@ export default function Profile() {
     setSPhone(p.phone || '');
     setSGender(p.gender || '');
     setSDob(p.dob || '');
-    setS10th(p.tenth || '');
-    setS12th(p.twelfth || '');
-    setSBacklogs(p.backlogs || '');
-    setSCurrBacklogs(p.currBacklogs || '');
-    setSPlacement(p.placement || '');
     setSSkills(p.skills || '');
     setSLinkedin(p.linkedin || '');
     setSGithub(p.github || '');
@@ -95,11 +85,6 @@ export default function Profile() {
     setSaving(false);
   }
 
-  function saveAcademic() {
-    saveProfileData({ tenth: s10th, twelfth: s12th, backlogs: sBacklogs, currBacklogs: sCurrBacklogs, placement: sPlacement });
-    setProfile(prev => ({ ...prev, tenth: s10th, twelfth: s12th, backlogs: sBacklogs, currBacklogs: sCurrBacklogs, placement: sPlacement }));
-    showStatus(' Academic info saved!', 'success');
-  }
 
   function saveAdditional() {
     saveProfileData({ skills: sSkills, linkedin: sLinkedin, github: sGithub });
@@ -109,7 +94,6 @@ export default function Profile() {
 
   if (!user) return null;
   const initials = (user.name || 'LC').substring(0, 2).toUpperCase();
-  const isAdmin = user.role === 'admin';
 
   return (
     <div className="app-container">
@@ -129,10 +113,9 @@ export default function Profile() {
               <div className="profile-divider"></div>
             </div>
 
-            <div className="profile-info-section">
-              <div className="info-section-header">
-                <h4>Personal Information</h4>
-                <a className="edit-link" onClick={() => setActiveTab('settings')} title="Edit profile">️ Edit</a>
+              <div className="info-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Personal Information</h4>
+                <a className="edit-link" onClick={() => setActiveTab('settings')} title="Edit profile" style={{ color: 'var(--accent)', fontWeight: 700, cursor: 'pointer' }}>Edit Profile</a>
               </div>
               {[
                 ['Name', user.name],
@@ -154,39 +137,9 @@ export default function Profile() {
           {/* RIGHT COLUMN */}
           <div className="profile-right">
             <div className="profile-tabs">
-              {!isAdmin && (
-                <button className={`profile-tab${activeTab === 'academic' ? ' active' : ''}`} onClick={() => setActiveTab('academic')}>Academic Information</button>
-              )}
               <button className={`profile-tab${activeTab === 'settings' ? ' active' : ''}`} onClick={() => setActiveTab('settings')}>Account Settings</button>
             </div>
 
-            {/* ACADEMIC PANEL */}
-            {!isAdmin && activeTab === 'academic' && (
-              <div className="profile-panel active">
-                <div className="panel-header">
-                  <h3>Academic Information</h3>
-                  <a className="edit-link" onClick={() => setActiveTab('settings')}>️ Edit</a>
-                </div>
-                <table className="info-table">
-                  <thead><tr><th>Information</th><th>Details</th></tr></thead>
-                  <tbody>
-                    {[
-                      ['10th *', profile.tenth || '—'],
-                      ['12th', profile.twelfth || '—'],
-                      ['Diploma', 'Not Applicable'],
-                      ['Under Graduate', 'Not Applicable'],
-                      ['Backlogs History *', profile.backlogs || '—'],
-                      ['Current Backlogs *', profile.currBacklogs || '—'],
-                      ['Interested in Placement *', profile.placement || '—'],
-                      ['Active Courses', profile.activeCourses || '—'],
-                      ['Completed Courses', profile.completedCourses || '—'],
-                    ].map(([info, detail]) => (
-                      <tr key={info}><td>{info}</td><td className={detail === 'Not Applicable' ? 'na-text' : ''}>{detail}</td></tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
 
             {/* SETTINGS PANEL */}
             {activeTab === 'settings' && (
@@ -232,32 +185,12 @@ export default function Profile() {
                       <label className="setting-label">Date of Birth</label>
                       <input className="setting-input" type="date" value={sDob} onChange={e => setSDob(e.target.value)} />
                     </div>
-                    <button type="submit" className="save-btn" disabled={saving}>{saving ? 'Saving…' : ' Save Changes'}</button>
+                     <button type="submit" className="save-btn" disabled={saving} style={{ background: 'var(--accent)', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', width: '100%', marginTop: '12px', boxShadow: '0 10px 20px rgba(44,88,255,0.2)' }}>
+                      {saving ? 'Saving Changes...' : 'Save Profile Changes'}
+                    </button>
                   </form>
                 </div>
 
-                {/* Academic Details */}
-                {!isAdmin && (
-                  <div className="settings-section">
-                    <h4>Academic Details</h4>
-                    <div className="setting-row"><label className="setting-label">10th %</label><input className="setting-input" type="text" value={s10th} onChange={e => setS10th(e.target.value)} placeholder="e.g. 87%" /></div>
-                    <div className="setting-row"><label className="setting-label">12th %</label><input className="setting-input" type="text" value={s12th} onChange={e => setS12th(e.target.value)} placeholder="e.g. 92%" /></div>
-                    <div className="setting-row">
-                      <label className="setting-label">Backlogs History</label>
-                      <select className="setting-input" value={sBacklogs} onChange={e => setSBacklogs(e.target.value)}>
-                        <option value="">Select</option><option>No</option><option>Yes</option>
-                      </select>
-                    </div>
-                    <div className="setting-row"><label className="setting-label">Current Backlogs</label><input className="setting-input" type="number" value={sCurrBacklogs} onChange={e => setSCurrBacklogs(e.target.value)} placeholder="0" min="0" /></div>
-                    <div className="setting-row">
-                      <label className="setting-label">Interested in Placement</label>
-                      <select className="setting-input" value={sPlacement} onChange={e => setSPlacement(e.target.value)}>
-                        <option value="">Select</option><option>Yes</option><option>No</option>
-                      </select>
-                    </div>
-                    <button className="save-btn" onClick={saveAcademic}> Save Academic Info</button>
-                  </div>
-                )}
 
                 {/* Additional Info */}
                 <div className="settings-section">
@@ -265,7 +198,9 @@ export default function Profile() {
                   <div className="setting-row"><label className="setting-label">Skills</label><input className="setting-input" type="text" value={sSkills} onChange={e => setSSkills(e.target.value)} placeholder="Python, JavaScript, …" /></div>
                   <div className="setting-row"><label className="setting-label">LinkedIn</label><input className="setting-input" type="url" value={sLinkedin} onChange={e => setSLinkedin(e.target.value)} placeholder="https://linkedin.com/in/…" /></div>
                   <div className="setting-row"><label className="setting-label">GitHub</label><input className="setting-input" type="url" value={sGithub} onChange={e => setSGithub(e.target.value)} placeholder="https://github.com/…" /></div>
-                  <button className="save-btn" onClick={saveAdditional}> Save Additional Info</button>
+                   <button className="save-btn" onClick={saveAdditional} style={{ background: 'var(--accent)', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', width: '100%', marginTop: '12px', boxShadow: '0 10px 20px rgba(44,88,255,0.2)' }}>
+                    Save Additional Info
+                  </button>
                 </div>
               </div>
             )}
