@@ -14,7 +14,6 @@ export default function Lesson() {
   const course = COURSES[courseId] || COURSES[1];
 
   const [currentLesson, setCurrentLesson] = useState(0);
-  const [activeTab, setActiveTab] = useState('overview');
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('// Output will appear here');
   const [outputColor, setOutputColor] = useState('var(--green)');
@@ -44,7 +43,7 @@ export default function Lesson() {
     }
   }, [currentLesson, course]);
 
-  function goToLesson(i) { setCurrentLesson(i); setActiveTab('overview'); }
+  function goToLesson(i) { setCurrentLesson(i); }
 
   function prevLesson() { if (currentLesson > 0) goToLesson(currentLesson - 1); }
 
@@ -135,50 +134,17 @@ export default function Lesson() {
 
           {/* MAIN CONTENT */}
           <main className="lesson-content" style={{ background: 'var(--bg)', padding: 0, display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-            {/* TABS */}
-            <div className="content-tabs" style={{ display: 'flex', backgroundColor: 'var(--bg-top)', borderBottom: '1px solid var(--border)', padding: '0 32px' }}>
-              <div
-                className={`content-tab${activeTab === 'overview' ? ' active' : ''}`}
-                onClick={() => setActiveTab('overview')}
-                style={{
-                  padding: '16px 20px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer',
-                  color: activeTab === 'overview' ? 'var(--accent)' : 'var(--text2)',
-                  borderBottom: activeTab === 'overview' ? '3px solid var(--accent)' : 'none'
-                }}
-              >
-                Overview
-              </div>
-              <div
-                className={`content-tab${activeTab === 'lab' ? ' active' : ''}`}
-                onClick={() => setActiveTab('lab')}
-                style={{
-                  padding: '16px 20px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer',
-                  color: activeTab === 'lab' ? 'var(--accent)' : 'var(--text2)',
-                  borderBottom: activeTab === 'lab' ? '3px solid var(--accent)' : 'none'
-                }}
-              >
-                Attempt
-              </div>
-            </div>
 
-            {/* OVERVIEW PANE */}
-            {activeTab === 'overview' && (
-              <div style={{ flex: 1, overflowY: 'auto', padding: '32px 48px' }} className="markdown-content">
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              {/* OVERVIEW PANE */}
+              <div style={{ padding: '32px 48px' }} className="markdown-content">
                 <div dangerouslySetInnerHTML={{ __html: fetchedContent }} />
-                <div className="lesson-nav" style={{ marginTop: '40px' }}>
-                  <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0}>← Previous</button>
-                  <button className="btn-primary" onClick={nextLesson}>
-                    {currentLesson === course.lessons.length - 1 ? '✓ Finish' : 'Next →'}
-                  </button>
-                </div>
               </div>
-            )}
 
-            {/* CODE EDITOR PANE */}
-            {activeTab === 'lab' && (
-              <aside className={`editor-panel${fullscreen ? ' fullscreen' : ''}`} style={{ display: 'flex', flex: 1, flexDirection: 'column', height: '100%' }}>
-                <div className="editor-tabs">
-                  <div className="editor-tab active">Code Editor</div>
+              {/* CODE EDITOR PANE */}
+              <aside className={`editor-panel${fullscreen ? ' fullscreen' : ''}`} style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--border)', background: 'var(--surface2)', margin: '0 48px 48px', borderRadius: '12px', overflow: 'hidden' }}>
+                <div className="editor-tabs" style={{ background: 'var(--bg-top)' }}>
+                  <div className="editor-tab active">Interactive Lab</div>
                   <div className="editor-tab">{course.lang}</div>
                   <button
                     className="editor-tab"
@@ -193,15 +159,22 @@ export default function Lesson() {
                   value={code}
                   onChange={e => setCode(e.target.value)}
                   placeholder="# Write your code here..."
-                  style={{ flex: 1 }}
+                  style={{ height: '200px', backgroundColor: 'transparent' }}
                 />
                 <div className="editor-run-bar">
                   <span style={{ fontSize: '0.78rem', color: 'var(--text3)', fontFamily: 'var(--font-mono)' }}>▶ Run your code</span>
                   <button className="run-btn" onClick={executeCode}>▶ Run</button>
                 </div>
-                <div className="output-area" style={{ height: '150px', color: outputColor }}>{output}</div>
+                <div className="output-area" style={{ height: '120px', color: outputColor }}>{output}</div>
               </aside>
-            )}
+
+              <div className="lesson-nav" style={{ padding: '0 48px 48px' }}>
+                <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0}>← Previous</button>
+                <button className="btn-primary" onClick={nextLesson}>
+                  {currentLesson === course.lessons.length - 1 ? '✓ Finish' : 'Next →'}
+                </button>
+              </div>
+            </div>
           </main>
         </div>
       </div>
