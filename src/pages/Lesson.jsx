@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import { Progress } from '../utils/auth';
 import { COURSES } from '../utils/courseData';
 import { showToast } from '../components/Toast';
+import { marked } from 'marked';
 
 export default function Lesson() {
   const [searchParams] = useSearchParams();
@@ -18,12 +19,30 @@ export default function Lesson() {
   const [output, setOutput] = useState('// Output will appear here');
   const [outputColor, setOutputColor] = useState('var(--green)');
   const [fullscreen, setFullscreen] = useState(false);
+  const [fetchedContent, setFetchedContent] = useState('');
 
   useEffect(() => {
-    setCode(course.lessons[currentLesson]?.starter || '// Write your code here');
+    const lesson = course.lessons[currentLesson];
+    setCode(lesson?.starter || '// Write your code here');
     setOutput('// Output will appear here');
-    document.title = `${course.lessons[currentLesson]?.title} — LearnCode`;
-  }, [currentLesson]);
+    document.title = `${lesson?.title} — LearnCode`;
+
+    // Fetch dynamic content if path exists
+    if (lesson?.contentPath) {
+      setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');
+      fetch(lesson.contentPath)
+        .then(res => res.text())
+        .then(md => {
+          setFetchedContent(marked.parse(md));
+        })
+        .catch(err => {
+          console.error("Failed to load lesson:", err);
+          setFetchedContent('<p style="color:var(--red)">Failed to load lesson content. Please try again later.</p>');
+        });
+    } else {
+      setFetchedContent(lesson?.content || '');
+    }
+  }, [currentLesson, course]);
 
   function goToLesson(i) { setCurrentLesson(i); setActiveTab('overview'); }
 
@@ -144,8 +163,8 @@ export default function Lesson() {
 
             {/* OVERVIEW PANE */}
             {activeTab === 'overview' && (
-              <div style={{ flex: 1, overflowY: 'auto', padding: '32px 48px' }}>
-                <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
+              <div style={{ flex: 1, overflowY: 'auto', padding: '32px 48px' }} className="markdown-content">
+                <div dangerouslySetInnerHTML={{ __html: fetchedContent }} />
                 <div className="lesson-nav" style={{ marginTop: '40px' }}>
                   <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0}>← Previous</button>
                   <button className="btn-primary" onClick={nextLesson}>

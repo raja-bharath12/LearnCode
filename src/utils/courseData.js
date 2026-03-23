@@ -5,81 +5,30 @@ export const COURSES = {
     title: "Python for Beginners",
     lang: "python",
     lessons: [
-      {
-        id: 1, title: "Introduction to Python",
-        content: `<h1>Welcome to Python 🐍</h1>
-<p>Python is one of the most popular and beginner-friendly programming languages in the world. Created by Guido van Rossum in 1991, Python emphasizes readability and simplicity.</p>
-<h3 style="margin:24px 0 12px;color:var(--accent)">Why Python?</h3>
-<ul style="color:var(--text2);padding-left:20px;line-height:2">
-  <li>Easy to read and write</li><li>Huge community &amp; libraries</li>
-  <li>Used in web, data science, AI, automation</li>
-</ul>
-<h3 style="margin:24px 0 12px;color:var(--accent)">Your First Program</h3>
-<p>Try this classic first program in the editor:</p>
-<pre><code><span class="c-fn">print</span>(<span class="c-str">"Hello, World!"</span>)</code></pre>
-<p>The <code>print()</code> function outputs text to the screen. Run it in the editor on the right! →</p>`,
-        starter: '# Your first Python program\nprint("Hello, World!")\nprint("Welcome to LearnCode!")'
-      },
-      {
-        id: 2, title: "Variables & Data Types",
-        content: `<h1>Variables &amp; Data Types</h1>
-<p>Variables are containers for storing data values. In Python, you don't need to declare the type explicitly.</p>
-<h3 style="margin:24px 0 12px;color:var(--accent)">Basic Types</h3>
-<pre><code><span class="c-comment"># Integer</span>
-age = <span class="c-str">25</span>
-<span class="c-comment"># Float</span>
-price = <span class="c-str">9.99</span>
-<span class="c-comment"># String</span>
-name = <span class="c-str">"Alice"</span>
-<span class="c-comment"># Boolean</span>
-is_student = <span class="c-keyword">True</span>
-
-<span class="c-fn">print</span>(<span class="c-fn">type</span>(age))
-<span class="c-fn">print</span>(<span class="c-fn">type</span>(name))</code></pre>`,
-        starter: '# Variables & Data Types\nname = "Alice"\nage = 25\nprice = 9.99\nis_student = True\n\nprint("Name:", name)\nprint("Age:", age)\nprint("Type of age:", type(age))'
-      },
-      {
-        id: 3, title: "Operators",
-        content: `<h1>Python Operators</h1>
-<p>Operators are used to perform operations on variables and values.</p>
-<h3 style="margin:24px 0 12px;color:var(--accent)">Arithmetic Operators</h3>
-<pre><code>a = <span class="c-str">10</span>
-b = <span class="c-str">3</span>
-<span class="c-fn">print</span>(a + b)   <span class="c-comment"># 13</span>
-<span class="c-fn">print</span>(a - b)   <span class="c-comment"># 7</span>
-<span class="c-fn">print</span>(a * b)   <span class="c-comment"># 30</span>
-<span class="c-fn">print</span>(a / b)   <span class="c-comment"># 3.33</span>
-<span class="c-fn">print</span>(a % b)   <span class="c-comment"># 1</span>
-<span class="c-fn">print</span>(a ** b)  <span class="c-comment"># 1000</span></code></pre>`,
-        starter: '# Arithmetic Operators\na = 10\nb = 3\nprint("Add:", a + b)\nprint("Sub:", a - b)\nprint("Mul:", a * b)\nprint("Div:", a / b)\nprint("Mod:", a % b)\nprint("Power:", a ** b)'
-      },
-      {
-        id: 4, title: "If / Else Statements",
-        content: `<h1>Conditional Statements</h1>
-<p>Use <code>if</code>, <code>elif</code>, and <code>else</code> to make decisions in your code.</p>
-<pre><code>age = <span class="c-str">18</span>
-<span class="c-keyword">if</span> age >= <span class="c-str">18</span>:
-    <span class="c-fn">print</span>(<span class="c-str">"You are an adult"</span>)
-<span class="c-keyword">elif</span> age >= <span class="c-str">13</span>:
-    <span class="c-fn">print</span>(<span class="c-str">"You are a teenager"</span>)
-<span class="c-keyword">else</span>:
-    <span class="c-fn">print</span>(<span class="c-str">"You are a child"</span>)</code></pre>`,
-        starter: '# Conditional Statements\nage = 18\n\nif age >= 18:\n    print("You are an adult")\nelif age >= 13:\n    print("You are a teenager")\nelse:\n    print("You are a child")\n\n# Try changing the age value!'
-      },
-      {
-        id: 5, title: "Loops",
-        content: `<h1>Loops in Python</h1>
-<p>Loops let you repeat a block of code multiple times.</p>
-<h3 style="margin:24px 0 12px;color:var(--accent)">for Loop</h3>
-<pre><code><span class="c-keyword">for</span> i <span class="c-keyword">in</span> <span class="c-fn">range</span>(<span class="c-str">5</span>):
-    <span class="c-fn">print</span>(<span class="c-str">f"Count: {i}"</span>)</code></pre>
-<h3 style="margin:24px 0 12px;color:var(--accent)">while Loop</h3>
-<pre><code>count = <span class="c-str">0</span>
-<span class="c-keyword">while</span> count < <span class="c-str">5</span>:
-    <span class="c-fn">print</span>(<span class="c-str">f"Count: {count}"</span>)
-    count += <span class="c-str">1</span></code></pre>`,
-        starter: '# Loops\nprint("--- for loop ---")\nfor i in range(5):\n    print(f"Count: {i}")\n\nprint("--- while loop ---")\ncount = 0\nwhile count < 5:\n    print(f"Count: {count}")\n    count += 1'
-      }
+      { id: 1, title: "Introduction to Python", contentPath: "/courses/1-python-for-beginners/lessons/1-introduction-to-python/content.md", starter: '# Your first Python program\nprint("Hello, World!")' },
+      { id: 2, title: "Variables & Data Types", contentPath: "/courses/1-python-for-beginners/lessons/2-variables-data-types/content.md", starter: '# Variables & Data Types\nname = "Alice"\nage = 25\nprint(f"Name: {name}, Age: {age}")' },
+      { id: 3, title: "Strings", contentPath: "/courses/1-python-for-beginners/lessons/3-strings/content.md", starter: '# Strings\ntext = "Python is Fun"\nprint(text.upper())\nprint(text[0:6])' },
+      { id: 4, title: "Numbers & Math", contentPath: "/courses/1-python-for-beginners/lessons/4-numbers-math/content.md", starter: '# Numbers & Math\na = 10\nb = 3\nprint("Add:", a + b)\nprint("Power:", a ** b)' },
+      { id: 5, title: "Input & Output", contentPath: "/courses/1-python-for-beginners/lessons/5-input-output/content.md", starter: '# Input & Output\nname = input("Enter your name: ")\nprint(f"Hello, {name}!")' },
+      { id: 6, title: "Conditional Statements (if/elif/else)", contentPath: "/courses/1-python-for-beginners/lessons/6-conditional-statements-if-elif-else/content.md", starter: '# Conditional Statements\nage = 18\nif age >= 18:\n    print("Adult")\nelse:\n    print("Minor")' },
+      { id: 7, title: "Loops (for & while)", contentPath: "/courses/1-python-for-beginners/lessons/7-loops-for-while/content.md", starter: '# Loops\nfor i in range(5):\n    print(f"Count: {i}")' },
+      { id: 8, title: "Lists", contentPath: "/courses/1-python-for-beginners/lessons/8-lists/content.md", starter: '# Lists\nfruits = ["apple", "banana"]\nfruits.append("cherry")\nprint(fruits)' },
+      { id: 9, title: "Tuples", contentPath: "/courses/1-python-for-beginners/lessons/9-tuples/content.md", starter: '# Tuples\npoint = (10, 20)\nprint(point[0])' },
+      { id: 10, title: "Dictionaries", contentPath: "/courses/1-python-for-beginners/lessons/10-dictionaries/content.md", starter: '# Dictionaries\nuser = {"name": "Raja", "age": 20}\nprint(user["name"])' },
+      { id: 11, title: "Sets", contentPath: "/courses/1-python-for-beginners/lessons/11-sets/content.md", starter: '# Sets\ns = {1, 2, 2, 3}\nprint(s) # {1, 2, 3}' },
+      { id: 12, title: "Functions", contentPath: "/courses/1-python-for-beginners/lessons/12-functions/content.md", starter: 'def greet():\n    print("Hello!")\n\ngreet()' },
+      { id: 13, title: "Arguments & Return Values", contentPath: "/courses/1-python-for-beginners/lessons/13-arguments-return-values/content.md", starter: 'def add(a, b):\n    return a + b\n\nprint(add(5, 7))' },
+      { id: 14, title: "Scope & Namespaces", contentPath: "/courses/1-python-for-beginners/lessons/14-scope-namespaces/content.md", starter: 'x = 10\ndef show():\n    global x\n    x = 20\n\nshow()\nprint(x)' },
+      { id: 15, title: "Modules & Imports", contentPath: "/courses/1-python-for-beginners/lessons/15-modules-imports/content.md", starter: 'import math\nprint(math.sqrt(16))' },
+      { id: 16, title: "File I/O", contentPath: "/courses/1-python-for-beginners/lessons/16-file-i-o/content.md", starter: '# File I/O example\nwith open("test.txt", "w") as f:\n    f.write("Hello World")' },
+      { id: 17, title: "Exception Handling", contentPath: "/courses/1-python-for-beginners/lessons/17-exception-handling/content.md", starter: 'try:\n    x = 1/0\nexcept ZeroDivisionError:\n    print("Error!")' },
+      { id: 18, title: "List Comprehensions", contentPath: "/courses/1-python-for-beginners/lessons/18-list-comprehensions/content.md", starter: 'nums = [1, 2, 3, 4]\nsquares = [x*x for x in nums]\nprint(squares)' },
+      { id: 19, title: "Lambda Functions", contentPath: "/courses/1-python-for-beginners/lessons/19-lambda-functions/content.md", starter: 'add = lambda a, b: a + b\nprint(add(5, 3))' },
+      { id: 20, title: "Classes & Objects (OOP Intro)", contentPath: "/courses/1-python-for-beginners/lessons/20-classes-objects-oop-intro/content.md", starter: 'class Dog:\n    def speak(self):\n        print("Woof!")\n\nd = Dog()\nd.speak()' },
+      { id: 21, title: "Inheritance", contentPath: "/courses/1-python-for-beginners/lessons/21-inheritance/content.md", starter: 'class Animal:\n    def speak(self):\n        print("Sound")\n\nclass Dog(Animal):\n    def speak(self):\n        print("Bark")' },
+      { id: 22, title: "Python Standard Library", contentPath: "/courses/1-python-for-beginners/lessons/22-python-standard-library/content.md", starter: 'import random\nprint(random.randint(1, 100))' },
+      { id: 23, title: "Virtual Environments & pip", contentPath: "/courses/1-python-for-beginners/lessons/23-virtual-environments-pip/content.md", starter: '# Commands are run in terminal\n# pip install requests' },
+      { id: 24, title: "Project: Build a Calculator", contentPath: "/courses/1-python-for-beginners/lessons/24-project-build-a-calculator/content.md", starter: '# Final Project: Calculator\n# Implement your logic here' }
     ]
   },
   2: {
