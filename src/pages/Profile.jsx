@@ -113,6 +113,7 @@ export default function Profile() {
               <div className="profile-divider"></div>
             </div>
 
+            <div className="profile-info-section">
               <div className="info-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Personal Information</h4>
                 <a className="edit-link" onClick={() => setActiveTab('settings')} title="Edit profile" style={{ color: 'var(--accent)', fontWeight: 700, cursor: 'pointer' }}>Edit Profile</a>
