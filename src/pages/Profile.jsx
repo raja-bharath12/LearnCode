@@ -145,7 +145,6 @@ export default function Profile() {
             {/* SETTINGS PANEL */}
             {activeTab === 'settings' && (
               <div className="profile-panel active">
-                <div className="panel-header"><h3>Account Settings</h3></div>
 
                 {statusMsg.msg && (
                   <div style={{
