@@ -101,7 +101,13 @@ export default function Profile() {
       <div className="main-wrapper profile-page">
         <Header showBrand />
 
-        <div className="profile-cover"></div>
+        <div className="languages-banner profile-banner">
+          <div className="languages-track">
+            {Array(20).fill(user.name || 'User').map((name, i) => (
+              <span key={i}>{name}</span>
+            ))}
+          </div>
+        </div>
 
         <div className="container profile-body">
           {/* LEFT COLUMN */}
@@ -116,7 +122,6 @@ export default function Profile() {
             <div className="profile-info-section">
               <div className="info-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Personal Information</h4>
-                <a className="edit-link" onClick={() => setActiveTab('settings')} title="Edit profile" style={{ color: 'var(--accent)', fontWeight: 700, cursor: 'pointer' }}>Edit Profile</a>
               </div>
               {[
                 ['Name', user.name],

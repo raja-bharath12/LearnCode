@@ -36,7 +36,7 @@ export default function Header({ showSearch = false, showBrand = false }) {
 
   return (
     <header className="top-header">
-      <div className="container header-container">
+      <div className="header-container">
         {showBrand && <Link to="/" className="header-brand">LearnCode</Link>}
         {showSearch && (
           <div className="search-bar">

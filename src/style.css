@@ -150,18 +150,18 @@ body {
 }
 
 .main-wrapper {
-  margin-left: 100px;
+  margin-left: 80px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  width: calc(100% - 100px);
+  width: calc(100% - 80px);
 }
 
 .container {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 0 100px;
+  padding: 0 20px;
 }
 
 .top-header {
@@ -180,7 +180,8 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 40px;
+  padding: 0 24px;
+  max-width: none;
 }
 
 .header-brand {
@@ -445,6 +446,7 @@ body {
   background: var(--bg);
   width: 100%;
   position: relative;
+  max-width: none;
 }
 .languages-track {
   display: flex; gap: 48px;
@@ -766,12 +768,14 @@ body {
   display: flex; 
   gap: 0; 
   margin-bottom: 0px;
-  align-self: flex-start;
+  width: 100%;
   position: relative;
   z-index: 15;
 }
 .profile-tab {
-  padding: 14px 32px;
+  flex: 1;
+  text-align: center;
+  padding: 18px 32px;
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
@@ -779,15 +783,15 @@ body {
   font-weight: 700; color: var(--text3);
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 20px 20px 0 0;
+  border-radius: 28px 28px 0 0;
 }
 .profile-tab.active { 
   color: var(--accent); 
-  background: var(--surface);
+  background: var(--accent-light);
   border-bottom: 2px solid var(--accent);
 }
 .profile-panel {
-  border-radius: 0 28px 28px 28px;
+  border-radius: 0 0 28px 28px;
 }
 
 .profile-avatar-wrap {
@@ -844,15 +848,25 @@ body {
 }
 .setting-input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 4px var(--accent-light); }
 
-.profile-cover {
-  height: 240px;
+.profile-banner {
+  height: 180px;
+  display: flex;
+  align-items: center;
   background: linear-gradient(135deg, #2c58ff 0%, #7c3aed 100%);
-  position: relative;
-  overflow: hidden;
+  border-bottom: none;
+  padding: 0;
+  width: 100%;
+  max-width: none;
 }
-.profile-cover::after {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(circle at 70% 20%, rgba(255,255,255,0.1) 0%, transparent 60%);
+.profile-banner .languages-track span {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: -2px;
+  text-transform: uppercase;
+}
+.profile-banner .languages-track {
+  animation-duration: 40s;
 }
 
 .auth-switch { text-align: center; margin-top: 24px; color: var(--text2); font-size: 0.9rem; }
@@ -999,19 +1013,7 @@ body {
 }
 .lesson-nav { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
 
-.main-wrapper {
-  margin-left: 100px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
-}
 
-.container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 80px;
-}
 .editor-panel {
   flex: 1; border-left: 1px solid var(--border);
   display: flex; flex-direction: column; background: var(--bg2);
