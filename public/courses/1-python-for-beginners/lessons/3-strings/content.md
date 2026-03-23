@@ -1,12 +1,12 @@
-# 📘 Lesson 3: Strings
+#  Lesson 3: Strings
 
-## 📖 Definition
+##  Definition
 A **string** is a sequence of characters enclosed in single quotes (`' '`) or double quotes (`" "`).
 
-## 🧠 Explanation
+##  Explanation
 Strings are used to store text data such as names, messages, or paragraphs.
 
-### 🔑 Key Features:
+###  Key Features:
 - **Ordered**: Each character has a fixed position (index).
 - **Immutable**: Once created, individual characters cannot be changed directly.
 - **Versatile**: Supports powerful operations like indexing, slicing, and manipulation.
@@ -26,7 +26,7 @@ text = "Python"
 print(text[0:3]) # Output: Pyt
 ```
 
-### 🔧 Common String Operations:
+###  Common String Operations:
 ```python
 text = "python"
 print(text.upper())           # PYTHON
@@ -35,7 +35,7 @@ print(len(text))              # 6
 print(text.replace("p", "J")) # Jython
 ```
 
-### 🔗 String Concatenation:
+###  String Concatenation:
 Join two or more strings using the `+` operator:
 ```python
 a = "Hello"
@@ -43,49 +43,51 @@ b = "World"
 print(a + " " + b) # Output: Hello World
 ```
 
-### 🧾 Escape Characters:
+###  Escape Characters:
 | Symbol | Meaning |
 | :--- | :--- |
 | `\n` | New line |
 | `\t` | Tab space |
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Store a name in a variable and print it.
 ```python
 name = "Raja"
 print(name)
 ```
-✅ **Output:**
+ **Output:**
 ```
 Raja
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Find the length of a given string.
 ```python
 text = "Python"
 print(len(text))
 ```
-✅ **Output:**
+ **Output:**
 ```
 6
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Replace a specific word in a string with another word.
 ```python
 text = "I love Python"
 new_text = text.replace("Python", "Java")
 print(new_text)
 ```
-✅ **Output:**
+ **Output:**
 ```
 I love Java
 ```
 
-## 📌 Summary
+##  Summary
 - Strings store text and are immutable.
 - Indexing starts at 0; slicing uses `[start:end]`.
 - Native methods like `.upper()`, `.lower()`, and `.replace()` make manipulation easy.
+
+

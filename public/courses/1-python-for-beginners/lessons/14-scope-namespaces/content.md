@@ -1,13 +1,13 @@
-# 📘 Lesson 14: Scope & Namespaces
+#  Lesson 14: Scope & Namespaces
 
-## 📖 Definition
+##  Definition
 **Scope** refers to the specific region of a program where a variable is accessible.  
 **Namespace** is a container (like a dictionary) that stores variable names and connects them to their values.
 
-## 🧠 Explanation
+##  Explanation
 Python uses scope to prevent variable name conflicts. It follows the **LEGB rule** to look up variables.
 
-### 🔑 The LEGB Rule:
+###  The LEGB Rule:
 1. **L**ocal: Inside a function.
 2. **E**nclosing: Inside a nested function (closure).
 3. **G**lobal: At the top level of a file.
@@ -24,7 +24,7 @@ func()
 # print(x) # ❌ Error: x is not defined outside
 ```
 
-### 🌍 2. Global Scope:
+###  2. Global Scope:
 Variables created outside all functions are global.
 ```python
 x = 20 # Global
@@ -35,7 +35,7 @@ def func():
 func()
 ```
 
-### 🔄 Modifying a Global Variable:
+###  Modifying a Global Variable:
 Use the `global` keyword to change a global variable from within a function:
 ```python
 x = 10
@@ -48,9 +48,9 @@ update_x()
 print(x) # Output: 20
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Define a global variable and access it inside a function.
 ```python
 x = 100
@@ -60,12 +60,12 @@ def show_val():
 
 show_val()
 ```
-✅ **Output:**
+ **Output:**
 ```
 100
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Show the difference between a local and global variable with the same name.
 ```python
 x = 10 # Global
@@ -77,13 +77,13 @@ def func():
 func()
 print("Global x:", x)
 ```
-✅ **Output:**
+ **Output:**
 ```
 Local x: 5
 Global x: 10
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Demonstrate accessing a variable from an enclosing scope (nested function).
 ```python
 def outer():
@@ -96,12 +96,14 @@ def outer():
 
 outer()
 ```
-✅ **Output:**
+ **Output:**
 ```
 Hello from Outer
 ```
 
-## 📌 Summary
+##  Summary
 - Scope defines where variables "live."
 - Local variables are private to their functions.
 - Global variables should be used sparingly; use the `global` keyword to modify them inside functions.
+
+

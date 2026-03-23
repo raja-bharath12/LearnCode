@@ -1,12 +1,12 @@
-# 📘 Lesson 19: Lambda Functions
+#  Lesson 19: Lambda Functions
 
-## 📖 Definition
+##  Definition
 A **lambda function** is a small, anonymous (nameless) function defined in a single line using the `lambda` keyword.
 
-## 🧠 Explanation
+##  Explanation
 Lambdas are used for short, throwaway logic where defining a full function with `def` would be overkill.
 
-### ⚙️ Basic Syntax:
+###  Basic Syntax:
 `lambda arguments: expression`
 
 ### 🔍 Simple Example:
@@ -16,7 +16,7 @@ add_five = lambda x: x + 5
 print(add_five(10)) # Output: 15
 ```
 
-### 🔗 Using Lambda with `map()` and `filter()`:
+###  Using Lambda with `map()` and `filter()`:
 Lambdas are most powerful when used as arguments to other functions:
 
 - **`map()`**: Apply a function to every item in a list.
@@ -31,43 +31,45 @@ nums = [1, 2, 3, 4]
 evens = list(filter(lambda x: x % 2 == 0, nums)) # [2, 4]
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Create a lambda function that adds 10 to a number.
 ```python
 add_ten = lambda x: x + 10
 print(add_ten(5))
 ```
-✅ **Output:**
+ **Output:**
 ```
 15
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Create a lambda function that multiplies two numbers together.
 ```python
 multiply = lambda a, b: a * b
 print(multiply(4, 3))
 ```
-✅ **Output:**
+ **Output:**
 ```
 12
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Use the `filter()` function and a lambda to extract only the ODD numbers from the list `[1, 2, 3, 4, 5]`.
 ```python
 nums = [1, 2, 3, 4, 5]
 odd_nums = list(filter(lambda x: x % 2 != 0, nums))
 print(odd_nums)
 ```
-✅ **Output:**
+ **Output:**
 ```
 [1, 3, 5]
 ```
 
-## 📌 Summary
+##  Summary
 - Lambda functions have no name and are restricted to a single expression.
 - They are perfect for small functional programming tasks.
 - While useful, `def` is still better for any logic that is reuseable or takes more than one line.
+
+

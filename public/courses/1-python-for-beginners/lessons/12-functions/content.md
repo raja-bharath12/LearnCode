@@ -1,17 +1,17 @@
-# 📘 Lesson 12: Functions
+#  Lesson 12: Functions
 
-## 📖 Definition
+##  Definition
 A **function** is a reusable block of code that performs a specific task.
 
-## 🧠 Explanation
+##  Explanation
 Functions allow you to write code once and use it many times, making your programs organized, readable, and easier to debug.
 
-### 🔑 Key Benefits:
+###  Key Benefits:
 - **Code Reusability**: Call the same logic with one line.
 - **Modularity**: Break down complex problems into smaller parts.
 - **Maintainability**: Update logic in one place to affect the whole program.
 
-### ⚙️ The Structure:
+###  The Structure:
 Use the `def` keyword to define yours:
 ```python
 def greet():
@@ -20,7 +20,7 @@ def greet():
 greet() # This is a function call
 ```
 
-### 🔢 Functions with Parameters:
+###  Functions with Parameters:
 Send information into the function:
 ```python
 def greet_user(name):
@@ -29,7 +29,7 @@ def greet_user(name):
 greet_user("Raja") # Raja is passed as an argument
 ```
 
-### 🔁 Returning Results:
+###  Returning Results:
 Use `return` to send a value back to the caller:
 ```python
 def square(n):
@@ -39,9 +39,9 @@ result = square(4)
 print(result) # Output: 16
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Create a function that prints "Welcome to Python" and call it.
 ```python
 def welcome():
@@ -49,12 +49,12 @@ def welcome():
 
 welcome()
 ```
-✅ **Output:**
+ **Output:**
 ```
 Welcome to Python
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Create a function that takes a number as input and returns its square.
 ```python
 def square_val(num):
@@ -62,12 +62,12 @@ def square_val(num):
 
 print(square_val(5))
 ```
-✅ **Output:**
+ **Output:**
 ```
 25
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Create a function that takes a number and returns a message saying whether it is "Even" or "Odd".
 ```python
 def check_even_odd(num):
@@ -78,12 +78,14 @@ def check_even_odd(num):
 
 print(check_even_odd(7))
 ```
-✅ **Output:**
+ **Output:**
 ```
 Odd
 ```
 
-## 📌 Summary
+##  Summary
 - Functions are the building blocks of efficient programs.
 - Parameters go inside the `(...)` when defining; arguments go there when calling.
 - Always use the `return` statement if you want the function to produce a result that can be assigned to a variable.
+
+

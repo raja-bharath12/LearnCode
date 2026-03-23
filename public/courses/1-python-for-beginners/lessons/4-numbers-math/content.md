@@ -1,9 +1,9 @@
-# 📘 Lesson 4: Numbers & Math
+#  Lesson 4: Numbers & Math
 
-## 📖 Definition
+##  Definition
 Numbers in Python are used to store numeric values and perform various mathematical operations.
 
-## 🧠 Explanation
+##  Explanation
 Python supports three primary numeric types:
 
 | Type | Description | Example |
@@ -12,7 +12,7 @@ Python supports three primary numeric types:
 | `float` | Decimal numbers | `3.14`, `-0.5` |
 | `complex` | Numbers with real and imaginary parts | `2 + 3j` |
 
-### ➕ Arithmetic Operations:
+###  Arithmetic Operations:
 ```python
 a = 10
 b = 3
@@ -26,14 +26,14 @@ print(a ** b) # Power/Exponent (1000)
 print(a // b) # Floor Division (3)
 ```
 
-### 🔢 Type Conversion:
+###  Type Conversion:
 ```python
 x = 10
 y = float(x)
 print(y) # Output: 10.0
 ```
 
-### 📐 The Math Module:
+###  The Math Module:
 For advanced math, import the built-in `math` module:
 ```python
 import math
@@ -44,33 +44,33 @@ print(math.floor(4.8)) # 4
 print(math.pi)        # 3.14159...
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Write a program to add two numbers.
 ```python
 a = 5
 b = 7
 print(a + b)
 ```
-✅ **Output:**
+ **Output:**
 ```
 12
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Find the remainder when 10 is divided by 3.
 ```python
 a = 10
 b = 3
 print(a % b)
 ```
-✅ **Output:**
+ **Output:**
 ```
 1
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Calculate the area of a circle with a radius of 7.
 ```python
 import math
@@ -79,12 +79,14 @@ radius = 7
 area = math.pi * radius ** 2
 print(area)
 ```
-✅ **Output:**
+ **Output:**
 ```
 153.93804002589985
 ```
 
-## 📌 Summary
+##  Summary
 - Python handles `int`, `float`, and `complex` numbers easily.
 - Division always returns a `float`.
 - Use the `math` module for advanced trigonometry, logarithms, and constants like Pi.
+
+

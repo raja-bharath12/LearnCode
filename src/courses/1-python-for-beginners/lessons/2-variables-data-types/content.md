@@ -1,15 +1,15 @@
-# 📘 Lesson 2: Variables & Data Types
+#  Lesson 2: Variables & Data Types
 
-## 📖 Definition
+##  Definition
 A **variable** is a container used to store data values in a program.  
 A **data type** defines the type of value a variable can hold.
 
-## 🧠 Explanation
+##  Explanation
 In Python:
 - You don’t need to declare the variable type explicitly.
 - Python automatically assigns the data type based on the value.
 
-### 🔑 Common Data Types:
+###  Common Data Types:
 | Data Type | Description | Example |
 | :--- | :--- | :--- |
 | `int` | Integer numbers (whole numbers) | `10` |
@@ -17,7 +17,7 @@ In Python:
 | `str` | Text (string of characters) | `"Hello"` |
 | `bool` | Boolean (True or False) | `True` |
 
-### ⚙️ Dynamic Typing:
+###  Dynamic Typing:
 Python allows changing the type of a variable during execution:
 ```python
 x = 10        # x is an int
@@ -31,7 +31,7 @@ x = 10
 print(type(x)) # Output: <class 'int'>
 ```
 
-### 🧾 Type Conversion:
+###  Type Conversion:
 You can convert one type to another (casting):
 ```python
 x = "10"
@@ -39,32 +39,32 @@ y = int(x)
 print(y) # Output: 10 (as an integer)
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Store a number in a variable and print it.
 ```python
 num = 5
 print(num)
 ```
-✅ **Output:**
+ **Output:**
 ```
 5
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Store a name and an age, then print them on the same line.
 ```python
 name = "Raja"
 age = 20
 print(name, age)
 ```
-✅ **Output:**
+ **Output:**
 ```
 Raja 20
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Add an integer and a float, then display the result and its data type.
 ```python
 a = 10
@@ -74,18 +74,20 @@ result = a + b
 print(result)
 print(type(result))
 ```
-✅ **Output:**
+ **Output:**
 ```
 12.5
 <class 'float'>
 ```
 
-## 🧠 Important Rules for Variable Names:
+##  Important Rules for Variable Names:
 - Must start with a letter or an underscore (`_`).
 - Cannot start with a number.
 - Are case-sensitive (`a = 10` and `A = 20` are different).
 
-## 📌 Summary
+##  Summary
 - Variables store data and use dynamic typing.
 - Common types include `int`, `float`, `str`, and `bool`.
 - Use `type()` to check types and casting functions (like `int()`) to convert them.
+
+

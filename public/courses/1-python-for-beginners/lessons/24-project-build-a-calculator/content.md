@@ -1,16 +1,16 @@
-# 📘 Lesson 24: Project – Build a Calculator (Python)
+#  Lesson 24: Project – Build a Calculator (Python)
 
-## 📖 Definition
+##  Definition
 A **calculator** is a practical program that takes user input, performs arithmetic operations, and displays the result. It is the perfect capstone to consolidate everything you've learned.
 
-## 🧠 Project Objective
+##  Project Objective
 We will apply all the fundamental concepts we've covered:
 - **Variables**: Storing numbers and choices.
 - **Functions**: Wrapping operations like `add` and `multiply`.
 - **Logic**: Using `if/elif` to decide which function to run.
 - **Input/Output**: Interacting with the user.
 
-## 🧩 Step-by-Step Implementation
+##  Step-by-Step Implementation
 
 ### 🔹 Step 1: Define Arithmetic Functions
 ```python
@@ -58,26 +58,28 @@ else:
     print("Invalid choice!")
 ```
 
-## 📝 Practice Tests
+##  Practice Tests
 
-### 🟢 Easy
+###  Easy
 **Input**: First number `5`, Second number `3`, Choice `1`.
-✅ **Expected Output**: `Result: 8.0`
+ **Expected Output**: `Result: 8.0`
 
-### 🟡 Medium
+###  Medium
 **Input**: First number `10`, Second number `2`, Choice `4`.
-✅ **Expected Output**: `Result: 5.0`
+ **Expected Output**: `Result: 5.0`
 
-### 🔴 Advanced
+###  Advanced
 **Input**: First number `5`, Second number `0`, Choice `4`.
-✅ **Expected Output**: `Error: Cannot divide by zero!`
+ **Expected Output**: `Error: Cannot divide by zero!`
 
-## 🚀 Future Improvements:
+##  Future Improvements:
 - **Loop**: Wrap the logic in a `while True` loop so the user can calculate multiple times without restarting the program.
 - **UI**: Add a prettier menu or even a GUI using a library like `Tkinter`.
 - **Adv. Math**: Add features for square roots or exponents.
 
-## 🏆 Final Summary
+##  Final Summary
 - Building a calculator is a rite of passage for every programmer.
 - It proves you can handle data, logic, and structure together.
 - This codebase can serve as a template for more complex tool-building.
+
+

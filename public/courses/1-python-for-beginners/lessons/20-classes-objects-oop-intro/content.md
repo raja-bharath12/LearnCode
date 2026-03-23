@@ -1,17 +1,17 @@
-# 📘 Lesson 20: Classes & Objects (OOP – Introduction)
+#  Lesson 20: Classes & Objects (OOP – Introduction)
 
-## 📖 Definition
+##  Definition
 - A **class** is a blueprint (plan) for creating objects.
 - An **object** is a specific instance of a class.
 
-## 🧠 Explanation
+##  Explanation
 **Object-Oriented Programming (OOP)** is a paradigm that organizes software design around data (objects) rather than functions and logic.
 
-### 🔑 Real-World Analogy:
+###  Real-World Analogy:
 - **Class**: A Blueprint for a house.
 - **Object**: The actual house built from that blueprint. Every house has the same structure but can have different colors or owners.
 
-### ⚙️ Basic Syntax:
+###  Basic Syntax:
 ```python
 class Student:
     def __init__(self, name, age):
@@ -26,15 +26,15 @@ s1 = Student("Raja", 20)
 s1.greet()
 ```
 
-### 🧩 Key Terminology:
+###  Key Terminology:
 - **`__init__`**: The "Constructor" function. It runs automatically when a new object is created.
 - **`self`**: A keyword that refers to the specific object being worked on. It must be the first parameter in every class method.
 - **Attribute**: A variable that belongs to an object (e.g., `name`).
 - **Method**: A function that belongs to a class (e.g., `greet`).
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Create a class named `Car` with an attribute `brand`, create an object of it, and print the brand.
 ```python
 class Car:
@@ -43,12 +43,12 @@ class Car:
 c = Car()
 print(c.brand)
 ```
-✅ **Output:**
+ **Output:**
 ```
 Toyota
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Create a class `Person` with a constructor (`__init__`) that assigns a `name`. Create an object and print the name.
 ```python
 class Person:
@@ -58,12 +58,12 @@ class Person:
 p = Person("Raja")
 print(p.name)
 ```
-✅ **Output:**
+ **Output:**
 ```
 Raja
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Create a `Calculator` class with a method `add` that takes two numbers and returns their sum.
 ```python
 class Calculator:
@@ -73,12 +73,14 @@ class Calculator:
 my_calc = Calculator()
 print(my_calc.add(5, 3))
 ```
-✅ **Output:**
+ **Output:**
 ```
 8
 ```
 
-## 📌 Summary
+##  Summary
 - Classes allow you to group data and behavior together into logical units.
 - Objects represent real-world entities within your code.
 - OOP is the foundation of most modern software development, including Python itself.
+
+

@@ -1,16 +1,16 @@
-# 📘 Lesson 21: Inheritance
+#  Lesson 21: Inheritance
 
-## 📖 Definition
+##  Definition
 **Inheritance** is a core Object-Oriented Programming (OOP) feature that allows one class (the **child**) to acquire the attributes and methods of another class (the **parent**).
 
-## 🧠 Explanation
+##  Explanation
 Inheritance allows you to create specialized versions of existing classes, promoting code reusability and reducing duplication.
 
-### 🔑 Terminology:
+###  Terminology:
 - **Parent Class (Base Class)**: The original class being inherited from.
 - **Child Class (Derived Class)**: The new class that inherits features and can add its own.
 
-### ⚙️ Basic Syntax:
+###  Basic Syntax:
 ```python
 class Parent:
     def greet(self):
@@ -23,7 +23,7 @@ c = Child()
 c.greet() # Output: Hello from the Parent!
 ```
 
-### 🔧 Method Overriding:
+###  Method Overriding:
 A child class can "redefine" a method from the parent to change its behavior.
 ```python
 class Animal:
@@ -38,9 +38,9 @@ d = Dog()
 d.speak() # Output: Dog barks!
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Create a parent class `Animal` with a method `sound` and a child class `Cat` that inherits from it.
 ```python
 class Animal:
@@ -53,12 +53,12 @@ class Cat(Animal):
 my_cat = Cat()
 my_cat.sound()
 ```
-✅ **Output:**
+ **Output:**
 ```
 Some generic sound
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Override a `show` method from a `Parent` class in a `Child` class to print "Child class here".
 ```python
 class Parent:
@@ -72,12 +72,12 @@ class Child(Parent):
 obj = Child()
 obj.show()
 ```
-✅ **Output:**
+ **Output:**
 ```
 Child class here
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Demonstrate multilevel inheritance where `Class C` inherits from `Class B`, and `Class B` inherits from `Class A`.
 ```python
 class A:
@@ -93,12 +93,14 @@ class C(B): # C inherits from B
 obj = C()
 obj.say_a() # Can access A because of inheritance chain
 ```
-✅ **Output:**
+ **Output:**
 ```
 A
 ```
 
-## 📌 Summary
+##  Summary
 - Inheritance allows for a hierarchy of classes, sharing common functionality.
 - Method overriding is used to customize or replace parent behavior in a child class.
 - Use `super()` if you want to call the parent version of a method from within the child class.
+
+

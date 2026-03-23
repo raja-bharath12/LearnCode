@@ -1,12 +1,12 @@
-# 📘 Lesson 17: Exception Handling
+#  Lesson 17: Exception Handling
 
-## 📖 Definition
+##  Definition
 **Exception Handling** is a mechanism used to gracefully handle runtime errors, preventing your program from crashing when something unexpected happens.
 
-## 🧠 Explanation
+##  Explanation
 An "Exception" is an error that occurs during the execution of a program (e.g., dividing by zero, opening a missing file).
 
-### ⚙️ The `try...except` Block:
+###  The `try...except` Block:
 - **`try`**: Place the code that might cause an error here.
 - **`except`**: Place the code that should run if an error occurs.
 
@@ -18,7 +18,7 @@ except ValueError:
     print("Error: That is not a valid number!")
 ```
 
-### 🔧 More Fine-Grained Control:
+###  More Fine-Grained Control:
 - **`else`**: Runs if **no** exceptions occur in the `try` block.
 - **`finally`**: Runs no matter what (even if there was an error or a `return`).
 
@@ -33,9 +33,9 @@ finally:
     print("Execution complete.")
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Handle a potential error when converting a string to an integer.
 ```python
 try:
@@ -43,12 +43,12 @@ try:
 except:
     print("Invalid input detected")
 ```
-✅ **Output:**
+ **Output:**
 ```
 Invalid input detected
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Handle a `ZeroDivisionError` specifically when dividing two numbers.
 ```python
 try:
@@ -58,12 +58,12 @@ try:
 except ZeroDivisionError:
     print("Cannot divide by zero")
 ```
-✅ **Output:**
+ **Output:**
 ```
 Cannot divide by zero
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Create a block that uses `try`, `except`, `else`, and `finally` to handle a conversion.
 ```python
 try:
@@ -75,13 +75,15 @@ else:
 finally:
     print("Cleanup step: Done")
 ```
-✅ **Output:**
+ **Output:**
 ```
 Converted successfully
 Cleanup step: Done
 ```
 
-## 📌 Summary
+##  Summary
 - Exception handling makes your code more robust and user-friendly.
 - Always try to catch specific exceptions (like `ValueError`) rather than using a generic `except` block.
 - Use `finally` for tasks like closing files or database connections that must happen regardless of success or failure.
+
+

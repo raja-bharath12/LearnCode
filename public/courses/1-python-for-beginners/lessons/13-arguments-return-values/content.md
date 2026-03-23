@@ -1,13 +1,13 @@
-# 📘 Lesson 13: Arguments & Return Values
+#  Lesson 13: Arguments & Return Values
 
-## 📖 Definition
+##  Definition
 **Arguments** are the values passed to a function when it is called.  
 The **Return value** is the result that a function sends back to the caller using the `return` statement.
 
-## 🧠 Explanation
+##  Explanation
 Functions are more flexible and useful when they can take input data and provide output results.
 
-### 🔢 Types of Arguments:
+###  Types of Arguments:
 1. **Positional Arguments**: Values are passed in the order defined in the function.
 ```python
 def add(a, b):
@@ -36,7 +36,7 @@ def total(*nums):
 print(total(1, 2, 3)) # 6
 ```
 
-### 🔁 Multiple Return Values:
+###  Multiple Return Values:
 A Python function can return more than one result as a tuple:
 ```python
 def calc(a, b):
@@ -46,9 +46,9 @@ sum_val, mul_val = calc(2, 3)
 print(sum_val, mul_val) # 5 6
 ```
 
-## 📝 Examples with Answers
+##  Examples with Answers
 
-### 🟢 Easy
+###  Easy
 **Problem:** Create a function that takes a name and prints a personalized greeting.
 ```python
 def greet(name):
@@ -56,12 +56,12 @@ def greet(name):
 
 greet("Raja")
 ```
-✅ **Output:**
+ **Output:**
 ```
 Hello Raja
 ```
 
-### 🟡 Medium
+###  Medium
 **Problem:** Create a function that takes two numbers and returns their sum.
 ```python
 def add_nums(a, b):
@@ -70,12 +70,12 @@ def add_nums(a, b):
 result = add_nums(5, 7)
 print(result)
 ```
-✅ **Output:**
+ **Output:**
 ```
 12
 ```
 
-### 🔴 Advanced
+###  Advanced
 **Problem:** Create a function with a default argument for age and return a formatted string saying "Name is Age years old".
 ```python
 def display_info(name, age=18):
@@ -84,13 +84,15 @@ def display_info(name, age=18):
 print(display_info("Raja"))
 print(display_info("Kumar", 25))
 ```
-✅ **Output:**
+ **Output:**
 ```
 Raja is 18 years old
 Kumar is 25 years old
 ```
 
-## 📌 Summary
+##  Summary
 - Arguments provide the necessary input for a function to perform its task.
 - `return` sends data back, allowing the function result to be stored in a variable.
 - Python supports highly flexible argument types, including default values and variable-length inputs.
+
+

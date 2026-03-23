@@ -37,7 +37,7 @@ export const COURSES = {
     lessons: [
       {
         id: 1, title: "Intro to JavaScript",
-        content: `<h1>Welcome to JavaScript ⚡</h1><p>JavaScript is the language of the web. It runs in every browser and powers interactive websites.</p><pre><code>console.log("Hello, World!");</code></pre>`,
+        content: `<h1>Welcome to JavaScript</h1><p>JavaScript is the language of the web. It runs in every browser and powers interactive websites.</p><pre><code>console.log("Hello, World!");</code></pre>`,
         starter: '// Your first JS program\nconsole.log("Hello, World!");\nconsole.log("JavaScript is awesome!");'
       },
       {
@@ -53,3 +53,4 @@ export const COURSES = {
     ]
   }
 };
+

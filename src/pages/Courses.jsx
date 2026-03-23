@@ -71,7 +71,9 @@ export default function Courses() {
                     data-level={(c.level || 'Beginner').toLowerCase()}
                   >
                     <div className="course-card-top" style={{ '--accent': c.color || 'var(--accent)' }}>
-                      <span className="course-icon">{c.icon || '📚'}</span>
+                      <span className="course-icon" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent)' }}>
+                        {c.title.charAt(0)}
+                      </span>
                       <span className={`course-level level-${(c.level || 'Beginner').toLowerCase()}`}>{c.level || 'Beginner'}</span>
                     </div>
                     <div className="course-card-body">
