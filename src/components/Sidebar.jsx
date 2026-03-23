@@ -11,8 +11,8 @@ export default function Sidebar() {
       <div className="mini-nav-links">
         <Link to="/" className={active('/')} title="Home">🏠</Link>
         <Link to="/courses" className={active('/courses')} title="Courses">📚</Link>
-        <Link to="/dashboard" className={active('/dashboard')} title="Dashboard">📊</Link>
-        <Link to="/ide" className={active('/ide')} title="IDE">💻</Link>
+        <Link to="/profile" className={active('/profile')} title="Profile">📊</Link>
+        <a href="https://www.onlinegdb.com/online_c_compiler" className="mini-link" target="_blank" rel="noopener noreferrer" title="IDE">💻</a>
       </div>
       <Link to="/profile" className={active('/profile')} title="Profile">👤</Link>
     </aside>

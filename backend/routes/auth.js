@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
     if (mongoose.connection.readyState !== 1) {
       // Demo mode — return a fake token
       return res.status(201).json({
-        message: 'Demo mode: Account created!',
+        message: 'Account created!',
         token: 'demo_token_' + Date.now(),
         user: { id: 'demo', name, email }
       });
@@ -55,11 +55,11 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create user
-    const user = new User({ 
-      name, 
-      email, 
-      password: hashedPassword, 
-      role: role || 'user' 
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || 'user'
     });
     await user.save();
 

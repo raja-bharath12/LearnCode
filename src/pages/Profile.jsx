@@ -267,13 +267,6 @@ export default function Profile() {
                   <div className="setting-row"><label className="setting-label">GitHub</label><input className="setting-input" type="url" value={sGithub} onChange={e => setSGithub(e.target.value)} placeholder="https://github.com/…" /></div>
                   <button className="save-btn" onClick={saveAdditional}>💾 Save Additional Info</button>
                 </div>
-
-                {/* Danger Zone */}
-                <div className="danger-zone">
-                  <h4>⚠️ Danger Zone</h4>
-                  <p>Logging out will clear your session. You'll need to sign in again to access your account.</p>
-                  <button className="logout-btn" onClick={() => Auth.logout()}>🚪 Logout</button>
-                </div>
               </div>
             )}
           </div>
