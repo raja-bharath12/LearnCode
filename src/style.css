@@ -769,7 +769,7 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
-  .hero { flex-direction: column; padding: 120px 40px 60px; text-align: center; }
+  .hero { flex-direction: column; padding: 120px 24px 60px; text-align: center; }
   .hero-cta { justify-content: center; }
   .hero-stats { justify-content: center; }
   .hero-code-window { min-width: unset; width: 100%; max-width: 500px; margin: 0 auto; }
@@ -782,14 +782,84 @@ body {
 }
 
 @media (max-width: 768px) {
-  .navbar { padding: 0 20px; }
-  .nav-links { display: none; }
-  .hamburger { display: block; }
-  .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 68px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 20px; }
-  .hero { padding: 100px 24px 60px; }
-  .section { padding: 60px 0; }
-  .footer-grid { grid-template-columns: 1fr; }
-  .courses-grid { grid-template-columns: 1fr; }
-  .testimonials-grid { grid-template-columns: 1fr; }
-  .paths-grid { grid-template-columns: 1fr 1fr; }
+  :root {
+    --sidebar-width: 0px;
+    --top-height: 56px;
+  }
+
+  .container, .section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .header-container {
+    padding: 0 16px;
+  }
+
+  /* Transformation: Sidebar -> Bottom Nav */
+  .side-nav-mini {
+    width: 100%;
+    height: 64px;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    flex-direction: row;
+    padding: 0 10px;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    justify-content: space-around;
+  }
+
+  .nav-logo-mini {
+    display: none;
+  }
+
+  .mini-nav-links {
+    flex-direction: row;
+    width: 100%;
+    gap: 0;
+    justify-content: space-around;
+  }
+
+  .mini-link {
+    width: 50px;
+    height: 50px;
+  }
+
+  .mini-link:hover, .mini-link.active {
+    transform: translateY(-2px);
+  }
+
+  /* Hide the redundant profile link at bottom of side-nav-mini on mobile */
+  .side-nav-mini > a:last-child {
+    display: none;
+  }
+
+  .main-wrapper {
+    padding-left: 0;
+    padding-bottom: 64px; /* Space for bottom nav */
+  }
+
+  .header-brand {
+    font-size: 1.25rem;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero-code-window {
+    display: none; /* Hide complex code window on mobile to save space */
+  }
+
+  .courses-grid, .paths-grid, .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-divider { display: none; }
+  .hero-stats { flex-direction: column; gap: 8px; }
+
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  
+  .auth-card { padding: 32px 24px; }
 }

@@ -445,13 +445,31 @@
 @media (max-width: 900px) {
   .profile-body {
     flex-direction: column;
-    padding: 16px;
+    padding: 20px 16px 80px; /* Extra bottom padding for mobile nav */
   }
   .profile-left {
     width: 100%;
-    margin-top: -40px;
+    margin-top: -60px;
+    margin-bottom: 20px;
   }
-  .profile-meta-bar { gap: 16px; padding: 0 20px; }
+  .profile-meta-bar { 
+    gap: 12px; 
+    padding: 10px 16px; 
+    justify-content: flex-start;
+  }
+  .profile-tabs {
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+  }
+  .profile-panel {
+    border-top: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .info-table thead { display: none; }
+  .info-table td { display: block; width: 100% !important; padding: 10px 20px; }
+  .info-table td:first-child { background: var(--surface2); border-bottom: none; }
+  .setting-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .setting-input { min-width: 100%; }
 }
 /* Integrated with global container strategy */
 #profile-root {
