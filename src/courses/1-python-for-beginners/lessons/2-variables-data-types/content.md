@@ -24,7 +24,7 @@ x = 10        # x is an int
 x = "Python"  # now x is a str
 ```
 
-### 🔍 Checking Data Type:
+###  Checking Data Type:
 Use the `type()` function to see the data type of a variable:
 ```python
 x = 10

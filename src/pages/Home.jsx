@@ -64,12 +64,12 @@ export default function Home() {
               </div>
               <pre className="code-body"><code>
                 <span className="c-keyword">def</span> <span className="c-fn">greet</span>(name):{'\n'}
-                {'  '}<span className="c-keyword">return</span> <span className="c-str">f"Hello, {'{'}name{'}'} 👋"</span>{'\n\n'}
+                {'  '}<span className="c-keyword">return</span> <span className="c-str">f"Hello, {'{'}name{'}'} "</span>{'\n\n'}
                 <span className="c-comment"># Start your journey</span>{'\n'}
                 message = greet(<span className="c-str">"World"</span>){'\n'}
                 <span className="c-fn">print</span>(message){'\n\n'}
                 <span className="c-comment"># Output:</span>{'\n'}
-                <span className="c-output">Hello, World! 👋</span>
+                <span className="c-output">Hello, World! </span>
               </code></pre>
               <div className="code-cursor"></div>
             </div>
@@ -97,7 +97,7 @@ export default function Home() {
               {featured.map(c => (
                 <Link key={c.id} to={`/lesson?course=${c.id}`} className="course-card">
                   <div className="course-card-top" style={{ '--accent': c.color || 'var(--accent)' }}>
-                    <span className="course-icon">{c.icon || '📚'}</span>
+                    <span className="course-icon">{c.icon || ''}</span>
                     <span className={`course-level level-${(c.level || 'Beginner').toLowerCase()}`}>{c.level || 'Beginner'}</span>
                   </div>
                   <div className="course-card-body">
@@ -153,25 +153,25 @@ export default function Home() {
             </div>
             <div className="paths-grid">
               <Link to="/courses?filter=web" className="path-card path-web">
-                <div className="path-icon">🌐</div>
+                <div className="path-icon"></div>
                 <h3>Web Development</h3>
                 <p>HTML, CSS, JS, React, Node.js</p>
                 <span className="path-courses">{counts.web} Courses</span>
               </Link>
               <Link to="/courses?filter=data" className="path-card path-data">
-                <div className="path-icon">📊</div>
+                <div className="path-icon"></div>
                 <h3>Data Science</h3>
                 <p>Python, Pandas, ML, Visualization</p>
                 <span className="path-courses">{counts.data} Courses</span>
               </Link>
               <Link to="/courses?filter=mobile" className="path-card path-mobile">
-                <div className="path-icon">📱</div>
+                <div className="path-icon"></div>
                 <h3>Mobile Dev</h3>
                 <p>Flutter, React Native, Kotlin</p>
                 <span className="path-courses">{counts.mobile} Courses</span>
               </Link>
               <Link to="/courses?filter=backend" className="path-card path-backend">
-                <div className="path-icon">⚙️</div>
+                <div className="path-icon">️</div>
                 <h3>Backend Engineering</h3>
                 <p>Java, Go, Databases, APIs</p>
                 <span className="path-courses">{counts.backend} Courses</span>

@@ -11,14 +11,14 @@ Tuples are very similar to lists, but with one key difference: once a tuple is c
 - **Immutable**: Elements cannot be modified after the tuple is defined.
 - **Efficient**: Tuples use less memory than lists and are faster to process.
 
-### 🔍 Accessing Elements (Indexing):
+###  Accessing Elements (Indexing):
 Just like lists, indexing starts at 0.
 ```python
 t = (10, 20, 30)
 print(t[0]) # Output: 10
 ```
 
-### ✂️ Slicing:
+### ️ Slicing:
 Extract a portion using `[start:end]`.
 ```python
 t = (1, 2, 3, 4)
@@ -29,7 +29,7 @@ print(t[1:3]) # Output: (2, 3)
 Attempting to change an item will result in an error.
 ```python
 t = (1, 2, 3)
-# t[0] = 10 ❌ TypeError: 'tuple' object does not support item assignment
+# t[0] = 10  TypeError: 'tuple' object does not support item assignment
 ```
 
 ###  Tuple Packing & Unpacking:

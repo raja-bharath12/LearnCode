@@ -27,14 +27,14 @@ export default function Register() {
       const data = await res.json();
       if (res.ok) {
         Auth.setUser({ ...data.user, token: data.token });
-        showToast('Account created! 🎉', 'success');
+        showToast('Account created! ', 'success');
         setTimeout(() => navigate('/courses'), 800);
       } else {
         setError(data.error || 'Registration failed.');
       }
     } catch {
       Auth.setUser({ name, email });
-      showToast('Demo account created! 🎉', 'success');
+      showToast('Demo account created! ', 'success');
       setTimeout(() => navigate('/courses'), 800);
     }
     setLoading(false);
@@ -43,7 +43,7 @@ export default function Register() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Create Account 🚀</h1>
+        <h1>Create Account </h1>
         <p>Join 10,000+ learners coding for free today.</p>
         {error && (
           <div style={{ background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '20px' }}>

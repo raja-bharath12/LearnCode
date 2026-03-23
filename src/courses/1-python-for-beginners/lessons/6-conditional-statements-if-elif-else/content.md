@@ -11,7 +11,7 @@ Python uses specific keywords to control logic flow:
 - **`elif`** (Else If): Checks another condition if the previous ones were `False`.
 - **`else`**: The "fallback"; executes if all previous conditions were `False`.
 
-### 🔍 Simple Example:
+###  Simple Example:
 ```python
 age = 18
 

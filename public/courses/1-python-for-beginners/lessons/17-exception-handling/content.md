@@ -10,7 +10,7 @@ An "Exception" is an error that occurs during the execution of a program (e.g., 
 - **`try`**: Place the code that might cause an error here.
 - **`except`**: Place the code that should run if an error occurs.
 
-### 🔍 Basic Example:
+###  Basic Example:
 ```python
 try:
     num = int("abc") # This will fail

@@ -6,7 +6,7 @@ The **Python Standard Library** is a massive collection of high-quality, pre-ins
 ##  Explanation
 Known for the "Batteries Included" philosophy, Python provides these modules so you don't have to reinvent the wheel.
 
-### 📦 Essential Modules:
+###  Essential Modules:
 | Module | Use Case | Example |
 | :--- | :--- | :--- |
 | `math` | Advanced math | `math.sqrt(16)` |

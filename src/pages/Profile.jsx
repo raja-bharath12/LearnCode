@@ -91,20 +91,20 @@ export default function Profile() {
     setProfile(prev => ({ ...prev, phone: sPhone, gender: sGender, dob: sDob }));
     setUser(prev => ({ ...prev, name: sName }));
     window.dispatchEvent(new CustomEvent('userUpdate'));
-    showStatus('✅ Profile updated successfully!', 'success');
+    showStatus(' Profile updated successfully!', 'success');
     setSaving(false);
   }
 
   function saveAcademic() {
     saveProfileData({ tenth: s10th, twelfth: s12th, backlogs: sBacklogs, currBacklogs: sCurrBacklogs, placement: sPlacement });
     setProfile(prev => ({ ...prev, tenth: s10th, twelfth: s12th, backlogs: sBacklogs, currBacklogs: sCurrBacklogs, placement: sPlacement }));
-    showStatus('✅ Academic info saved!', 'success');
+    showStatus(' Academic info saved!', 'success');
   }
 
   function saveAdditional() {
     saveProfileData({ skills: sSkills, linkedin: sLinkedin, github: sGithub });
     setProfile(prev => ({ ...prev, skills: sSkills, linkedin: sLinkedin, github: sGithub }));
-    showStatus('✅ Additional info saved!', 'success');
+    showStatus(' Additional info saved!', 'success');
   }
 
   if (!user) return null;
@@ -132,7 +132,7 @@ export default function Profile() {
             <div className="profile-info-section">
               <div className="info-section-header">
                 <h4>Personal Information</h4>
-                <a className="edit-link" onClick={() => setActiveTab('settings')} title="Edit profile">✏️ Edit</a>
+                <a className="edit-link" onClick={() => setActiveTab('settings')} title="Edit profile">️ Edit</a>
               </div>
               {[
                 ['Name', user.name],
@@ -165,7 +165,7 @@ export default function Profile() {
               <div className="profile-panel active">
                 <div className="panel-header">
                   <h3>Academic Information</h3>
-                  <a className="edit-link" onClick={() => setActiveTab('settings')}>✏️ Edit</a>
+                  <a className="edit-link" onClick={() => setActiveTab('settings')}>️ Edit</a>
                 </div>
                 <table className="info-table">
                   <thead><tr><th>Information</th><th>Details</th></tr></thead>
@@ -232,7 +232,7 @@ export default function Profile() {
                       <label className="setting-label">Date of Birth</label>
                       <input className="setting-input" type="date" value={sDob} onChange={e => setSDob(e.target.value)} />
                     </div>
-                    <button type="submit" className="save-btn" disabled={saving}>{saving ? 'Saving…' : '💾 Save Changes'}</button>
+                    <button type="submit" className="save-btn" disabled={saving}>{saving ? 'Saving…' : ' Save Changes'}</button>
                   </form>
                 </div>
 
@@ -255,7 +255,7 @@ export default function Profile() {
                         <option value="">Select</option><option>Yes</option><option>No</option>
                       </select>
                     </div>
-                    <button className="save-btn" onClick={saveAcademic}>💾 Save Academic Info</button>
+                    <button className="save-btn" onClick={saveAcademic}> Save Academic Info</button>
                   </div>
                 )}
 
@@ -265,7 +265,7 @@ export default function Profile() {
                   <div className="setting-row"><label className="setting-label">Skills</label><input className="setting-input" type="text" value={sSkills} onChange={e => setSSkills(e.target.value)} placeholder="Python, JavaScript, …" /></div>
                   <div className="setting-row"><label className="setting-label">LinkedIn</label><input className="setting-input" type="url" value={sLinkedin} onChange={e => setSLinkedin(e.target.value)} placeholder="https://linkedin.com/in/…" /></div>
                   <div className="setting-row"><label className="setting-label">GitHub</label><input className="setting-input" type="url" value={sGithub} onChange={e => setSGithub(e.target.value)} placeholder="https://github.com/…" /></div>
-                  <button className="save-btn" onClick={saveAdditional}>💾 Save Additional Info</button>
+                  <button className="save-btn" onClick={saveAdditional}> Save Additional Info</button>
                 </div>
               </div>
             )}

@@ -40,13 +40,13 @@ export default function Header({ showSearch = false, showBrand = false }) {
         {showBrand && <Link to="/" className="header-brand">LearnCode</Link>}
         {showSearch && (
           <div className="search-bar">
-            <span>🔍</span>
+            <span></span>
             <input type="text" placeholder="Search courses..." />
           </div>
         )}
         <div className="top-actions">
           <button onClick={toggleTheme} className="theme-toggle-btn" title="Toggle Theme">
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? '' : '️'}
           </button>
           {user ? (
             <button onClick={handleLogout} className="logout-btn-header">Logout</button>

@@ -7,7 +7,7 @@
 ##  Explanation
 Professional Python developers never install packages globally. They use virtual environments to keep their development environment clean.
 
-### 🔹 Why Virtual Environments?
+###  Why Virtual Environments?
 If Project A needs `Django 3.0` and Project B needs `Django 4.0`, you can't have both globally. Virtual environments solve this.
 
 ###  Setting Up an Environment:
@@ -16,7 +16,7 @@ If Project A needs `Django 3.0` and Project B needs `Django 4.0`, you can't have
 3. **Activate (Mac/Linux)**: `source myenv/bin/activate`
 4. **Deactivate**: `deactivate`
 
-### 📦 Using pip:
+###  Using pip:
 ```bash
 # Install a package
 pip install requests

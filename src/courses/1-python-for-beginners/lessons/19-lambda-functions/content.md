@@ -9,7 +9,7 @@ Lambdas are used for short, throwaway logic where defining a full function with 
 ###  Basic Syntax:
 `lambda arguments: expression`
 
-### 🔍 Simple Example:
+###  Simple Example:
 ```python
 # A lambda that adds 5 to its input
 add_five = lambda x: x + 5

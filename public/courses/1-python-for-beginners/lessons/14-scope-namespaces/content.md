@@ -13,7 +13,7 @@ Python uses scope to prevent variable name conflicts. It follows the **LEGB rule
 3. **G**lobal: At the top level of a file.
 4. **B**uilt-in: Reserved Python names (`print`, `len`, etc.).
 
-### 🔍 1. Local Scope:
+###  1. Local Scope:
 Variables created inside a function are only accessible there.
 ```python
 def func():
@@ -21,7 +21,7 @@ def func():
     print(x)
 
 func()
-# print(x) # ❌ Error: x is not defined outside
+# print(x) #  Error: x is not defined outside
 ```
 
 ###  2. Global Scope:

@@ -26,7 +26,7 @@ export default function Login() {
       const data = await res.json();
       if (res.ok) {
         Auth.setUser({ ...data.user, token: data.token });
-        showToast('Welcome back! 🎉', 'success');
+        showToast('Welcome back! ', 'success');
         setTimeout(() => navigate('/courses'), 800);
       } else {
         setError(data.error || 'Invalid credentials. Please try again.');
@@ -40,7 +40,7 @@ export default function Login() {
           role: isAdminLogin ? 'admin' : 'student' 
         };
         Auth.setUser(user);
-        showToast(`${isAdminLogin ? 'Admin' : 'Demo'} login successful! 🎉`, 'success');
+        showToast(`${isAdminLogin ? 'Admin' : 'Demo'} login successful! `, 'success');
         setTimeout(() => navigate('/profile'), 800);
       } else {
         setError('Backend not running. Use a valid email and 6+ char password for demo.');
@@ -52,7 +52,7 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>{isAdminLogin ? 'Admin Login' : 'Welcome back 👋'}</h1>
+        <h1>{isAdminLogin ? 'Admin Login' : 'Welcome back '}</h1>
         <p>{isAdminLogin ? 'Sign in to access your profile.' : 'Sign in to continue your learning journey.'}</p>
         {error && (
           <div style={{ background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '20px' }}>

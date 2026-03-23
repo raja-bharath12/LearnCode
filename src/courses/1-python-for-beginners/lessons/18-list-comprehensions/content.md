@@ -9,7 +9,7 @@ It is a "Pythonic" alternative to using a multi-line `for` loop and the `.append
 ###  Basic Syntax:
 `[expression for item in iterable if condition]`
 
-### 🔍 Comparison:
+###  Comparison:
 **Standard Loop:**
 ```python
 nums = []

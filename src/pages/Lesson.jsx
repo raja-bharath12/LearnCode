@@ -52,7 +52,7 @@ export default function Lesson() {
     if (currentLesson < course.lessons.length - 1) {
       goToLesson(currentLesson + 1);
     } else {
-      showToast('🎉 Course Complete!', 'success');
+      showToast(' Course Complete!', 'success');
       navigate('/courses');
     }
   }
@@ -95,7 +95,7 @@ export default function Lesson() {
         <header className="top-header">
           <div className="container header-container">
             <div className="search-bar">
-              <span>🔍</span>
+              <span></span>
               <input type="text" placeholder="Search lessons, docs..." />
             </div>
             <div className="top-actions" style={{ gap: '16px' }}>
@@ -125,7 +125,7 @@ export default function Lesson() {
                   >
                     <span className="lnum">{String(i + 1).padStart(2, '0')}</span>
                     <span className="ltitle">{l.title}</span>
-                    {done && <span className="lcheck">✓</span>}
+                    {done && <span className="lcheck"></span>}
                   </div>
                 );
               })}
@@ -151,7 +151,7 @@ export default function Lesson() {
                     onClick={() => setFullscreen(!fullscreen)}
                     style={{ marginLeft: 'auto', border: 'none', background: 'transparent', fontSize: '1.1rem', padding: '0 15px' }}
                   >
-                    {fullscreen ? '✕' : '⛶'}
+                    {fullscreen ? '' : ''}
                   </button>
                 </div>
                 <textarea
@@ -171,7 +171,7 @@ export default function Lesson() {
               <div className="lesson-nav" style={{ padding: '0 48px 48px' }}>
                 <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0}>← Previous</button>
                 <button className="btn-primary" onClick={nextLesson}>
-                  {currentLesson === course.lessons.length - 1 ? '✓ Finish' : 'Next →'}
+                  {currentLesson === course.lessons.length - 1 ? ' Finish' : 'Next →'}
                 </button>
               </div>
             </div>

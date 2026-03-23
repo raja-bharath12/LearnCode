@@ -27,14 +27,14 @@ export default function AdminRegister() {
       const data = await res.json();
       if (res.ok) {
         Auth.setUser({ ...data.user, token: data.token });
-        showToast('Admin account created! 🎉', 'success');
+        showToast('Admin account created! ', 'success');
         setTimeout(() => navigate('/courses'), 800);
       } else {
         setError(data.error || 'Registration failed.');
       }
     } catch {
       Auth.setUser({ name, email, role: 'admin' });
-      showToast('Demo admin account created! 🎉', 'success');
+      showToast('Demo admin account created! ', 'success');
       setTimeout(() => navigate('/courses'), 800);
     }
     setLoading(false);
@@ -43,7 +43,7 @@ export default function AdminRegister() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>Admin Registration 🛡️</h1>
+        <h1>Admin Registration ️</h1>
         <p>Register as an instructor or admin for LearnCode.</p>
         {error && (
           <div style={{ background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '20px' }}>

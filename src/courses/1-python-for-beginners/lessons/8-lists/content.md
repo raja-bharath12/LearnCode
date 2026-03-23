@@ -11,7 +11,7 @@ Lists are one of the most powerful data structures in Python. They allow you to 
 - **Mutable**: You can add, remove, or change items after creation.
 - **Heterogeneous**: Can store different data types (e.g., `[1, "Apple", 3.5]`).
 
-### 🔍 Accessing Elements (Indexing):
+###  Accessing Elements (Indexing):
 Negative indexing (starts at -1) allows access from the end.
 ```python
 nums = [10, 20, 30]
@@ -28,7 +28,7 @@ fruits[0] = "Mango"      # Modify element
 print(len(fruits))       # Get size
 ```
 
-### ✂️ Slicing:
+### ️ Slicing:
 Extract a sub-list using `[start:end]`.
 ```python
 nums = [1, 2, 3, 4, 5]

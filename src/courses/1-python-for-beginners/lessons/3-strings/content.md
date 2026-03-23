@@ -11,7 +11,7 @@ Strings are used to store text data such as names, messages, or paragraphs.
 - **Immutable**: Once created, individual characters cannot be changed directly.
 - **Versatile**: Supports powerful operations like indexing, slicing, and manipulation.
 
-### 🔍 Indexing:
+###  Indexing:
 Access individual characters using their position (starts at 0):
 ```python
 text = "Python"
@@ -19,7 +19,7 @@ print(text[0]) # Output: P
 print(text[1]) # Output: y
 ```
 
-### ✂️ Slicing:
+### ️ Slicing:
 Extract a portion of a string using a range `[start:end]`:
 ```python
 text = "Python"

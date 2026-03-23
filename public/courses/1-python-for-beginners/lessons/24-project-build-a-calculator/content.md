@@ -12,7 +12,7 @@ We will apply all the fundamental concepts we've covered:
 
 ##  Step-by-Step Implementation
 
-### 🔹 Step 1: Define Arithmetic Functions
+###  Step 1: Define Arithmetic Functions
 ```python
 def add(a, b):
     return a + b
@@ -29,7 +29,7 @@ def divide(a, b):
     return a / b
 ```
 
-### 🔹 Step 2: Main Program Logic
+###  Step 2: Main Program Logic
 ```python
 # 1. Take numbers from user
 num1 = float(input("Enter first number: "))

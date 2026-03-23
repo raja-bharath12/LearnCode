@@ -7,7 +7,7 @@ A **module** is a file containing Python definitions (functions, classes, variab
 ##  Explanation
 Modularity is key to building large applications. Instead of one giant file, you break your code into manageable modules.
 
-### 📦 Types of Modules:
+###  Types of Modules:
 - **Built-in Modules**: Pre-installed with Python (e.g., `math`, `random`, `os`).
 - **User-defined Modules**: Files you create yourself (e.g., `utils.py`).
 
@@ -16,13 +16,13 @@ Modularity is key to building large applications. Instead of one giant file, you
 2. **Specific Part**: `from math import sqrt`
 3. **With Alias**: `import datetime as dt`
 
-### 🔍 Using Built-in Modules:
+###  Using Built-in Modules:
 ```python
 import random
 print(random.randint(1, 10)) # Random integer between 1 and 10
 ```
 
-### 📁 Creating Your Own Module:
+###  Creating Your Own Module:
 1. Create `mymodule.py`:
 ```python
 def say_hi():

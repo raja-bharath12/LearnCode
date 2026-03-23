@@ -36,7 +36,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>© 2025 LearnCode. Made with ❤️ for learners worldwide.</p>
+        <p>© 2025 LearnCode. Made with ️ for learners worldwide.</p>
       </div>
     </footer>
   );

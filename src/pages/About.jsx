@@ -32,10 +32,10 @@ export default function About() {
             </p>
             <div className="steps-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
               {[
-                { icon: '🌍', title: 'Accessible', desc: '100% free, no credit card, works on any device.' },
-                { icon: '🛠️', title: 'Hands-on', desc: 'Code directly in the browser with instant feedback.' },
-                { icon: '📈', title: 'Structured', desc: 'Carefully designed paths from beginner to expert.' },
-                { icon: '🏆', title: 'Recognised', desc: 'Earn certificates to share with employers.' },
+                { icon: '', title: 'Accessible', desc: '100% free, no credit card, works on any device.' },
+                { icon: '️', title: 'Hands-on', desc: 'Code directly in the browser with instant feedback.' },
+                { icon: '', title: 'Structured', desc: 'Carefully designed paths from beginner to expert.' },
+                { icon: '', title: 'Recognised', desc: 'Earn certificates to share with employers.' },
               ].map(item => (
                 <div key={item.title} className="step-card">
                   <div style={{ fontSize: '2rem', marginBottom: '12px' }}>{item.icon}</div>

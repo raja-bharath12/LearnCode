@@ -108,7 +108,7 @@ x = 10        # x is an int
 x = "Python"  # now x is a str
 ```
 
-### 🔍 Checking Data Type:
+###  Checking Data Type:
 Use the `type()` function to see the data type of a variable:
 ```python
 x = 10
@@ -190,7 +190,7 @@ Strings are used to store text data such as names, messages, or paragraphs.
 - **Immutable**: Once created, individual characters cannot be changed directly.
 - **Versatile**: Supports powerful operations like indexing, slicing, and manipulation.
 
-### 🔍 Indexing:
+###  Indexing:
 Access individual characters using their position (starts at 0):
 ```python
 text = "Python"
@@ -198,7 +198,7 @@ print(text[0]) # Output: P
 print(text[1]) # Output: y
 ```
 
-### ✂️ Slicing:
+### ️ Slicing:
 Extract a portion of a string using a range `[start:end]`:
 ```python
 text = "Python"
@@ -470,7 +470,7 @@ Python uses specific keywords to control logic flow:
 - **`elif`** (Else If): Checks another condition if the previous ones were `False`.
 - **`else`**: The "fallback"; executes if all previous conditions were `False`.
 
-### 🔍 Simple Example:
+###  Simple Example:
 ```python
 age = 18
 
@@ -645,7 +645,7 @@ Lists are one of the most powerful data structures in Python. They allow you to 
 - **Mutable**: You can add, remove, or change items after creation.
 - **Heterogeneous**: Can store different data types (e.g., `[1, "Apple", 3.5]`).
 
-### 🔍 Accessing Elements (Indexing):
+###  Accessing Elements (Indexing):
 Negative indexing (starts at -1) allows access from the end.
 ```python
 nums = [10, 20, 30]
@@ -662,7 +662,7 @@ fruits[0] = "Mango"      # Modify element
 print(len(fruits))       # Get size
 ```
 
-### ✂️ Slicing:
+### ️ Slicing:
 Extract a sub-list using `[start:end]`.
 ```python
 nums = [1, 2, 3, 4, 5]
@@ -731,14 +731,14 @@ Tuples are very similar to lists, but with one key difference: once a tuple is c
 - **Immutable**: Elements cannot be modified after the tuple is defined.
 - **Efficient**: Tuples use less memory than lists and are faster to process.
 
-### 🔍 Accessing Elements (Indexing):
+###  Accessing Elements (Indexing):
 Just like lists, indexing starts at 0.
 ```python
 t = (10, 20, 30)
 print(t[0]) # Output: 10
 ```
 
-### ✂️ Slicing:
+### ️ Slicing:
 Extract a portion using `[start:end]`.
 ```python
 t = (1, 2, 3, 4)
@@ -749,7 +749,7 @@ print(t[1:3]) # Output: (2, 3)
 Attempting to change an item will result in an error.
 ```python
 t = (1, 2, 3)
-# t[0] = 10 ❌ TypeError: 'tuple' object does not support item assignment
+# t[0] = 10  TypeError: 'tuple' object does not support item assignment
 ```
 
 ###  Tuple Packing & Unpacking:
@@ -1190,7 +1190,7 @@ Python uses scope to prevent variable name conflicts. It follows the **LEGB rule
 3. **G**lobal: At the top level of a file.
 4. **B**uilt-in: Reserved Python names (`print`, `len`, etc.).
 
-### 🔍 1. Local Scope:
+###  1. Local Scope:
 Variables created inside a function are only accessible there.
 ```python
 def func():
@@ -1198,7 +1198,7 @@ def func():
     print(x)
 
 func()
-# print(x) # ❌ Error: x is not defined outside
+# print(x) #  Error: x is not defined outside
 ```
 
 ###  2. Global Scope:
@@ -1295,7 +1295,7 @@ A **module** is a file containing Python definitions (functions, classes, variab
 ##  Explanation
 Modularity is key to building large applications. Instead of one giant file, you break your code into manageable modules.
 
-### 📦 Types of Modules:
+###  Types of Modules:
 - **Built-in Modules**: Pre-installed with Python (e.g., `math`, `random`, `os`).
 - **User-defined Modules**: Files you create yourself (e.g., `utils.py`).
 
@@ -1304,13 +1304,13 @@ Modularity is key to building large applications. Instead of one giant file, you
 2. **Specific Part**: `from math import sqrt`
 3. **With Alias**: `import datetime as dt`
 
-### 🔍 Using Built-in Modules:
+###  Using Built-in Modules:
 ```python
 import random
 print(random.randint(1, 10)) # Random integer between 1 and 10
 ```
 
-### 📁 Creating Your Own Module:
+###  Creating Your Own Module:
 1. Create `mymodule.py`:
 ```python
 def say_hi():
@@ -1458,7 +1458,7 @@ An "Exception" is an error that occurs during the execution of a program (e.g., 
 - **`try`**: Place the code that might cause an error here.
 - **`except`**: Place the code that should run if an error occurs.
 
-### 🔍 Basic Example:
+###  Basic Example:
 ```python
 try:
     num = int("abc") # This will fail
@@ -1548,7 +1548,7 @@ It is a "Pythonic" alternative to using a multi-line `for` loop and the `.append
 ###  Basic Syntax:
 `[expression for item in iterable if condition]`
 
-### 🔍 Comparison:
+###  Comparison:
 **Standard Loop:**
 ```python
 nums = []
@@ -1627,7 +1627,7 @@ Lambdas are used for short, throwaway logic where defining a full function with 
 ###  Basic Syntax:
 `lambda arguments: expression`
 
-### 🔍 Simple Example:
+###  Simple Example:
 ```python
 # A lambda that adds 5 to its input
 add_five = lambda x: x + 5
@@ -1897,7 +1897,7 @@ The **Python Standard Library** is a massive collection of high-quality, pre-ins
 ##  Explanation
 Known for the "Batteries Included" philosophy, Python provides these modules so you don't have to reinvent the wheel.
 
-### 📦 Essential Modules:
+###  Essential Modules:
 | Module | Use Case | Example |
 | :--- | :--- | :--- |
 | `math` | Advanced math | `math.sqrt(16)` |
@@ -1970,7 +1970,7 @@ print(datetime.datetime.now())
 ##  Explanation
 Professional Python developers never install packages globally. They use virtual environments to keep their development environment clean.
 
-### 🔹 Why Virtual Environments?
+###  Why Virtual Environments?
 If Project A needs `Django 3.0` and Project B needs `Django 4.0`, you can't have both globally. Virtual environments solve this.
 
 ###  Setting Up an Environment:
@@ -1979,7 +1979,7 @@ If Project A needs `Django 3.0` and Project B needs `Django 4.0`, you can't have
 3. **Activate (Mac/Linux)**: `source myenv/bin/activate`
 4. **Deactivate**: `deactivate`
 
-### 📦 Using pip:
+###  Using pip:
 ```bash
 # Install a package
 pip install requests
@@ -2036,7 +2036,7 @@ We will apply all the fundamental concepts we've covered:
 
 ##  Step-by-Step Implementation
 
-### 🔹 Step 1: Define Arithmetic Functions
+###  Step 1: Define Arithmetic Functions
 ```python
 def add(a, b):
     return a + b
@@ -2053,7 +2053,7 @@ def divide(a, b):
     return a / b
 ```
 
-### 🔹 Step 2: Main Program Logic
+###  Step 2: Main Program Logic
 ```python
 # 1. Take numbers from user
 num1 = float(input("Enter first number: "))
