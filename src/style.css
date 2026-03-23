@@ -150,13 +150,18 @@ body {
 }
 
 .main-wrapper {
-  flex: 1;
-  padding-left: var(--sidebar-width);
+  margin-left: 100px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  width: 100%;
-  overflow-x: hidden;
+  background: var(--bg);
+  width: calc(100% - 100px);
+}
+
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 100px;
 }
 
 .top-header {
@@ -733,7 +738,7 @@ body {
 /* ===== PROFILE PAGE ===== */
 .profile-body {
   display: flex;
-  gap: 64px;
+  gap: 100px;
   margin-top: -120px;
   position: relative;
   z-index: 10;
@@ -759,13 +764,30 @@ body {
 
 .profile-tabs { 
   display: flex; 
-  gap: 12px; 
-  margin-bottom: 24px;
-  background: var(--glass-bg);
-  padding: 8px;
-  border-radius: 16px;
-  border: 1px solid var(--glass-border);
+  gap: 0; 
+  margin-bottom: 0px;
   align-self: flex-start;
+  position: relative;
+  z-index: 15;
+}
+.profile-tab {
+  padding: 14px 32px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-bottom: none;
+  font-weight: 700; color: var(--text3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 20px 20px 0 0;
+}
+.profile-tab.active { 
+  color: var(--accent); 
+  background: var(--surface);
+  border-bottom: 2px solid var(--accent);
+}
+.profile-panel {
+  border-radius: 0 28px 28px 28px;
 }
 
 .profile-avatar-wrap {
@@ -790,17 +812,7 @@ body {
 .info-key { color: var(--text3); font-weight: 600; font-size: 0.9rem; }
 .info-val { color: var(--text); font-weight: 700; font-size: 0.95rem; }
 
-.profile-tabs { display: flex; gap: 12px; margin-bottom: 24px; }
-.profile-tab {
-  padding: 12px 24px;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  font-weight: 700; color: var(--text3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.profile-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+/* Moved to line 757 area */
 
 .setting-row { 
   display: flex; 
@@ -987,6 +999,19 @@ body {
 }
 .lesson-nav { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
 
+.main-wrapper {
+  margin-left: 100px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
 .editor-panel {
   flex: 1; border-left: 1px solid var(--border);
   display: flex; flex-direction: column; background: var(--bg2);
