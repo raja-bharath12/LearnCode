@@ -1,5 +1,3 @@
-#  Lesson 1: Introduction to Python
-
 ##  Definition
 Python is a high-level, interpreted, general-purpose programming language designed to be simple, readable, and easy to learn.
 

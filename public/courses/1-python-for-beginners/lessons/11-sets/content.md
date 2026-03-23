@@ -1,5 +1,3 @@
-#  Lesson 11: Sets
-
 ##  Definition
 A **set** is an unordered collection of **unique** elements.
 

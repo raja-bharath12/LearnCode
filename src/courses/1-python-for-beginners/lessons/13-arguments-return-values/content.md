@@ -1,5 +1,3 @@
-#  Lesson 13: Arguments & Return Values
-
 ##  Definition
 **Arguments** are the values passed to a function when it is called.  
 The **Return value** is the result that a function sends back to the caller using the `return` statement.

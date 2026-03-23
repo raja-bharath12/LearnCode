@@ -1,5 +1,3 @@
-#  Lesson 5: Input & Output
-
 ##  Definition
 **Input**: Taking data from the user during program execution.  
 **Output**: Displaying data, results, or messages to the user.

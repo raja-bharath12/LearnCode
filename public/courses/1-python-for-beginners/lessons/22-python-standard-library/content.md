@@ -1,5 +1,3 @@
-#  Lesson 22: Python Standard Library
-
 ##  Definition
 The **Python Standard Library** is a massive collection of high-quality, pre-installed modules and functions that allow you to do everything from math and networking to date processing.
 

@@ -1,5 +1,3 @@
-#  Lesson 4: Numbers & Math
-
 ##  Definition
 Numbers in Python are used to store numeric values and perform various mathematical operations.
 

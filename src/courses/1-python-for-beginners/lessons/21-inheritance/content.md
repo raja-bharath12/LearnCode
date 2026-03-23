@@ -1,5 +1,3 @@
-#  Lesson 21: Inheritance
-
 ##  Definition
 **Inheritance** is a core Object-Oriented Programming (OOP) feature that allows one class (the **child**) to acquire the attributes and methods of another class (the **parent**).
 

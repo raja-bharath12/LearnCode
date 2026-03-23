@@ -1,5 +1,3 @@
-#  Lesson 14: Scope & Namespaces
-
 ##  Definition
 **Scope** refers to the specific region of a program where a variable is accessible.  
 **Namespace** is a container (like a dictionary) that stores variable names and connects them to their values.

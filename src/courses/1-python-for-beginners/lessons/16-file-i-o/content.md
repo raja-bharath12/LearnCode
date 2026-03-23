@@ -1,5 +1,3 @@
-#  Lesson 16: File I/O (Input / Output)
-
 ##  Definition
 **File I/O** refers to the ability to read data from a file and write data to a file on your computer's storage.
 

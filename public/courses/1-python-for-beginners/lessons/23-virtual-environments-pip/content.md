@@ -1,5 +1,3 @@
-#  Lesson 23: Virtual Environments & pip
-
 ##  Definition
 - **Virtual Environment**: An isolated workspace designed for a specific project so its dependencies don't interfere with other projects.
 - **pip**: The standard package manager for Python, used to install libraries from the Python Package Index (PyPI).

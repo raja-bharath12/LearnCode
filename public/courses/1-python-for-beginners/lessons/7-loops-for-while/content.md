@@ -1,5 +1,3 @@
-#  Lesson 7: Loops (for & while)
-
 ##  Definition
 **Loops** are used to repeat a block of code multiple times until a specific condition is met or a sequence is exhausted.
 

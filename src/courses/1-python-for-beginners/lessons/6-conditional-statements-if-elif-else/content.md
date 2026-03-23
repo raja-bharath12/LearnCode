@@ -1,5 +1,3 @@
-#  Lesson 6: Conditional Statements (if / elif / else)
-
 ##  Definition
 **Conditional statements** allow a program to make decisions and execute different blocks of code based on whether a condition is true or false.
 

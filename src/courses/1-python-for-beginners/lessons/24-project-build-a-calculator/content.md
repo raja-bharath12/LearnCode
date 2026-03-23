@@ -1,5 +1,3 @@
-#  Lesson 24: Project – Build a Calculator (Python)
-
 ##  Definition
 A **calculator** is a practical program that takes user input, performs arithmetic operations, and displays the result. It is the perfect capstone to consolidate everything you've learned.
 

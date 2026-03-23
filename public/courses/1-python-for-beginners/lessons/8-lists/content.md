@@ -1,5 +1,3 @@
-#  Lesson 8: Lists
-
 ##  Definition
 A **list** is an ordered, mutable (changeable) collection of items stored in a single variable.
 

@@ -1,5 +1,3 @@
-#  Lesson 17: Exception Handling
-
 ##  Definition
 **Exception Handling** is a mechanism used to gracefully handle runtime errors, preventing your program from crashing when something unexpected happens.
 

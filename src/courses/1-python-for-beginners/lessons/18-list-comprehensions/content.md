@@ -1,5 +1,3 @@
-#  Lesson 18: List Comprehensions
-
 ##  Definition
 A **list comprehension** is a concise, one-line syntax for creating new lists based on existing lists or iterables.
 

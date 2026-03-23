@@ -1,5 +1,3 @@
-#  Lesson 3: Strings
-
 ##  Definition
 A **string** is a sequence of characters enclosed in single quotes (`' '`) or double quotes (`" "`).
 

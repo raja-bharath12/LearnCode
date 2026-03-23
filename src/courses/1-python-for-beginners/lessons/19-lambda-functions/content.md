@@ -1,5 +1,3 @@
-#  Lesson 19: Lambda Functions
-
 ##  Definition
 A **lambda function** is a small, anonymous (nameless) function defined in a single line using the `lambda` keyword.
 

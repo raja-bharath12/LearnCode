@@ -1,5 +1,3 @@
-#  Lesson 15: Modules & Imports
-
 ##  Definition
 A **module** is a file containing Python definitions (functions, classes, variables) that you can reuse in other programs.  
 **Import** is the keyword used to bring a module's code into your current script.

@@ -1,5 +1,3 @@
-#  Lesson 20: Classes & Objects (OOP – Introduction)
-
 ##  Definition
 - A **class** is a blueprint (plan) for creating objects.
 - An **object** is a specific instance of a class.

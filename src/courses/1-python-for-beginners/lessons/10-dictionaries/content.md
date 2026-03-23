@@ -1,5 +1,3 @@
-#  Lesson 10: Dictionaries
-
 ##  Definition
 A **dictionary** is a mutable collection of items stored as **key-value pairs**.
 

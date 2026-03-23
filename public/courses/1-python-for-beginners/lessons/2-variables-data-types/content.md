@@ -1,5 +1,3 @@
-#  Lesson 2: Variables & Data Types
-
 ##  Definition
 A **variable** is a container used to store data values in a program.  
 A **data type** defines the type of value a variable can hold.

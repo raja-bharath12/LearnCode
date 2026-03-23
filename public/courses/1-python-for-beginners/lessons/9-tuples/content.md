@@ -1,5 +1,3 @@
-#  Lesson 9: Tuples
-
 ##  Definition
 A **tuple** is an ordered, immutable collection of items stored in a single variable.
 
