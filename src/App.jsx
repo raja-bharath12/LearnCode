@@ -10,7 +10,9 @@ import AdminRegister from './pages/AdminRegister';
 import Courses from './pages/Courses';
 import Lesson from './pages/Lesson';
 import Profile from './pages/Profile';
+import Dashboard from './pages/Dashboard';
 import About from './pages/About';
+import Exams from './pages/Exams';
 import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
@@ -27,8 +29,10 @@ export default function App() {
         {/* Protected Routes */}
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/lesson" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
+        <Route path="/exams" element={<ProtectedRoute><Exams /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

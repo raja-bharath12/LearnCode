@@ -1,5 +1,5 @@
 // src/pages/Lesson.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { Progress } from '../utils/auth';
@@ -19,6 +19,11 @@ export default function Lesson() {
   const [outputColor, setOutputColor] = useState('var(--green)');
   const [fullscreen, setFullscreen] = useState(false);
   const [fetchedContent, setFetchedContent] = useState('');
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
+  const [isCompletedLocally, setIsCompletedLocally] = useState(false);
+  const [completedLessons, setCompletedLessons] = useState(Progress.get(courseId));
+  const scrollAreaRef = useRef(null);
 
   useEffect(() => {
     const lesson = course.lessons[currentLesson];
@@ -42,6 +47,71 @@ export default function Lesson() {
       setFetchedContent(lesson?.content || '');
     }
   }, [currentLesson, course]);
+
+  // TIMER LOGIC
+  useEffect(() => {
+    const lesson = course.lessons[currentLesson];
+    const isDone = Progress.get(courseId).includes(lesson?.id);
+    const savedTime = Progress.getTimer(courseId, lesson?.id);
+
+    if (isDone) {
+      setTimeLeft(0);
+      setHasReachedBottom(true);
+      setIsCompletedLocally(true);
+    } else {
+      setTimeLeft(savedTime !== null ? savedTime : 120);
+      setHasReachedBottom(false);
+      setIsCompletedLocally(false);
+    }
+    setCompletedLessons(Progress.get(courseId));
+  }, [currentLesson, courseId, course.lessons]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft(t => {
+          const next = t - 1;
+          Progress.saveTimer(courseId, course.lessons[currentLesson]?.id, next);
+          return next;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [timeLeft, courseId, currentLesson, course.lessons]);
+
+  // SCROLL DETECTION
+  const handleScroll = () => {
+    if (!scrollAreaRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
+    if (scrollTop + clientHeight >= scrollHeight - 100) {
+      setHasReachedBottom(true);
+    }
+  };
+
+  // AUTO COMPLETE LOGIC
+  useEffect(() => {
+    if (timeLeft === 0 && hasReachedBottom && !isCompletedLocally) {
+      const lesson = course.lessons[currentLesson];
+      const done = Progress.get(courseId).includes(lesson.id);
+      if (!done) {
+        Progress.mark(courseId, lesson.id);
+        setCompletedLessons(Progress.get(courseId));
+        setIsCompletedLocally(true);
+      }
+    }
+  }, [timeLeft, hasReachedBottom, currentLesson, courseId, course.lessons, isCompletedLocally]);
+
+  const formatTime = (s) => {
+    const mins = Math.floor(s / 60);
+    const secs = s % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = 0;
+    }
+  }, [currentLesson, courseId]);
 
   function goToLesson(i) { setCurrentLesson(i); }
 
@@ -106,43 +176,28 @@ export default function Lesson() {
           </div>
         </header>
 
-        <div className="lesson-layout" style={{ marginTop: 0, height: 'calc(100vh - var(--top-height))' }}>
+        <div className="lesson-layout">
           {/* LESSON SIDEBAR */}
-          <aside className="lesson-sidebar glass-panel" style={{ margin: '16px', height: 'calc(100% - 32px)', borderRadius: '24px' }}>
-            <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--border)', marginBottom: '12px' }}>
-              <Link to="/courses" style={{ fontSize: '0.75rem', color: 'var(--accent)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>← Back to Courses</Link>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginTop: '12px', color: 'var(--text)' }}>{course.title}</h2>
+          <aside className="lesson-sidebar glass-panel">
+            <div className="lesson-sidebar-header">
+              <Link to="/courses" className="back-to-courses">← Back to Courses</Link>
+              <h2 className="course-title-sidebar">{course.title}</h2>
             </div>
-            <div className="sidebar-title" style={{ paddingLeft: '20px', fontSize: '0.7rem', fontWeight: 800, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '16px' }}>Course Lessons</div>
-            <div style={{ overflowY: 'auto', flex: 1, padding: '0 12px 24px' }}>
+            <div className="sidebar-title">Course Lessons</div>
+            <div className="lesson-list">
               {course.lessons.map((l, i) => {
-                const done = Progress.get(courseId).includes(l.id);
+                const done = completedLessons.includes(l.id);
                 const active = i === currentLesson;
                 return (
                   <div
                     key={l.id}
                     className={`lesson-item${active ? ' active' : ''}`}
                     onClick={() => goToLesson(i)}
-                    style={{ 
-                      padding: '12px 16px', 
-                      borderRadius: '12px', 
-                      marginBottom: '4px',
-                      background: active ? 'var(--accent-light)' : 'transparent',
-                      border: active ? '1px solid var(--accent)' : '1px solid transparent'
-                    }}
                   >
-                    <div style={{ 
-                      width: '24px', height: '24px', 
-                      borderRadius: '50%', 
-                      border: done ? 'none' : '2px solid var(--border)',
-                      background: done ? 'var(--green)' : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '0.7rem', color: done ? 'white' : 'var(--text3)',
-                      marginRight: '12px', flexShrink: 0
-                    }}>
+                    <div className={`lesson-check ${done ? 'done' : ''}`}>
                       {done ? '✓' : i + 1}
                     </div>
-                    <span className="ltitle" style={{ fontSize: '0.9rem', color: active ? 'var(--accent)' : 'var(--text)', fontWeight: active ? 700 : 500 }}>{l.title}</span>
+                    <span className="lesson-item-title">{l.title}</span>
                   </div>
                 );
               })}
@@ -150,22 +205,30 @@ export default function Lesson() {
           </aside>
 
           {/* MAIN CONTENT */}
-          <main className="lesson-content" style={{ background: 'var(--bg)', padding: 0, display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+          <main className="lesson-content">
 
-            <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div className="lesson-scroll-area" ref={scrollAreaRef} onScroll={handleScroll}>
+              
+              {/* STICKY TIMER */}
+              <div className="premium-status-hud animate-in">
+                <div className="hud-timer">
+                  <span className="hud-icon">⏱️</span>
+                  <span>{formatTime(timeLeft)}</span>
+                </div>
+              </div>
               
               <div className="lesson-header-glass">
                 <div className="lesson-meta">
                   <div className="meta-item"><span>Beginner</span></div>
                   <div className="meta-item"><span>10 min read</span></div>
-                  <div className="meta-item"><span style={{ color: 'var(--green)' }}>✓ Verified Content</span></div>
+                  <div className="meta-item"><span className="verified-badge">✓ Verified Content</span></div>
                 </div>
                 <h1>{lesson.title}</h1>
-                <div style={{ width: '60px', height: '4px', background: 'var(--accent)', borderRadius: '2px', marginTop: '24px' }}></div>
+                <div className="header-underline"></div>
               </div>
 
               {/* OVERVIEW PANE */}
-              <div style={{ padding: '0 48px 48px' }} className="markdown-content">
+              <div className="markdown-content">
                 <div dangerouslySetInnerHTML={{ __html: fetchedContent }} />
               </div>
 
@@ -174,10 +237,10 @@ export default function Lesson() {
                 <div className="workbench-inner">
                   <div className="workbench-header">
                     <div className="workbench-title">Interactive Workbench — {course.lang}</div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ff5f56' }}></div>
-                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ffbd2e' }}></div>
-                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#27c93f' }}></div>
+                    <div className="workbench-header-dots">
+                      <div className="dot red"></div>
+                      <div className="dot yellow"></div>
+                      <div className="dot green"></div>
                     </div>
                   </div>
                   <textarea
@@ -188,25 +251,25 @@ export default function Lesson() {
                     placeholder="# Write your professional code here..."
                   />
                   <div className="workbench-footer">
-                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center', color: 'var(--text3)', fontSize: '0.8rem' }}>
-                      <span style={{ color: 'var(--green)' }}>●</span> System Online
+                    <div className="workbench-status">
+                      <span className="status-dot">●</span> System Online
                     </div>
-                    <button className="run-btn" onClick={executeCode} style={{ padding: '10px 24px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 700 }}>
+                    <button className="run-btn" onClick={executeCode}>
                       ▶ Run Code
                     </button>
                   </div>
                   <div className="workbench-output" style={{ color: outputColor }}>
-                    <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '8px', textTransform: 'uppercase' }}>Terminal Output</div>
+                    <div className="output-label">Terminal Output</div>
                     {output}
                   </div>
                 </div>
               </div>
 
-              <div className="lesson-nav" style={{ padding: '0 48px 60px', margin: '0 48px', border: 'none' }}>
-                <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0} style={{ padding: '14px 28px', borderRadius: '12px' }}>
+              <div className="lesson-nav">
+                <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0}>
                   ← Previous Lesson
                 </button>
-                <button className="btn-primary" onClick={nextLesson} style={{ padding: '14px 40px', borderRadius: '12px', boxShadow: '0 10px 20px rgba(44,88,255,0.2)' }}>
+                <button className="btn-primary" onClick={nextLesson} disabled={!isCompletedLocally} style={{ opacity: isCompletedLocally ? 1 : 0.5, cursor: isCompletedLocally ? 'pointer' : 'not-allowed' }}>
                   {currentLesson === course.lessons.length - 1 ? 'Complete Course' : 'Next Lesson →'}
                 </button>
               </div>

@@ -219,6 +219,19 @@ export const Progress = {
   getPercent(courseId, total) {
     if (!total) return 0;
     return Math.round((this.get(courseId).length / total) * 100);
+  },
+  getTimer(courseId, lessonId) {
+    try {
+      const timers = JSON.parse(localStorage.getItem(`lc_timers_${courseId}`)) || {};
+      return timers[lessonId] !== undefined ? timers[lessonId] : null;
+    } catch { return null; }
+  },
+  saveTimer(courseId, lessonId, seconds) {
+    try {
+      const timers = JSON.parse(localStorage.getItem(`lc_timers_${courseId}`)) || {};
+      timers[lessonId] = seconds;
+      localStorage.setItem(`lc_timers_${courseId}`, JSON.stringify(timers));
+    } catch (e) { console.error("Failed to save timer:", e); }
   }
 };
 

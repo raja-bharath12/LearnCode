@@ -36,63 +36,77 @@ export default function Courses() {
       <div className="main-wrapper">
         <Header showBrand />
 
-        <div className="page-header">
-          <div className="container">
+        <div className="page-header premium-mesh-bg animate-in">
+          <div className="container" style={{ textAlign: 'left' }}>
             <span className="section-tag">Explore Curriculum</span>
-            <h1>Learn Any Language, <span className="gradient-text" style={{ background: 'linear-gradient(90deg, var(--accent), #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Free Forever</span></h1>
-            <p>Master the most in-demand tech skills with our industry-leading, structured learning paths.</p>
+            <h1 className="text-glow">Learn Any Language, <span className="gradient-text">Free Forever</span></h1>
+            <p style={{ maxWidth: '700px', fontSize: '1.2rem' }}>Master the most in-demand tech skills with our industry-leading, structured learning paths.</p>
           </div>
         </div>
 
         <section className="section">
           <div className="container">
-            <div className="filter-bar">
-              {FILTERS.map(f => (
+            <div className="filter-bar animate-in" style={{ padding: '0 0 48px', justifyContent: 'flex-start', border: 'none', gap: '12px' }}>
+              {FILTERS.map((f, i) => (
                 <button
                   key={f}
-                  className={`filter-btn${activeFilter === f ? ' active' : ''}`}
+                  className={`glass-pill${activeFilter === f ? ' active' : ''}`}
                   onClick={() => setActiveFilter(f)}
+                  style={{ border: 'none', cursor: 'pointer' }}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
               ))}
             </div>
 
-            <div className="courses-grid">
-              {filtered.map(c => {
+            <div className="courses-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '32px' }}>
+              {filtered.map((c, idx) => {
                 const progress = Progress.getPercent(c.id, c.lessons);
                 return (
                   <Link
                     key={c.id}
                     to={`/lesson?course=${c.id}`}
-                    className="course-card"
+                    className="dashboard-card animate-in"
+                    style={{ animationDelay: `${idx * 0.05}s`, padding: 0, overflow: 'hidden' }}
                   >
-                    <div className="course-card-top" style={{ background: `linear-gradient(135deg, ${c.color || 'var(--accent)'}22, ${c.color || 'var(--accent)'}44)` }}>
-                      <span className="course-icon" style={{ color: c.color || 'var(--accent)' }}>
-                        {c.title.charAt(0)}
-                      </span>
-                      <span className="course-level">{c.level || 'Beginner'}</span>
+                    <div className="course-card-top" style={{ background: `${c.color || 'var(--accent)'}15`, padding: '32px', borderBottom: '1px solid var(--border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }}>
+                          {c.icon || c.title.charAt(0)}
+                        </div>
+                        <span className={`course-level level-${(c.level || 'Beginner').toLowerCase()}`} style={{ height: 'fit-content' }}>
+                          {c.level || 'Beginner'}
+                        </span>
+                      </div>
                     </div>
-                    <div className="course-card-body">
-                      <p>{c.language || c.lang} • {c.lessons} Lessons</p>
-                      <h3>{c.title}</h3>
-                      <p style={{ color: 'var(--text2)', textTransform: 'none', letterSpacing: 'normal', fontWeight: 400, marginTop: '8px', fontSize: '1rem', lineHeight: '1.6' }}>
-                        {c.description || c.desc || "Dive deep into the fundamentals and advanced concepts with our comprehensive guide."}
+                    <div className="course-card-body" style={{ padding: '32px' }}>
+                      <p style={{ color: 'var(--text3)', fontSize: '0.9rem', fontWeight: 800, marginBottom: '8px' }}>{c.language || c.lang} • {c.lessons} Lessons</p>
+                      <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '16px' }}>{c.title}</h3>
+                      <p style={{ color: 'var(--text2)', fontSize: '0.95rem', lineHeight: '1.7', height: '80px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+                        {c.description || c.desc || "Dive deep into the fundamentals and advanced concepts with our comprehensive guide or take on real-world projects."}
                       </p>
+                      
                       {progress > 0 && (
-                        <div style={{ marginTop: '24px' }}>
-                          <div className="progress-bar">
-                            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                        <div style={{ marginTop: '32px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text3)' }}>YOUR PROGRESS</span>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 900, color: 'var(--accent)' }}>{progress}%</span>
                           </div>
-                          <p style={{ fontSize: '0.75rem', color: 'var(--text3)', marginTop: '8px', fontWeight: 800 }}>
-                            {progress}% COMPLETED
-                          </p>
+                          <div className="progress-bar" style={{ height: '10px', background: 'var(--surface2)', borderRadius: '20px', overflow: 'hidden' }}>
+                            <div className="progress-fill" style={{ 
+                              width: `${progress}%`, 
+                              background: 'linear-gradient(90deg, var(--accent), #7c3aed)',
+                              boxShadow: '0 0 10px rgba(44, 88, 255, 0.2)'
+                            }}></div>
+                          </div>
                         </div>
                       )}
                     </div>
-                    <div className="course-card-footer">
-                      <span className="free-badge">★ PREMIUM FREE</span>
-                      <span className="start-link">{progress > 0 ? 'Continue Journey →' : 'Start Learning →'}</span>
+                    <div className="course-card-footer" style={{ padding: '20px 32px', background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>
+                      <span className="free-badge shimer">PREMIUM FREE</span>
+                      <span className="start-link" style={{ fontWeight: 800, color: 'var(--accent)' }}>
+                        {progress > 0 ? 'Continue Voyage →' : 'Start Journey →'}
+                      </span>
                     </div>
                   </Link>
                 );

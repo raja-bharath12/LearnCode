@@ -45,7 +45,7 @@ export default function Header({ showSearch = false, showBrand = false }) {
           </div>
         )}
         <div className="top-actions">
-          <button onClick={toggleTheme} className="theme-toggle-btn" title="Toggle Theme" style={{ background: 'transparent', border: 'none', color: 'var(--text2)', cursor: 'pointer', padding: '8px', display: 'flex', alignItems: 'center' }}>
+          <button onClick={toggleTheme} className="theme-toggle-btn" title="Toggle Theme">
             {theme === 'light' ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             ) : (

@@ -35,21 +35,36 @@ export const COURSES = {
     title: "JavaScript Fundamentals",
     lang: "javascript",
     lessons: [
-      {
-        id: 1, title: "Intro to JavaScript",
-        content: `<h1>Welcome to JavaScript</h1><p>JavaScript is the language of the web. It runs in every browser and powers interactive websites.</p><pre><code>console.log("Hello, World!");</code></pre>`,
-        starter: '// Your first JS program\nconsole.log("Hello, World!");\nconsole.log("JavaScript is awesome!");'
-      },
-      {
-        id: 2, title: "Variables: let & const",
-        content: `<h1>Variables in JS</h1><p>Use <code>let</code> for variables that change, and <code>const</code> for constants.</p><pre><code>let name = "Alice";\nconst PI = 3.14159;\nconsole.log(name, PI);</code></pre>`,
-        starter: 'let name = "Alice";\nconst PI = 3.14159;\nlet age = 25;\n\nconsole.log("Name:", name);\nconsole.log("PI:", PI);\nconsole.log("Age:", age);'
-      },
-      {
-        id: 3, title: "Functions",
-        content: `<h1>Functions</h1><p>Functions are reusable blocks of code.</p><pre><code>function greet(name) {\n  return \`Hello, \${name}!\`;\n}\nconsole.log(greet("World"));</code></pre>`,
-        starter: 'function greet(name) {\n  return `Hello, ${name}!`;\n}\n\nconst add = (a, b) => a + b;\n\nconsole.log(greet("World"));\nconsole.log("Sum:", add(5, 3));'
-      }
+      { id: 1, title: "Intro to JavaScript", contentPath: "/courses/2-javascript-fundamentals/lessons/1-introduction-to-javascript/content.md", starter: '// Your first JS program\nconsole.log("Hello World");' },
+      { id: 2, title: "Variables: var, let, const", contentPath: "/courses/2-javascript-fundamentals/lessons/2-variables-var-let-const/content.md", starter: 'let name = "Raja";\nconst age = 20;\nvar oldWay = "Avoid this";\n\nconsole.log(name, age);' },
+      { id: 3, title: "Data Types & typeof", contentPath: "/courses/2-javascript-fundamentals/lessons/3-data-types-typeof/content.md", starter: 'let name = "Raja";\nlet age = 20;\nlet isStudent = true;\n\nconsole.log(typeof name);\nconsole.log(typeof age);' },
+      { id: 4, title: "Operators", contentPath: "/courses/2-javascript-fundamentals/lessons/4-operators/content.md", starter: 'let a = 10;\nlet b = 5;\nconsole.log("Sum:", a + b);\nconsole.log("Is equal:", a === b);' },
+      { id: 5, title: "Template Literals", contentPath: "/courses/2-javascript-fundamentals/lessons/5-template-literals/content.md", starter: 'let name = "Raja";\nconsole.log(`Hello ${name}, welcome study JS!`);' },
+      { id: 6, title: "Conditionals", contentPath: "/courses/2-javascript-fundamentals/lessons/6-conditionals-if-else/content.md", starter: 'let age = 20;\nif (age >= 18) {\n  console.log("You can vote");\n} else {\n  console.log("Too young");\n}' },
+      { id: 7, title: "Switch Statements", contentPath: "/courses/2-javascript-fundamentals/lessons/7-switch-statements/content.md", starter: 'let day = 2;\nswitch(day) {\n  case 1: console.log("Mon"); break;\n  case 2: console.log("Tue"); break;\n  default: console.log("Unknown");\n}' },
+      { id: 8, title: "for Loops", contentPath: "/courses/2-javascript-fundamentals/lessons/8-for-loops/content.md", starter: 'for (let i = 1; i <= 5; i++) {\n  console.log("Count:", i);\n}' },
+      { id: 9, title: "while & do-while Loops", contentPath: "/courses/2-javascript-fundamentals/lessons/9-while-do-while-loops/content.md", starter: 'let i = 1;\nwhile (i <= 3) {\n  console.log("While:", i);\n  i++;\n}' },
+      { id: 10, title: "Functions & Declarations", contentPath: "/courses/2-javascript-fundamentals/lessons/10-functions-declarations/content.md", starter: 'function greet(name) {\n  return "Hello " + name;\n}\nconsole.log(greet("Raja"));' },
+      { id: 11, title: "Arrow Functions", contentPath: "/courses/2-javascript-fundamentals/lessons/11-arrow-functions/content.md", starter: 'const add = (a, b) => a + b;\nconsole.log(add(5, 10));' },
+      { id: 12, title: "Arrays & Array Methods", contentPath: "/courses/2-javascript-fundamentals/lessons/12-arrays-array-methods/content.md", starter: 'let fruits = ["Apple", "Banana"];\nfruits.push("Mango");\nconsole.log(fruits);' },
+      { id: 13, title: "Objects & Properties", contentPath: "/courses/2-javascript-fundamentals/lessons/13-objects-properties/content.md", starter: 'let user = { name: "Raja", age: 20 };\nconsole.log(user.name);' },
+      { id: 14, title: "Object Methods & this", contentPath: "/courses/2-javascript-fundamentals/lessons/14-object-methods-this/content.md", starter: 'let person = {\n  name: "Raja",\n  greet() { console.log("Hi " + this.name); }\n};\nperson.greet();' },
+      { id: 15, title: "Destructuring", contentPath: "/courses/2-javascript-fundamentals/lessons/15-destructuring/content.md", starter: 'const user = { name: "Raja", age: 20 };\nconst { name, age } = user;\nconsole.log(name, age);' },
+      { id: 16, title: "Spread & Rest", contentPath: "/courses/2-javascript-fundamentals/lessons/16-spread-rest/content.md", starter: 'let arr1 = [1, 2];\nlet arr2 = [...arr1, 3, 4];\nconsole.log(arr2);' },
+      { id: 17, title: "DOM Manipulation", contentPath: "/courses/2-javascript-fundamentals/lessons/17-dom-manipulation/content.md", starter: '// Check lesson content for DOM examples\nconsole.log(document.title);' },
+      { id: 18, title: "Events & Event Listeners", contentPath: "/courses/2-javascript-fundamentals/lessons/18-events-event-listeners/content.md", starter: '// Check lesson content for event examples\n// document.addEventListener("click", () => alert("Hi"));' },
+      { id: 19, title: "Fetch API & Promises", contentPath: "/courses/2-javascript-fundamentals/lessons/19-fetch-api-promises/content.md", starter: 'fetch("https://jsonplaceholder.typicode.com/todos/1")\n  .then(res => res.json())\n  .then(data => console.log(data));' },
+      { id: 20, title: "Async / Await", contentPath: "/courses/2-javascript-fundamentals/lessons/20-async-await/content.md", starter: 'async function load() {\n  let res = await fetch("https://jsonplaceholder.typicode.com/todos/1");\n  let data = await res.json();\n  console.log(data);\n}\nload();' },
+      { id: 21, title: "Error Handling (try/catch)", contentPath: "/courses/2-javascript-fundamentals/lessons/21-error-handling-try-catch/content.md", starter: 'try {\n  console.log(nonExistentVar);\n} catch (err) {\n  console.log("Caught:", err.message);\n}' },
+      { id: 22, title: "ES6 Modules", contentPath: "/courses/2-javascript-fundamentals/lessons/22-es6-modules/content.md", starter: '// Use import/export in real files\nconsole.log("Modules are great for local apps");' },
+      { id: 23, title: "LocalStorage & SessionStorage", contentPath: "/courses/2-javascript-fundamentals/lessons/23-localstorage-sessionstorage/content.md", starter: 'localStorage.setItem("name", "Raja");\nconsole.log(localStorage.getItem("name"));' },
+      { id: 24, title: "JSON & APIs", contentPath: "/courses/2-javascript-fundamentals/lessons/24-json-apis/content.md", starter: 'let user = { name: "Raja" };\nlet json = JSON.stringify(user);\nconsole.log(json);\nconsole.log(JSON.parse(json));' },
+      { id: 25, title: "Regular Expressions (Regex)", contentPath: "/courses/2-javascript-fundamentals/lessons/25-regular-expressions-regex/content.md", starter: 'const pattern = /hello/i;\nconsole.log(pattern.test("Hello World"));' },
+      { id: 26, title: "Closures", contentPath: "/courses/2-javascript-fundamentals/lessons/26-closures/content.md", starter: 'function outer() {\n  let count = 0;\n  return () => ++count;\n}\nconst counter = outer();\nconsole.log(counter());' },
+      { id: 27, title: "Prototype & Inheritance", contentPath: "/courses/2-javascript-fundamentals/lessons/27-prototype-inheritance/content.md", starter: 'function User(n) { this.n = n; }\nUser.prototype.greet = function() { console.log(this.n); };\nnew User("Raja").greet();' },
+      { id: 28, title: "Classes in JS", contentPath: "/courses/2-javascript-fundamentals/lessons/28-classes-in-js/content.md", starter: 'class User {\n  constructor(n) { this.n = n; }\n  greet() { console.log(this.n); }\n}\nnew User("Raja").greet();' },
+      { id: 29, title: "Callbacks & Higher-Order Functions", contentPath: "/courses/2-javascript-fundamentals/lessons/29-callbacks-higher-order-functions/content.md", starter: 'const nums = [1, 2, 3];\nnums.forEach(n => console.log(n));' },
+      { id: 30, title: "Project: Interactive Todo App", contentPath: "/courses/2-javascript-fundamentals/lessons/30-project-interactive-todo-app/content.md", starter: '// Build your Todo App here!\nconsole.log("Project Time!");' }
     ]
   }
 };

@@ -27,7 +27,7 @@ export default function Login() {
       if (res.ok) {
         Auth.setUser({ ...data.user, token: data.token });
         showToast('Welcome back! ', 'success');
-        setTimeout(() => navigate('/courses'), 800);
+        setTimeout(() => navigate('/'), 800);
       } else {
         setError(data.error || 'Invalid credentials. Please try again.');
       }
@@ -41,7 +41,7 @@ export default function Login() {
         };
         Auth.setUser(user);
         showToast(`${isAdminLogin ? 'Admin' : 'Demo'} login successful! `, 'success');
-        setTimeout(() => navigate('/profile'), 800);
+        setTimeout(() => navigate('/'), 800);
       } else {
         setError('Backend not running. Use a valid email and 6+ char password for demo.');
       }
@@ -50,38 +50,60 @@ export default function Login() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>{isAdminLogin ? 'Admin Login' : 'Welcome back '}</h1>
-        <p>{isAdminLogin ? 'Sign in to access your profile.' : 'Sign in to continue your learning journey.'}</p>
+    <div className="auth-page premium-mesh-bg">
+      <div className="auth-card dashboard-card animate-in" style={{ maxWidth: '450px', padding: '48px' }}>
+        <div className="auth-icon-header animate-in" style={{ animationDelay: '0.1s', marginBottom: '24px', textAlign: 'center' }}>
+          <div style={{ width: '64px', height: '64px', background: 'var(--accent-light)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: '2rem' }}>
+            {isAdminLogin ? '🔐' : '🚀'}
+          </div>
+        </div>
+        <h1 className="text-glow animate-in" style={{ animationDelay: '0.2s', textAlign: 'center', marginBottom: '8px' }}>{isAdminLogin ? 'Admin Portal' : 'Welcome Back'}</h1>
+        <p className="animate-in" style={{ animationDelay: '0.3s', textAlign: 'center', color: 'var(--text3)', marginBottom: '32px' }}>{isAdminLogin ? 'Enter your credentials to manage the Forge.' : 'Pick up exactly where you left off.'}</p>
+        
         {error && (
-          <div style={{ background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', color: 'var(--red)', padding: '12px 16px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '20px' }}>
-            {error}
+          <div className="animate-in" style={{ animationDelay: '0.4s', background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', color: 'var(--red)', padding: '16px', borderRadius: '12px', fontSize: '0.9rem', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span>⚠️</span> {error}
           </div>
         )}
-        <form onSubmit={handleLogin}>
+
+        <form onSubmit={handleLogin} className="animate-in" style={{ animationDelay: '0.5s' }}>
           <div className="form-group">
-            <label>Email Address</label>
-            <input type="email" placeholder="you@example.com" required value={email} onChange={e => setEmail(e.target.value)} />
+            <label style={{ color: 'var(--text2)', fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Email Address</label>
+            <input 
+              type="email" 
+              placeholder="explorer@learncode.dev" 
+              required 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px 18px' }}
+            />
           </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input type="password" placeholder="••••••••" required value={password} onChange={e => setPassword(e.target.value)} />
+          <div className="form-group" style={{ marginBottom: '32px' }}>
+            <label style={{ color: 'var(--text2)', fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Password</label>
+            <input 
+              type="password" 
+              placeholder="••••••••" 
+              required 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px 18px' }}
+            />
           </div>
-          <button type="submit" className="auth-submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+          <button type="submit" className="auth-submit shimmer" disabled={loading} style={{ padding: '16px', borderRadius: '12px', fontWeight: 800, fontSize: '1rem', letterSpacing: '0.5px' }}>
+            {loading ? 'Authenticating...' : 'Enter the Forge →'}
           </button>
         </form>
-        <div className="auth-switch">
+
+        <div className="auth-switch animate-in" style={{ animationDelay: '0.6s', marginTop: '32px', textAlign: 'center', borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
           {isAdminLogin ? (
-            <>Regular student? <a href="#" onClick={(e) => { e.preventDefault(); setIsAdminLogin(false); }}>Student Login →</a></>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text3)' }}>Regular student? <a href="#" onClick={(e) => { e.preventDefault(); setIsAdminLogin(false); }} style={{ color: 'var(--accent)', fontWeight: 800 }}>Student Login →</a></p>
           ) : (
-            <>Don't have an account? <Link to="/register">Create one free →</Link></>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text3)' }}>New to LearnCode? <Link to="/register" style={{ color: 'var(--accent)', fontWeight: 800 }}>Create Free Account →</Link></p>
           )}
         </div>
         {!isAdminLogin && (
-          <div className="auth-switch" style={{ marginTop: '10px', opacity: 0.7, fontSize: '0.8rem' }}>
-            Are you an instructor? <a href="#" onClick={(e) => { e.preventDefault(); setIsAdminLogin(true); }}>Admin Login →</a>
+          <div className="auth-switch animate-in" style={{ animationDelay: '0.7s', marginTop: '12px', opacity: 0.6, fontSize: '0.8rem', textAlign: 'center' }}>
+            Are you an instructor? <a href="#" onClick={(e) => { e.preventDefault(); setIsAdminLogin(true); }}>Admin Portal →</a>
           </div>
         )}
       </div>
