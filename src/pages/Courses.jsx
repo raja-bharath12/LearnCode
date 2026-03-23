@@ -38,9 +38,9 @@ export default function Courses() {
 
         <div className="page-header">
           <div className="container">
-            <span className="section-tag">All Courses</span>
-            <h1>Learn Any Language, <span className="gradient-text">Free</span></h1>
-            <p>{courses.length}+ structured courses with hands-on coding exercises</p>
+            <span className="section-tag">Explore Curriculum</span>
+            <h1>Learn Any Language, <span className="gradient-text" style={{ background: 'linear-gradient(90deg, var(--accent), #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Free Forever</span></h1>
+            <p>Master the most in-demand tech skills with our industry-leading, structured learning paths.</p>
           </div>
         </div>
 
@@ -66,36 +66,33 @@ export default function Courses() {
                     key={c.id}
                     to={`/lesson?course=${c.id}`}
                     className="course-card"
-                    data-lang={c.language || c.lang}
-                    data-category={c.category || ''}
-                    data-level={(c.level || 'Beginner').toLowerCase()}
                   >
-                    <div className="course-card-top" style={{ '--accent': c.color || 'var(--accent)' }}>
-                      <span className="course-icon" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent)' }}>
+                    <div className="course-card-top" style={{ background: `linear-gradient(135deg, ${c.color || 'var(--accent)'}22, ${c.color || 'var(--accent)'}44)` }}>
+                      <span className="course-icon" style={{ color: c.color || 'var(--accent)' }}>
                         {c.title.charAt(0)}
                       </span>
-                      <span className={`course-level level-${(c.level || 'Beginner').toLowerCase()}`}>{c.level || 'Beginner'}</span>
+                      <span className="course-level">{c.level || 'Beginner'}</span>
                     </div>
                     <div className="course-card-body">
-                      <h3>{c.title}</h3>
                       <p>{c.language || c.lang} • {c.lessons} Lessons</p>
-                      <p style={{ color: 'var(--text2)', fontFamily: 'var(--font-body)', marginTop: '8px', fontSize: '0.85rem' }}>
-                        {c.description || c.desc}
+                      <h3>{c.title}</h3>
+                      <p style={{ color: 'var(--text2)', textTransform: 'none', letterSpacing: 'normal', fontWeight: 400, marginTop: '8px', fontSize: '1rem', lineHeight: '1.6' }}>
+                        {c.description || c.desc || "Dive deep into the fundamentals and advanced concepts with our comprehensive guide."}
                       </p>
                       {progress > 0 && (
-                        <>
-                          <div className="progress-bar" style={{ marginTop: '12px' }}>
+                        <div style={{ marginTop: '24px' }}>
+                          <div className="progress-bar">
                             <div className="progress-fill" style={{ width: `${progress}%` }}></div>
                           </div>
-                          <p style={{ fontSize: '0.75rem', color: 'var(--text3)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-                            {progress}% complete
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text3)', marginTop: '8px', fontWeight: 800 }}>
+                            {progress}% COMPLETED
                           </p>
-                        </>
+                        </div>
                       )}
                     </div>
                     <div className="course-card-footer">
-                      <span className="free-badge">FREE</span>
-                      <span className="start-link">{progress > 0 ? 'Continue →' : 'Start →'}</span>
+                      <span className="free-badge">★ PREMIUM FREE</span>
+                      <span className="start-link">{progress > 0 ? 'Continue Journey →' : 'Start Learning →'}</span>
                     </div>
                   </Link>
                 );

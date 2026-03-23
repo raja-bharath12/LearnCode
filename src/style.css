@@ -491,20 +491,76 @@ body {
 .section-cta { text-align: center; margin-top: 48px; }
 
 /* ===== COURSES GRID ===== */
+.page-header {
+  padding: 100px 0 80px;
+  background: radial-gradient(circle at top right, var(--accent-light), transparent), 
+              radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.05), transparent);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 16px; color: var(--text); }
+.page-header p { font-size: 1.25rem; color: var(--text2); max-width: 600px; margin: 0 auto; opacity: 0.8; }
+
+.section-tag {
+  display: inline-block;
+  padding: 6px 16px;
+  background: var(--accent-light);
+  color: var(--accent);
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(44, 88, 255, 0.1);
+}
+
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 24px 0 40px;
+  margin-top: -40px;
+  justify-content: center;
+}
+.filter-btn {
+  padding: 10px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+}
+.filter-btn:hover { background: var(--bg2); transform: translateY(-2px); }
+.filter-btn.active {
+  background: var(--accent); color: white;
+  border-color: var(--accent);
+  box-shadow: 0 10px 20px rgba(44, 88, 255, 0.3);
+}
+
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 32px;
+  padding: 20px 0 80px;
 }
 
 .course-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
   overflow: hidden;
-  display: flex; flex-direction: column;
-  transition: var(--transition);
-  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--glass-shadow);
+  height: 100%;
 }
 .course-card:hover {
   transform: translateY(-4px);

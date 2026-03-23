@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer" style={{ borderTop: '1px solid var(--border)', background: 'var(--surface)', padding: '60px 0 40px' }}>
       <div className="container footer-grid">
         <div className="footer-brand">
           <Link to="/" className="header-brand">LearnCode</Link>
@@ -36,7 +36,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>© 2025 LearnCode. Made with ️ for learners worldwide.</p>
+        <p>© 2026 LearnCode. Made with <span style={{ color: 'var(--red)' }}>❤</span> for learners worldwide.</p>
       </div>
     </footer>
   );
