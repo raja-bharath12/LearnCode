@@ -1,5 +1,3 @@
-# Lesson 8: for Loops
-
 🧠 **1. What is a Loop?**
 A loop is used to repeat a block of code multiple times.
 

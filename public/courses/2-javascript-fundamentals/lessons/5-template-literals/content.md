@@ -1,5 +1,3 @@
-# Lesson 5: Template Literals (` `)
-
 🧠 **1. What are Template Literals?**
 Template literals are a modern way to write strings using backticks: `` ` `` (backtick key near Esc).
 

@@ -1,5 +1,3 @@
-# Lesson 21: Error Handling (try...catch)
-
 🧠 **1. Why Error Handling?**
 👉 In real-world apps, things go wrong (e.g., Network failure, Invalid input, Bug).
 

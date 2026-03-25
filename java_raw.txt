@@ -1,0 +1,934 @@
+☕ COURSE 3: Java Complete Course
+📘 Lesson 1: Java Basics
+🔹 1. What is Java?
+Java is a high-level, object-oriented programming language developed by Sun Microsystems (now owned by Oracle Corporation).
+
+💡 Key Features:
+Platform Independent (Write Once, Run Anywhere)
+Object-Oriented
+Secure & Robust
+Multithreaded
+Automatic Memory Management (Garbage Collection)
+
+🔹 2. How Java Works?
+⚙️ Flow:
+Write code → .java
+Compile using javac → .class (bytecode)
+Run using JVM → Output
+
+📌 Important Components:
+JDK (Java Development Kit) → For development
+JRE (Java Runtime Environment) → For running
+JVM (Java Virtual Machine) → Executes bytecode
+
+🔹 3. Basic Java Program Structure
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+🔹 4. Variables in Java
+📌 Data Types: int, float, double, char, boolean, String
+✅ Example:
+```java
+int age = 20;
+double price = 99.99;
+String name = "Java";
+```
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Write a Java program to print "Hello World".
+✅ Solution:
+```java
+public class Main { public static void main(String[] args) { System.out.println("Hello World"); } }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Take two numbers and print their sum.
+✅ Solution:
+```java
+public class Main { public static void main(String[] args) { int a = 5, b = 10; System.out.println("Sum: " + (a+b)); } }
+```
+
+🔴 HARD LEVEL
+❓ Problem: Take name and age as input and print a formatted string.
+✅ Solution:
+```java
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String name = sc.next();
+        int age = sc.nextInt();
+        System.out.println(name + " is " + age + " years old.");
+    }
+}
+```
+
+📘 Lesson 2: Variables & Data Types
+🔹 1. What is a Variable?
+A variable is a container used to store data in memory.
+Types: Local, Instance, Static.
+
+Primitive Data Types: byte, short, int, long, float, double, char, boolean.
+Non-Primitive Data Types: String, Arrays, Classes, Objects.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Declare variables and print them.
+✅ Solution:
+```java
+int age = 21; System.out.println(age);
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Type cast a double to int.
+✅ Solution:
+```java
+double d = 9.99;
+int i = (int) d;
+System.out.println(i);
+```
+
+🔴 HARD LEVEL
+❓ Problem: Convert a character 'A' to its ASCII value.
+✅ Solution:
+```java
+char c = 'A';
+int ascii = (int) c;
+System.out.println(ascii);
+```
+
+📘 Lesson 3: Operators & Expressions
+🔹 1. What are Operators?
+Symbols used to perform operations on variables and values.
+Arithmetic: +, -, *, /, %
+Relational: ==, !=, >, <, >=, <=
+Logical: &&, ||, !
+Assignment: =, +=, -=, *=, /=
+Increment/Decrement: ++, --
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Print the sum, difference, and product of two numbers.
+✅ Solution:
+```java
+int a=10, b=5; System.out.println((a+b) + " " + (a-b) + " " + (a*b));
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Check whether a number is positive, negative, or zero using ternary operator.
+✅ Solution:
+```java
+int n = -5;
+String res = (n > 0) ? "Positive" : (n < 0) ? "Negative" : "Zero";
+System.out.println(res);
+```
+
+🔴 HARD LEVEL
+❓ Problem: Find the largest of three numbers using only operators (no if-else).
+✅ Solution:
+```java
+int a=10, b=20, c=15;
+int max = (a > b) ? (a > c ? a : c) : (b > c ? b : c);
+System.out.println(max);
+```
+
+📘 Lesson 4: Control Flow (if / else)
+🔹 1. Control Flow
+Determines how a program executes based on conditions.
+Keywords: if, else if, else, switch.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Check if a number is even or odd.
+✅ Solution:
+```java
+int n = 10;
+if(n%2 == 0) System.out.println("Even");
+else System.out.println("Odd");
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Take marks as input and print grade (A, B, C, Fail).
+✅ Solution:
+```java
+int marks = 85;
+if(marks >= 90) System.out.println("A");
+else if(marks >= 75) System.out.println("B");
+else if(marks >= 50) System.out.println("C");
+else System.out.println("Fail");
+```
+
+🔴 HARD LEVEL
+❓ Problem: Leap year check.
+✅ Solution:
+```java
+int year = 2024;
+if((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) System.out.println("Leap Year");
+else System.out.println("Not a Leap Year");
+```
+
+📘 Lesson 5: Loops (for / while / do-while)
+🔹 1. Loops in Java
+for loop: known iterations.
+while loop: unknown iterations.
+do-while loop: executes at least once.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Print numbers from 1 to 10.
+✅ Solution:
+```java
+for(int i=1; i<=10; i++) System.out.println(i);
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Sum of first N natural numbers.
+✅ Solution:
+```java
+int n=5, sum=0;
+for(int i=1; i<=n; i++) sum += i;
+System.out.println(sum);
+```
+
+🔴 HARD LEVEL
+❓ Problem: Check prime number.
+✅ Solution:
+```java
+int n=7; boolean prime=true;
+for(int i=2; i<n; i++) { if(n%i==0) { prime=false; break; } }
+System.out.println(prime ? "Prime" : "Not Prime");
+```
+
+📘 Lesson 6: Methods (Functions)
+🔹 1. Methods
+Reusable blocks of code.
+Can have parameters and return types.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Method to print Hello.
+✅ Solution:
+```java
+static void printHello() { System.out.println("Hello"); }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Method to square a number.
+✅ Solution:
+```java
+static int square(int n) { return n * n; }
+```
+
+🔴 HARD LEVEL
+❓ Problem: Recursion to find factorial.
+✅ Solution:
+```java
+static int fact(int n) { return (n==0) ? 1 : n * fact(n-1); }
+```
+
+📘 Lesson 7: Arrays
+🔹 1. Arrays
+Collection of elements of the same data type.
+0-based indexing.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Print array elements.
+✅ Solution:
+```java
+int[] arr = {1, 2, 3};
+for(int x : arr) System.out.println(x);
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Sum of array elements.
+✅ Solution:
+```java
+int[] arr = {1, 2, 3}; int sum=0;
+for(int x : arr) sum += x;
+System.out.println(sum);
+```
+
+🔴 HARD LEVEL
+❓ Problem: Find max element.
+✅ Solution:
+```java
+int[] arr = {1, 5, 2}; int max = arr[0];
+for(int x : arr) if(x > max) max = x;
+System.out.println(max);
+```
+
+📘 Lesson 8: Strings in Java
+🔹 1. Strings
+Sequence of characters. Objects in Java.
+Immutable. Use StringBuilder for mutable strings.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Print string length.
+✅ Solution:
+```java
+String s = "Java"; System.out.println(s.length());
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Check palindrome string.
+✅ Solution:
+```java
+String s = "madam";
+String rev = new StringBuilder(s).reverse().toString();
+System.out.println(s.equals(rev) ? "Palindrome" : "Not Palindrome");
+```
+
+🔴 HARD LEVEL
+❓ Problem: Count vowels and consonants in a string.
+✅ Solution:
+```java
+String s = "hello"; int v=0, c=0;
+for(char ch : s.toLowerCase().toCharArray()) {
+  if("aeiou".indexOf(ch) != -1) v++;
+  else if(Character.isLetter(ch)) c++;
+}
+System.out.println("Vowels: " + v + ", Consonants: " + c);
+```
+
+📘 Lesson 9: OOP – Classes & Objects
+🔹 1. OOP Basics
+Class: Blueprint. Object: Instance.
+Methods & Fields. Constructor initializes objects.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Create Car class and print properties.
+✅ Solution:
+```java
+class Car { String brand = "Toyota"; }
+public class Main { public static void main(String[] args) { System.out.println(new Car().brand); } }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Class with constructor.
+✅ Solution:
+```java
+class Student { String name; Student(String n) { name = n; } }
+```
+
+🔴 HARD LEVEL
+❓ Problem: Employee class with methods.
+✅ Solution:
+```java
+class Employee {
+  String name; int salary;
+  Employee(String n, int s) { name=n; salary=s; }
+  void display() { System.out.println(name + " " + salary); }
+}
+```
+
+📘 Lesson 10: Constructors
+🔹 1. Constructors
+Special method to initialize objects. No return type. Same name as class.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Default constructor.
+✅ Solution:
+```java
+class Demo { Demo() { System.out.println("Created"); } }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Parameterized constructor.
+✅ Solution:
+```java
+class Demo { Demo(int x) { System.out.println(x); } }
+```
+
+🔴 HARD LEVEL
+❓ Problem: Constructor overloading.
+✅ Solution:
+```java
+class Demo {
+  Demo() { System.out.println("Default"); }
+  Demo(int x) { System.out.println(x); }
+}
+```
+
+📘 Lesson 11: Encapsulation
+🔹 1. Encapsulation
+Wrapping data and methods. Private variables with public getter/setter.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Private variable with getter/setter.
+✅ Solution:
+```java
+class Person {
+  private String name;
+  void setName(String n) { name=n; }
+  String getName() { return name; }
+}
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Validation in setter.
+✅ Solution:
+```java
+class Account {
+  private int balance;
+  void deposit(int amt) { if(amt>0) balance+=amt; }
+}
+```
+
+🔴 HARD LEVEL
+❓ Problem: Secure Bank Account.
+✅ Solution: // Combined above logics
+
+📘 Lesson 12: Inheritance
+🔹 1. Inheritance
+Reusing code from parent using `extends`.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Simple inheritance.
+✅ Solution:
+```java
+class Animal { void eat() { System.out.println("Eat"); } }
+class Dog extends Animal {}
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Override method.
+✅ Solution:
+```java
+class Dog extends Animal { @Override void eat() { System.out.println("Dog eats"); } }
+```
+
+🔴 HARD LEVEL
+❓ Problem: `super` keyword.
+✅ Solution:
+```java
+class Dog extends Animal { void eat() { super.eat(); System.out.println("Dog eats"); } }
+```
+
+📘 Lesson 13: Polymorphism
+🔹 1. Polymorphism
+Overloading (compile time) & Overriding (runtime).
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Overload method.
+✅ Solution:
+```java
+int add(int a, int b) { return a+b; }
+double add(double a, double b) { return a+b; }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Override method.
+✅ Solution: Same as inheritance example.
+
+🔴 HARD LEVEL
+❓ Problem: Dynamic method dispatch.
+✅ Solution:
+```java
+Animal a = new Dog(); a.eat();
+```
+
+📘 Lesson 14: Abstraction
+🔹 1. Abstraction
+Hiding implementation. `abstract` class or `interface`.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Abstract class.
+✅ Solution:
+```java
+abstract class Shape { abstract void draw(); }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Implement abstract method.
+✅ Solution:
+```java
+class Circle extends Shape { void draw() { System.out.println("Circle"); } }
+```
+
+🔴 HARD LEVEL
+❓ Problem: Interface payment.
+✅ Solution:
+```java
+interface Payment { void pay(); }
+class UPI implements Payment { public void pay() { System.out.println("UPI"); } }
+```
+
+📘 Lesson 15: Interfaces
+🔹 1. Interfaces
+Multiple inheritance in Java.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Simple interface.
+✅ Solution:
+```java
+interface Animal { void sound(); }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Multiple interfaces.
+✅ Solution:
+```java
+class Dog implements Animal, Pet {}
+```
+
+🔴 HARD LEVEL
+❓ Problem: Default methods.
+✅ Solution:
+```java
+interface Animal { default void sleep() { System.out.println("Sleep"); } }
+```
+
+📘 Lesson 16: Packages & Access Modifiers
+🔹 1. Packages
+Grouping classes. public, protected, private, default.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Public vs Private.
+✅ Solution: Private is class-only. Public is universal.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Protected.
+✅ Solution: Accessed in same package or subclasses.
+
+🔴 HARD LEVEL
+❓ Problem: Create package.
+✅ Solution: `package com.example;`
+
+📘 Lesson 17: Exception Handling
+🔹 1. Exception Handling
+try, catch, finally, throw, throws.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Divide by zero catch.
+✅ Solution:
+```java
+try{ int x = 1/0; } catch(Exception e){}
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Array index bounds.
+✅ Solution: Catch `ArrayIndexOutOfBoundsException`.
+
+🔴 HARD LEVEL
+❓ Problem: Custom exception.
+✅ Solution:
+```java
+class AgeException extends Exception {}
+```
+
+📘 Lesson 18: Generics
+🔹 1. Generics
+Type safety. `<T>`.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Generic Box class.
+✅ Solution:
+```java
+class Box<T> { T value; }
+```
+
+🟡 MEDIUM LEVEL
+❓ Problem: Generic method.
+✅ Solution:
+```java
+<T> void print(T val) { System.out.println(val); }
+```
+
+🔴 HARD LEVEL
+❓ Problem: Generic Pair.
+✅ Solution:
+```java
+class Pair<K,V> { K key; V val; }
+```
+
+📘 Lesson 19: Collections – ArrayList
+🔹 1. ArrayList
+Dynamic arrays.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Add and print elements.
+✅ Solution: `list.add(10); list.forEach(System.out::println);`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Sum of ArrayList.
+✅ Solution: Loop and add.
+
+🔴 HARD LEVEL
+❓ Problem: Remove duplicates.
+✅ Solution: Use HashSet or streams.
+
+📘 Lesson 20: Collections – HashMap
+🔹 1. HashMap
+Key-value pairs.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Add to HashMap.
+✅ Solution: `map.put("A", 1);`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Count frequencies.
+✅ Solution: `map.put(key, map.getOrDefault(key, 0) + 1);`
+
+🔴 HARD LEVEL
+❓ Problem: First non-repeating char.
+✅ Solution: Map char counts and check.
+
+📘 Lesson 21: Collections – LinkedList
+🔹 1. LinkedList
+Nodes with data and pointers.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Add elements.
+✅ Solution: `list.addFirst(1);`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Iterate LinkedList.
+✅ Solution: for-each.
+
+🔴 HARD LEVEL
+❓ Problem: Reverse LinkedList.
+✅ Solution: `Collections.reverse(list);`
+
+📘 Lesson 22: Iterators
+🔹 1. Iterator
+Safe removal during iteration.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Use Iterator.
+✅ Solution: `while(it.hasNext()) out.println(it.next());`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Remove specific element.
+✅ Solution: `if(val == 5) it.remove();`
+
+🔴 HARD LEVEL
+❓ Problem: ListIterator backwards.
+✅ Solution: `while(it.hasPrevious()) out.println(it.previous());`
+
+📘 Lesson 23: Lambda Expressions
+🔹 1. Lambdas
+Anonymous functions. `(a,b) -> a+b`.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Simple lambda thread.
+✅ Solution: `new Thread(() -> System.out.println("Hi")).start();`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Comparator lambda.
+✅ Solution: `list.sort((a,b) -> a - b);`
+
+🔴 HARD LEVEL
+❓ Problem: Custom functional interface.
+✅ Solution: `@FunctionalInterface interface Op { int apply(int a, int b); }`
+
+📘 Lesson 24: Streams API
+🔹 1. Streams
+Filters, maps, reduces collection processing.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Print with streams.
+✅ Solution: `list.stream().forEach(System.out::println);`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Filter even numbers.
+✅ Solution: `list.stream().filter(n -> n%2==0).collect(Collectors.toList());`
+
+🔴 HARD LEVEL
+❓ Problem: Sum of squares.
+✅ Solution: `list.stream().mapToInt(n -> n*n).sum();`
+
+📘 Lesson 25: File I/O (java.io)
+🔹 1. File Handling
+java.io package. Reader and Writer.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Write string to file.
+✅ Solution: Use `FileWriter`.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Read from file.
+✅ Solution: Use `BufferedReader`.
+
+🔴 HARD LEVEL
+❓ Problem: Copy file.
+✅ Solution: Read lines and write them.
+
+📘 Lesson 26: NIO & Paths
+🔹 1. NIO
+Faster I/O. `Path` and `Files`.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Write via NIO.
+✅ Solution: `Files.write(Paths.get("test.txt"), "hello".getBytes());`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Read via NIO.
+✅ Solution: `Files.readAllLines()`.
+
+🔴 HARD LEVEL
+❓ Problem: Copy file NIO.
+✅ Solution: `Files.copy()`.
+
+📘 Lesson 27: Multithreading Basics
+🔹 1. Threads
+Thread & Runnable.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Thread class.
+✅ Solution: `class MyThread extends Thread { public void run() {} }`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Runnable iterface.
+✅ Solution: `new Thread(new Runnable() { public void run(){} }).start();`
+
+🔴 HARD LEVEL
+❓ Problem: Two threads printing numbers.
+✅ Solution: Start t1 and t2 together.
+
+📘 Lesson 28: Concurrency (synchronized)
+🔹 1. Concurrency
+Synchronized keyword.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Sync method.
+✅ Solution: `synchronized void inc() {}`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Sync block.
+✅ Solution: `synchronized(this) {}`
+
+🔴 HARD LEVEL
+❓ Problem: Wait and Notify.
+✅ Solution: inter-thread communication.
+
+📘 Lesson 29: Executor Service
+🔹 1. Executors
+Thread pools.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Single thread executor.
+✅ Solution: `Executors.newSingleThreadExecutor();`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Fixed thread pool.
+✅ Solution: `Executors.newFixedThreadPool(10);`
+
+🔴 HARD LEVEL
+❓ Problem: Callable & Future.
+✅ Solution: Return values from tasks.
+
+📘 Lesson 30: Java 8+ Features
+🔹 1. Modern Java
+Optional, Default methods.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Optional.
+✅ Solution: `Optional.ofNullable(val);`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Method reference.
+✅ Solution: `System.out::println`
+
+🔴 HARD LEVEL
+❓ Problem: Default interface method.
+✅ Solution: `default void log() {}`
+
+📘 Lesson 31: Inner Classes
+🔹 1. Inner classes
+Nested, static, anonymous.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Nested class.
+✅ Solution: class inside class.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Static nested.
+✅ Solution: `static class Inner {}`
+
+🔴 HARD LEVEL
+❓ Problem: Anonymous inner class.
+✅ Solution: `new Runnable() { public void run() {} };`
+
+📘 Lesson 32: Enums
+🔹 1. Enums
+Fixed constants.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Days enum.
+✅ Solution: `enum Day { MON, TUE }`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Enum in switch.
+✅ Solution: `switch(day) { case MON:; }`
+
+🔴 HARD LEVEL
+❓ Problem: Enum with fields.
+✅ Solution: `enum Color { RED("#FF0000"); String hex; Color(String h){hex=h;} }`
+
+📘 Lesson 33: Annotations
+🔹 1. Annotations
+Metadata.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: @Override
+✅ Solution: Use above overridden method.
+
+🟡 MEDIUM LEVEL
+❓ Problem: @Deprecated
+✅ Solution: Mark method old.
+
+🔴 HARD LEVEL
+❓ Problem: Custom annotation.
+✅ Solution: `@interface MyAnno {}`
+
+📘 Lesson 34: Reflection
+🔹 1. Reflection
+Runtime class inspection.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Get class name.
+✅ Solution: `obj.getClass().getName();`
+
+🟡 MEDIUM LEVEL
+❓ Problem: Get methods.
+✅ Solution: `Class.forName("...").getMethods();`
+
+🔴 HARD LEVEL
+❓ Problem: Invoke method by name.
+✅ Solution: `method.invoke(obj);`
+
+📘 Lesson 35: Design Patterns - Singleton
+🔹 1. Singleton
+Only one instance.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Basic singleton.
+✅ Solution: private constructor, static getInstance.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Lazy singleton.
+✅ Solution: `if(instance==null) instance = new Singleton();`
+
+🔴 HARD LEVEL
+❓ Problem: Thread safe singleton.
+✅ Solution: Double checked locking.
+
+📘 Lesson 36: Design Patterns - Factory
+🔹 1. Factory Pattern
+Create objects without exposing instantiation logic.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Factory returning shapes.
+✅ Solution: ShapeFactory.getShape("CIRCLE");
+
+🟡 MEDIUM LEVEL
+❓ Problem: Factory with interfaces.
+✅ Solution: Interface implemented by concrete classes.
+
+🔴 HARD LEVEL
+❓ Problem: Abstract Factory.
+✅ Solution: Factory of factories.
+
+📘 Lesson 37: Design Patterns - Observer
+🔹 1. Observer Pattern
+Pub/Sub model.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Subject and Observers.
+✅ Solution: List of observers.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Notify all.
+✅ Solution: loop through observers and call update().
+
+🔴 HARD LEVEL
+❓ Problem: Remove observer.
+✅ Solution: `observers.remove(observer);`
+
+📘 Lesson 38: JDBC Databases
+🔹 1. JDBC
+Connecting Java to SQL databases.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Connection.
+✅ Solution: DriverManager.getConnection
+
+🟡 MEDIUM LEVEL
+❓ Problem: Statement and ResultSet.
+✅ Solution: stmt.executeQuery("SELECT * ...");
+
+🔴 HARD LEVEL
+❓ Problem: PreparedStatement.
+✅ Solution: `PreparedStatement pstmt = conn.prepareStatement("INSERT INTO...");`
+
+📘 Lesson 39: Unit Testing with JUnit
+🔹 1. JUnit
+Framework for unit testing in Java.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Basic test.
+✅ Solution: @Test annotation.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Assertions.
+✅ Solution: assertEquals(expected, actual);
+
+🔴 HARD LEVEL
+❓ Problem: @Before and @After.
+✅ Solution: Setup and teardown test environment.
+
+📘 Lesson 40: Project - Library Management System
+🔹 1. Final Project
+Bringing it all together.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Class structure.
+✅ Solution: Book, Author, Library.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Features.
+✅ Solution: Add Book, Issue Book, Return Book.
+
+🔴 HARD LEVEL
+❓ Problem: Complete robust system.
+✅ Solution: Collections, File I/O, Exceptions.

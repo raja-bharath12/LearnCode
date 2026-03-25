@@ -1,5 +1,3 @@
-# Lesson 24: JSON & APIs
-
 🧠 **1. What is JSON?**
 JSON = **JavaScript Object Notation**. It is the standard format for sending and receiving data on the web.
 

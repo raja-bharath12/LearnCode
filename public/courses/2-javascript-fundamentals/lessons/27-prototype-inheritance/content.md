@@ -1,5 +1,3 @@
-# Lesson 27: Prototype & Inheritance
-
 🧠 **1. What is a Prototype?**
 In JavaScript, every object has a hidden property called `[[Prototype]]`. It links to another object.
 

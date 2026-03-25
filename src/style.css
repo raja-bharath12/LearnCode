@@ -989,6 +989,10 @@ body {
   background: linear-gradient(to bottom, var(--bg-top), transparent);
   border-bottom: 1px solid var(--border);
   margin-bottom: 24px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .lesson-content {
@@ -999,11 +1003,38 @@ body {
 }
 .verified-badge { color: var(--green); }
 .header-underline { width: 60px; height: 4px; background: var(--accent); border-radius: 2px; margin-top: 24px; }
-.markdown-content { padding: 0 48px 48px; }
+.markdown-content { 
+  padding: 0 48px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.markdown-content h2 { margin: 48px 0 24px; font-weight: 800; font-size: 1.75rem; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.markdown-content h3 { margin: 36px 0 18px; font-weight: 700; font-size: 1.4rem; color: var(--text); }
+.markdown-content p { margin-bottom: 24px; }
+.markdown-content ul, .markdown-content ol { margin-bottom: 24px; padding-left: 24px; }
+.markdown-content li { margin-bottom: 12px; }
+.markdown-content strong { color: var(--text); font-weight: 700; }
+.markdown-content code { background: var(--surface2); padding: 2px 6px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.9em; color: var(--accent); }
+.markdown-content pre { 
+  background: #1e293b; 
+  padding: 24px; 
+  border-radius: 16px; 
+  margin: 32px 0; 
+  overflow-x: auto; 
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: var(--shadow-lg);
+}
+.markdown-content pre code { background: transparent; padding: 0; color: #e2e8f0; font-size: 0.95rem; }
 
 /* Workbench Editor */
 .workbench-container {
-  margin: 60px 48px;
+  margin: 60px auto;
+  max-width: 900px;
+  width: calc(100% - 96px);
   padding: 1px;
   background: linear-gradient(135deg, var(--accent), #7c3aed);
   border-radius: 16px;
@@ -1068,7 +1099,10 @@ body {
 
 .lesson-nav { 
   display: flex; justify-content: space-between; 
-  padding: 0 48px 60px; margin: 0 48px; border: none;
+  padding: 40px 0 60px; 
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
   border-top: 1px solid var(--border);
 }
 

@@ -1,5 +1,3 @@
-# Lesson 2: Variables (var, let, const)
-
 🧠 **1. What is a Variable?**
 A variable is a container used to store data.
 

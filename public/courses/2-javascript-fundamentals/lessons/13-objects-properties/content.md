@@ -1,5 +1,3 @@
-# Lesson 13: Objects & Properties
-
 🧠 **1. What is an Object?**
 An object is a collection of key-value pairs.
 ```javascript

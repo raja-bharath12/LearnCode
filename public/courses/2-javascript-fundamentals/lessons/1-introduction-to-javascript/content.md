@@ -1,5 +1,3 @@
-# Lesson 1: Introduction to JavaScript
-
 🧠 **1. What is JavaScript?**
 JavaScript is a programming language for the web used to make websites interactive and dynamic.
 

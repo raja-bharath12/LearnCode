@@ -1,0 +1,372 @@
+🌐 COURSE 4: Web Dev with HTML & CSS
+📘 Lesson 1: HTML Basics & Structure
+🔹 1. What is HTML?
+HTML (HyperText Markup Language) is the standard language used to create the structure of web pages.
+
+🔹 2. Basic Structure of an HTML Document
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My First Page</title>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <p>This is my first webpage.</p>
+</body>
+</html>
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Create a simple HTML page with a heading and paragraph
+✅ Solution:
+<!DOCTYPE html><html><body><h1>Welcome</h1><p>first page</p></body></html>
+
+🟡 MEDIUM LEVEL
+❓ Problem: Create a webpage that contains a heading, paragraph, clickable link, and image
+✅ Solution:
+<!DOCTYPE html><html><body><h1>Webpage</h1><p>sample</p><a href="https://google.com">Google</a><img src="https://via.placeholder.com/150"></body></html>
+
+🔴 HARD LEVEL
+❓ Problem: Create structured webpage with Header, Navigation, Main, Footer
+✅ Solution:
+<!DOCTYPE html><html><body><header><h1>Header</h1></header><nav><a>Nav</a></nav><main><p>content</p></main><footer>Footer</footer></body></html>
+
+📘 Lesson 2: Text Elements & Semantics
+🔹 1. What are Text Elements?
+Text tags structure content readability.
+
+🔹 2. Headings and Paragraphs
+<h1> to <h6>, <p>, <br>
+
+🔹 3. Formatting
+<b>, <strong>, <i>, <em>
+
+🔹 4. Semantic Tags
+<header>, <nav>, <main>, <section>, <article>, <footer>
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Create a webpage with one h1, two paragraphs, line break
+✅ Solution: <h1>Welcome</h1><p>P1</p><br><p>P2</p>
+
+🟡 MEDIUM LEVEL
+❓ Problem: Heading and paragraph with bold, italic, highlighted text
+✅ Solution: <h1>Text</h1><p><b>bold</b> <i>italic</i> <mark>highlight</mark></p>
+
+🔴 HARD LEVEL
+❓ Problem: Semantic page with header, nav, main, section, article, footer
+✅ Solution: <header><h1>Blog</h1></header><nav><a>Home</a></nav><main><section><h2>Posts</h2><article><p>Post</p></article></section></main><footer>©</footer>
+
+📘 Lesson 3: Links & Images
+🔹 1. HTML Links
+<a href="url">Link</a>
+
+🔹 2. Images in HTML
+<img src="url" alt="desc">
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Link to Google and image displayed
+✅ Solution: <a href="https://google.com">Google</a><img src="image.jpg">
+
+🟡 MEDIUM LEVEL
+❓ Problem: Link in new tab, image custom size, clickable image link
+✅ Solution: <a href="https://google.com" target="_blank">Google</a><br><a href="https://wikipedia.org"><img src="image.jpg" width="100"></a>
+
+🔴 HARD LEVEL
+❓ Problem: Anchor links jumping to sections with images
+✅ Solution: <nav><a href="#s1">S1</a></nav><h2 id="s1">S1</h2><img src="image.jpg">
+
+📘 Lesson 4: Lists & Tables
+🔹 1. Lists
+Unordered <ul>, ordered <ol>, description <dl>.
+
+🔹 2. Tables
+<table>, <tr>, <th>, <td>, colspan, rowspan.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Unordered list of 3 fruits, ordered list of 3 steps
+✅ Solution: <ul><li>Apple</li></ul><ol><li>Step 1</li></ol>
+
+🟡 MEDIUM LEVEL
+❓ Problem: Table Name, Age, City with 3 rows
+✅ Solution: <table><tr><th>Name</th></tr><tr><td>Raja</td></tr></table>
+
+🔴 HARD LEVEL
+❓ Problem: Nested list and table showing Product, Price, Availability with colspan
+✅ Solution: <ul><li>Electronics<ul><li>Phone</li></ul></li></ul><table><tr><th>Product</th><th colspan="2">Details</th></tr><tr><td>Phone</td><td>In Stock</td></tr></table>
+
+📘 Lesson 5: Forms & Inputs
+🔹 1. HTML Form
+Collects user input using <form>, <input>, <textarea>, <button>, <select>
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Name, Email, Submit form
+✅ Solution: <form><input type="text"><input type="email"><input type="submit"></form>
+
+🟡 MEDIUM LEVEL
+❓ Problem: Name, password, radio genders, checkboxes skills, submit
+✅ Solution: <form><input type="password"><input type="radio" name="g"><input type="checkbox"></form>
+
+🔴 HARD LEVEL
+❓ Problem: Complete registration form including select and textarea
+✅ Solution: <form><input type="text"><select><option>US</option></select><textarea></textarea></form>
+
+📘 Lesson 6: HTML5 Semantic Elements
+🔹 1. Semantic Elements
+<header>, <nav>, <main>, <section>, <article>, <footer>
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: header, main, footer webpage
+✅ Solution: <header></header><main></main><footer></footer>
+
+🟡 MEDIUM LEVEL
+❓ Problem: header, nav, section
+✅ Solution: <header></header><nav></nav><section></section>
+
+🔴 HARD LEVEL
+❓ Problem: Complete semantic structure
+✅ Solution: <header></header><nav></nav><main><section><article></article></section></main><footer></footer>
+
+📘 Lesson 7: CSS Introduction & Selectors
+🔹 1. What is CSS?
+Styles web pages using inline, internal, external styles. Selector targeting.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Inline blue color
+✅ Solution: <p style="color: blue;">Blue</p>
+
+🟡 MEDIUM LEVEL
+❓ Problem: Internal css h1 red, p green
+✅ Solution: <style>h1{color:red;} p{color:green;}</style>
+
+🔴 HARD LEVEL
+❓ Problem: Class, ID, Group CSS
+✅ Solution: <style>.b{color:blue;} #r{color:red;} h2, p{font: Arial;}</style>
+
+📘 Lesson 8: CSS Box Model
+🔹 1. Box Model
+Margin, Border, Padding, Content. Built around CSS sizing and spacings.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Box width 200 padding 10 border 2 black
+✅ Solution: .box{width:200px; padding:10px; border:2px solid black;}
+
+🟡 MEDIUM LEVEL
+❓ Problem: Margin 20, padding 15, background
+✅ Solution: .box{margin:20px; padding:15px; background:lightblue;}
+
+🔴 HARD LEVEL
+❓ Problem: Default box sizing vs border-box
+✅ Solution: .box1{box-sizing:content-box;} .box2{box-sizing:border-box;}
+
+📘 Lesson 9: Colors & Typography
+🔹 1. Colors & Fonts
+Hex, rgb, font-family, font-size, line-height.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Blue text, lightgray bg
+✅ Solution: color:blue; background:lightgray;
+
+🟡 MEDIUM LEVEL
+❓ Problem: Centered heading, custom size paragraph
+✅ Solution: h1{text-align:center;} p{font-size:20px;}
+
+🔴 HARD LEVEL
+❓ Problem: Google fonts, background, sizes
+✅ Solution: body{font-family:'Poppins'; background:#eef2f3;}
+
+📘 Lesson 10: Display & Positioning
+🔹 1. Display
+Block, inline, inline-block, none.
+🔹 2. Position
+Static, relative, absolute, fixed, sticky.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: block and inline element
+✅ Solution: <div style="display:block"></div><span style="display:inline"></span>
+
+🟡 MEDIUM LEVEL
+❓ Problem: Relative box moved 20 down right
+✅ Solution: position: relative; top: 20px; left: 20px;
+
+🔴 HARD LEVEL
+❓ Problem: Absolute box in container with fixed navbar
+✅ Solution: nav{position:fixed;} container{position:relative;} box{position:absolute;}
+
+📘 Lesson 11: Flexbox Basics
+🔹 1. Flexbox
+1D flex layouts, row/col flex direction, justify-content, align-items.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Row flex with 3 items
+✅ Solution: .container{display:flex;}
+
+🟡 MEDIUM LEVEL
+❓ Problem: Centered flex items with gap
+✅ Solution: .container{display:flex; justify-content:center; align-items:center; gap:20px;}
+
+🔴 HARD LEVEL
+❓ Problem: 3 boxes, first takes more space
+✅ Solution: .b1{flex:2;} .b2{flex:1;}
+
+📘 Lesson 12: Flexbox Advanced
+🔹 1. Wrap and Align
+Flex wrap, wrap-reverse, align-content, order, responsive flex flex:1 1 200px.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Wrap items
+✅ Solution: display:flex; flex-wrap:wrap;
+
+🟡 MEDIUM LEVEL
+❓ Problem: Space rows with wrap
+✅ Solution: flex-wrap:wrap; align-content:space-between;
+
+🔴 HARD LEVEL
+❓ Problem: Wrap, special item order -1 and self center
+✅ Solution: order:-1; align-self:center;
+
+📘 Lesson 13: CSS Grid Basics
+🔹 1. Grid
+2D layouts. Columns, rows, grid gap.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: 3 equal cols grid
+✅ Solution: display:grid; grid-template-columns: repeat(3, 1fr);
+
+🟡 MEDIUM LEVEL
+❓ Problem: 4 cols with gap
+✅ Solution: grid-template-columns: repeat(4, 1fr); gap: 10px;
+
+🔴 HARD LEVEL
+❓ Problem: 3 columns, span 2 item
+✅ Solution: grid-column: span 2;
+
+📘 Lesson 14: CSS Grid Advanced
+🔹 1. Advanced Grid
+Grid-template-areas, Minmax, auto-fit, auto-fill.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Areas header footer
+✅ Solution: grid-template-areas: "header" "footer";
+
+🟡 MEDIUM LEVEL
+❓ Problem: minmax columns
+✅ Solution: grid-template-columns: repeat(3, minmax(100px, 1fr));
+
+🔴 HARD LEVEL
+❓ Problem: Layout Header, Sidebar, Main, Footer using auto-fit
+✅ Solution: display:grid; grid-template-areas: "h h" "s m" "f f"; 
+
+📘 Lesson 15: Responsive Design & Media Queries
+🔹 1. Responsive Design
+Mobile first, Media queries target max-width max devices.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: @media max 600px bg lightblue
+✅ Solution: @media(max-width:600px) { body{background:lightblue;} }
+
+🟡 MEDIUM LEVEL
+❓ Problem: Flex row to column on mobile
+✅ Solution: @media(max-width:768px){.container{flex-direction:column;}}
+
+🔴 HARD LEVEL
+❓ Problem: 3 col to 2 col to 1 col
+✅ Solution: @media(max-width:768px){cols:repeat(2,1fr)} @media(max-width:480px){cols:1fr;}
+
+📘 Lesson 16: CSS Variables
+🔹 1. Variables properties
+--varname on :root then var(--varname).
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Color var
+✅ Solution: :root{--c:blue;} p{color:var(--c);}
+
+🟡 MEDIUM LEVEL
+❓ Problem: Bg and text variables
+✅ Solution: :root{--bg:red;} .b{background:var(--bg);}
+
+🔴 HARD LEVEL
+❓ Problem: Dark mode theme variables
+✅ Solution: .dark{--bg:black;} body{background:var(--bg);}
+
+📘 Lesson 17: Transitions & Animations
+🔹 1. Keyframes and Hover
+Transitions for hover sizes, Keyframes for constant animation.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Smooth hover color change
+✅ Solution: transition: background 0.5s; .box:hover{background:red;}
+
+🟡 MEDIUM LEVEL
+❓ Problem: Box scales on hover
+✅ Solution: transform:scale(1.2); transition:transform 0.3s;
+
+🔴 HARD LEVEL
+❓ Problem: Infinite move animation
+✅ Solution: animation: move 3s infinite linear; @keyframes move { to { transform: translateX(300px); } }
+
+📘 Lesson 18: Pseudo-classes & Pseudo-elements
+🔹 1. Pseudos
+:hover, :nth-child(), ::before, ::after
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Hover button
+✅ Solution: button:hover{background:blue;}
+
+🟡 MEDIUM LEVEL
+❓ Problem: first-child red, last blue
+✅ Solution: li:first-child{color:red;}
+
+🔴 HARD LEVEL
+❓ Problem: ::before "Fire", ::first-letter big, hover blue
+✅ Solution: p::before{content:"🔥"} p::first-letter{color:red;} 
+
+📘 Lesson 19: CSS Frameworks Overview (Bootstrap)
+🔹 1. Bootstrap
+Ready CSS layout templates and classes like btn-primary, container.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Bootstrap button
+✅ Solution: <button class="btn btn-primary">Me</button>
+
+🟡 MEDIUM LEVEL
+❓ Problem: container and two columns
+✅ Solution: <div class="container"><div class="row"><div class="col">1</div><div class="col">2</div></div></div>
+
+🔴 HARD LEVEL
+❓ Problem: Navbar, btn, card
+✅ Solution: <nav class="navbar"></nav><button class="btn"></button><div class="card"></div>
+
+📘 Lesson 20: Project - Responsive Portfolio Website
+🔹 1. Final Project
+Navbar, sections, flexbox grid, responsive queries, and UI components put together to construct a responsive, full static webpage.
+
+🧠 Practice Problems
+🟢 EASY LEVEL
+❓ Problem: Run standard project markup and customize text to yourself.
+✅ Solution: Modify name in H1 to User.
+
+🟡 MEDIUM LEVEL
+❓ Problem: Add new project cards and contact links.
+✅ Solution: Append new .card inside flexbox.
+
+🔴 HARD LEVEL
+❓ Problem: Add dark mode variables and animations.
+✅ Solution: Incorporate :root and @keyframes techniques from previous lessons.

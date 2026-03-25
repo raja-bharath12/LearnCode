@@ -218,11 +218,6 @@ export default function Lesson() {
               </div>
               
               <div className="lesson-header-glass">
-                <div className="lesson-meta">
-                  <div className="meta-item"><span>Beginner</span></div>
-                  <div className="meta-item"><span>10 min read</span></div>
-                  <div className="meta-item"><span className="verified-badge">✓ Verified Content</span></div>
-                </div>
                 <h1>{lesson.title}</h1>
                 <div className="header-underline"></div>
               </div>

@@ -1,5 +1,3 @@
-# Lesson 18: Events & Event Listeners
-
 🧠 **1. What are Events?**
 An event is an action that happens in the browser.
 

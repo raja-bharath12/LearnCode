@@ -1,5 +1,3 @@
-# Lesson 14: Object Methods & this
-
 🧠 **1. What are Object Methods?**
 👉 A method is simply a function inside an object.
 ```javascript

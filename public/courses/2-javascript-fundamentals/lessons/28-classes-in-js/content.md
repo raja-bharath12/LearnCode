@@ -1,5 +1,3 @@
-# Lesson 28: Classes in JS
-
 🧠 **1. What is a Class?**
 👉 A class is a template for creating objects. It was introduced in ES6 to make Object-Oriented Programming (OOP) easier.
 

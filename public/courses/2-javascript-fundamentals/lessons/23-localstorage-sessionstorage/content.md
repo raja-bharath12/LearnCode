@@ -1,5 +1,3 @@
-# Lesson 23: LocalStorage & SessionStorage
-
 🧠 **1. What is Web Storage?**
 Web storage allows you to save data directly in the browser. The data stays even if you refresh the page.
 

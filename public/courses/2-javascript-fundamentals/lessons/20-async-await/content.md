@@ -1,5 +1,3 @@
-# Lesson 20: Async / Await
-
 🧠 **1. What is Async/Await?**
 👉 `async/await` is a modern way to handle Promises that makes asynchronous code look and feel like synchronous code.
 

@@ -1,5 +1,3 @@
-# Lesson 3: Data Types & typeof
-
 🧠 **1. What are Data Types?**
 Data types define what kind of value a variable holds.
 

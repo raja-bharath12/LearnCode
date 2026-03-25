@@ -1,5 +1,3 @@
-# Lesson 29: Callbacks & Higher-Order Functions
-
 🧠 **1. What is a Callback?**
 A callback is a function passed as an argument to another function.
 

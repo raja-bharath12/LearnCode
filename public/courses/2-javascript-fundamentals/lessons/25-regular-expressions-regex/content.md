@@ -1,5 +1,3 @@
-# Lesson 25: Regular Expressions (Regex)
-
 🧠 **1. What is Regex?**
 Regex (Regular Expression) is a pattern used to match character combinations in strings.
 

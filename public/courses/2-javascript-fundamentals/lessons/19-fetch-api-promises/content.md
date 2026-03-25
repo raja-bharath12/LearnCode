@@ -1,5 +1,3 @@
-# Lesson 19: Fetch API & Promises
-
 🧠 **1. What is an API?**
 API = **Application Programming Interface**. It allows your website to get data from a server (e.g., Weather, User Data, Products).
 

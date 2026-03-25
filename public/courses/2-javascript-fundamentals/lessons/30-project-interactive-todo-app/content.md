@@ -1,5 +1,3 @@
-# Lesson 30: Project: Interactive Todo App
-
 🧠 **1. Final Mission!**
 Today, you won't just learn a topic. You will **build an app** using everything you've learned.
 

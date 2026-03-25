@@ -1,5 +1,3 @@
-# Lesson 16: Spread & Rest Operators (...)
-
 🧠 **1. What is ... (Three Dots)?**
 The same syntax (`...`) is used for two different purposes:
 - **Spread** → Expands values

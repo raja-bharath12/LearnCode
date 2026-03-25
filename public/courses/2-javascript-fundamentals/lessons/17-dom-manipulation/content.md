@@ -1,5 +1,3 @@
-# Lesson 17: DOM Manipulation (Basics)
-
 🧠 **1. What is DOM?**
 DOM = **Document Object Model**. It represents your HTML as a tree structure that JavaScript can control.
 

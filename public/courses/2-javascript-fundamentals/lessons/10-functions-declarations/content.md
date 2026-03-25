@@ -1,5 +1,3 @@
-# Lesson 10: Functions & Declarations
-
 🧠 **1. What is a Function?**
 A function is a block of reusable code designed to perform a task.
 

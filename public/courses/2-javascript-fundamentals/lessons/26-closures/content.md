@@ -1,5 +1,3 @@
-# Lesson 26: Closures
-
 🧠 **1. What is a Closure?**
 A closure is a function that "remembers" its outer variables even after the outer function has finished executing.
 

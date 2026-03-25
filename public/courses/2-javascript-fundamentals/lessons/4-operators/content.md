@@ -1,5 +1,3 @@
-# Lesson 4: JavaScript Operators
-
 🧠 **1. What are Operators?**
 Operators are symbols used to perform operations on values (operands).
 

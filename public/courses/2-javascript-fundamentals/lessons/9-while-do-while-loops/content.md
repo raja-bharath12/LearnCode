@@ -1,5 +1,3 @@
-# Lesson 9: while & do...while Loops
-
 🧠 **1. What is a while Loop?**
 A while loop runs as long as a condition is true.
 

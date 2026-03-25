@@ -1,5 +1,3 @@
-# Lesson 11: Arrow Functions
-
 🧠 **1. What are Arrow Functions?**
 Arrow functions are a shorter and cleaner way to write functions.
 

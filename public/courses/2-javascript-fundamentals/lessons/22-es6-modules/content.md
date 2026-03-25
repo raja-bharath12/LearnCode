@@ -1,5 +1,3 @@
-# Lesson 22: ES6 Modules (import & export)
-
 🧠 **1. What are Modules?**
 Modules allow you to split your JavaScript code into multiple files.
 

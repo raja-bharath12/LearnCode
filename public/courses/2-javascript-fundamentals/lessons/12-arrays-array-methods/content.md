@@ -1,5 +1,3 @@
-# Lesson 12: Arrays & Array Methods
-
 🧠 **1. What is an Array?**
 An array is a collection of values stored in a single variable.
 ```javascript

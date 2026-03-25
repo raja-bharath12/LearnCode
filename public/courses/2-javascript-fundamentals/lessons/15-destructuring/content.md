@@ -1,5 +1,3 @@
-# Lesson 15: Destructuring (Objects & Arrays)
-
 🧠 **1. What is Destructuring?**
 Destructuring is a modern way to extract values from arrays or objects into separate variables quickly.
 

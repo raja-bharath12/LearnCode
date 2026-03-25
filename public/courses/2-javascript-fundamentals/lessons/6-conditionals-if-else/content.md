@@ -1,5 +1,3 @@
-# Lesson 6: Conditionals (if, else, switch)
-
 🧠 **1. What are Conditionals?**
 Conditionals allow your program to execute code based on conditions.
 

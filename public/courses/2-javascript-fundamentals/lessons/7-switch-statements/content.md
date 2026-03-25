@@ -1,5 +1,3 @@
-# Lesson 7: Switch Statements
-
 🧠 **1. What is a Switch Statement?**
 A switch is used to compare one value against multiple possible cases.
 
