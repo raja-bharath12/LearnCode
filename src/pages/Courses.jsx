@@ -15,17 +15,21 @@ export default function Courses() {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    // 1. Initially load from AdminStore (sync)
+    const adminCourses = AdminStore.getCourses();
+    const visibleCourses = adminCourses.filter(c => !c.hidden);
+    setCourses(visibleCourses);
+
+    // 2. Refresh from backend (async)
     fetchCourses().then(data => {
       if (data?.courses) {
-        // Merge with AdminStore overrides and filter out hidden
-        const adminCourses = AdminStore.getCourses();
-        const visibleCourses = adminCourses.filter(c => !c.hidden);
-        setCourses(visibleCourses);
+        setCourses(AdminStore.getCourses().filter(c => !c.hidden));
       }
     });
+
     const filter = searchParams.get('filter');
     if (filter) setActiveFilter(filter);
-  }, []);
+  }, [searchParams]);
 
   const filtered = courses.filter(c => {
     if (activeFilter === 'all') return true;

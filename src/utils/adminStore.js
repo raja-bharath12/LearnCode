@@ -13,15 +13,31 @@ export const AdminStore = {
     const overrides = JSON.parse(localStorage.getItem(STORAGE_KEY_COURSES)) || {};
     return MOCK_COURSES.map(course => {
       const override = overrides[course.id] || {};
-      const staticLessons = COURSES[course.id]?.lessons || [];
+      const staticData = COURSES[course.id] || {};
+      const staticLessons = (staticData.lessons || []).map(l => ({
+        id: l.id,
+        title: l.title,
+        contentPath: l.contentPath
+      }));
+      
+      // If override has a lessons_list, we use it, but we MUST ensure each lesson 
+      // has its title and contentPath (inherited from static if missing)
+      let lessonsList = override.lessons_list || staticLessons;
+      
+      // Patch missing titles or paths in overrides (migration/cleanup)
+      lessonsList = lessonsList.map(l => {
+        const staticL = staticLessons.find(sl => String(sl.id) === String(l.id));
+        return {
+          ...l,
+          title: l.title || l.name || staticL?.title || 'Untitled Lesson',
+          contentPath: l.contentPath || l.url || staticL?.contentPath || ''
+        };
+      });
+
       return {
         ...course,
-        lessons_list: staticLessons.map(l => ({
-          id: l.id,
-          name: l.title,
-          url: l.contentPath // provide the full path
-        })),
-        ...override
+        ...override,
+        lessons_list: lessonsList
       };
     });
   },

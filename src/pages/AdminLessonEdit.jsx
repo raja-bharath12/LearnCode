@@ -3,10 +3,25 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { marked } from 'marked';
+import hljs from 'highlight.js';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { AdminStore } from '../utils/adminStore';
 import { Auth } from '../utils/auth';
+
+// Configure marked with highlight.js
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(code, { language: lang }).value;
+      } catch (__) {}
+    }
+    return hljs.highlightAuto(code).value;
+  },
+  breaks: true,
+  gfm: true
+});
 
 export default function AdminLessonEdit() {
   const { courseId, lessonId } = useParams();
@@ -43,14 +58,18 @@ export default function AdminLessonEdit() {
     if (stored) {
       setContent(stored);
     } else {
-      if (l.url) {
+      const path = l.contentPath || l.url;
+      if (path) {
         setFetchedStatus('Loading...');
-        fetch(l.url)
-          .then(res => res.text())
+        fetch(path)
+          .then(res => {
+            if (!res.ok) throw new Error('Not found');
+            return res.text();
+          })
           .then(text => setContent(text))
-          .catch(() => setContent('# ' + (l.name || l.title) + '\nStart writing...'));
+          .catch(() => setContent('# ' + l.title + '\nStart writing...'));
       } else {
-        setContent('# ' + (l.name || l.title) + '\nStart writing...');
+        setContent('# ' + l.title + '\nStart writing...');
       }
     }
   }, [courseId, lessonId, navigate]);
@@ -90,7 +109,7 @@ export default function AdminLessonEdit() {
             </Link>
             <div style={{ borderLeft: '1px solid var(--border)', paddingLeft: '20px' }}>
               <div style={{ fontSize: '0.65rem', color: 'var(--text3)', fontWeight: 800 }}>COURSE: {course.title.toUpperCase()}</div>
-              <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>Editing: <span className="gradient-text">{lesson.name}</span></div>
+              <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>Editing: <span className="gradient-text">{lesson.title}</span></div>
             </div>
           </div>
           
@@ -118,8 +137,24 @@ export default function AdminLessonEdit() {
 
         {/* EDITOR & PREVIEW AREA */}
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-          {/* MONACO EDITOR */}
-          <div style={{ flex: 1, position: 'relative', borderRight: showPreview ? '1px solid var(--border)' : 'none' }}>
+          {/* PREVIEW PANE (NOW ON LEFT) */}
+          {showPreview && (
+            <div style={{ 
+              flex: 1, 
+              background: 'var(--surface-alt)', 
+              overflowY: 'auto', 
+              padding: '60px',
+              color: 'var(--text1)',
+              borderRight: '1px solid var(--border)'
+            }}>
+              <div className="markdown-content">
+                 <div dangerouslySetInnerHTML={{ __html: marked.parse(content || '') }} />
+              </div>
+            </div>
+          )}
+
+          {/* MONACO EDITOR (NOW ON RIGHT) */}
+          <div style={{ flex: 1, position: 'relative' }}>
             <Editor
               height="100%"
               defaultLanguage="markdown"
@@ -127,13 +162,13 @@ export default function AdminLessonEdit() {
               value={content}
               onChange={(val) => setContent(val || '')}
               options={{
-                fontSize: 15,
+                fontSize: 16,
                 minimap: { enabled: false },
                 wordWrap: 'on',
-                padding: { top: 30, right: 30, bottom: 30, left: 30 },
+                padding: { top: 40, right: 40, bottom: 40, left: 40 },
                 lineNumbers: 'on',
                 fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                lineHeight: 24,
+                lineHeight: 28,
                 scrollbar: {
                   vertical: 'visible',
                   horizontal: 'hidden'
@@ -141,21 +176,6 @@ export default function AdminLessonEdit() {
               }}
             />
           </div>
-
-          {/* PREVIEW PANE */}
-          {showPreview && (
-            <div style={{ 
-              flex: 1, 
-              background: 'var(--surface1)', 
-              overflowY: 'auto', 
-              padding: '40px',
-              color: 'var(--text1)'
-            }}>
-              <div className="markdown-content">
-                 <div dangerouslySetInnerHTML={{ __html: marked.parse(content || '') }} />
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

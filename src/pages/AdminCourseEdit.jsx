@@ -49,8 +49,8 @@ export default function AdminCourseEdit() {
     if (title) {
       const newLesson = {
         id: `new-lesson-${Date.now()}`,
-        name: title,
-        url: 'content.md', // default local path
+        title: title,
+        contentPath: '', // default local path
         content: '# New Lesson\nStart writing content here...'
       };
       AdminStore.addLesson(id, newLesson);
@@ -134,7 +134,7 @@ export default function AdminCourseEdit() {
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                         <span style={{ color: 'var(--text3)', fontWeight: 800, fontSize: '0.8rem' }}>{idx + 1}</span>
-                        <span style={{ fontWeight: 800 }}>{lesson.name}</span>
+                        <span style={{ fontWeight: 800 }}>{lesson.title}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '10px' }}>
                         <Link 

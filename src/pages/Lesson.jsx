@@ -7,13 +7,28 @@ import { COURSES } from '../utils/courseData';
 import { AdminStore } from '../utils/adminStore';
 import { showToast } from '../components/Toast';
 import { marked } from 'marked';
+import hljs from 'highlight.js';
+
+// Configure marked with highlight.js
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(code, { language: lang }).value;
+      } catch (__) {}
+    }
+    return hljs.highlightAuto(code).value;
+  },
+  breaks: true,
+  gfm: true
+});
 
 export default function Lesson() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const courseId = parseInt(searchParams.get('course')) || 1;
   const course = AdminStore.getCourse(courseId) || COURSES[courseId] || COURSES[1];
-  const lessonsList = course.lessons_list || course.lessons || [];
+  const lessonsList = course.lessons_list || (Array.isArray(course.lessons) ? course.lessons : []);
 
   const [currentLesson, setCurrentLesson] = useState(0);
   const [code, setCode] = useState('');
@@ -29,41 +44,46 @@ export default function Lesson() {
 
   useEffect(() => {
     // Get actual lesson objects from AdminStore or fallback
-    const lessonsList = course.lessons_list || course.lessons || [];
+    const lessonsList = course.lessons_list || (Array.isArray(course.lessons) ? course.lessons : []);
     const lesson = lessonsList[currentLesson];
     
     setCode(lesson?.starter || '// Write your code here');
     setOutput('// Output will appear here');
-    document.title = `${lesson?.title || lesson?.name} — LearnCode`;
+    document.title = `${lesson?.title} — LearnCode`;
+    
+    if (!lesson) return;
 
     // 1. Check AdminStore for local content overrides
-    const stored = AdminStore.getLessonContent(courseId, lesson?.id);
+    const stored = AdminStore.getLessonContent(courseId, lesson.id);
     if (stored) {
       setFetchedContent(marked.parse(stored));
       return;
     }
 
     // 2. Fallback to fetching dynamic content if path exists
-    if (lesson?.contentPath || lesson?.url) {
-      const path = lesson.contentPath || `/courses/${course.id}/${lesson.url}`;
+    const path = lesson.contentPath || lesson.url;
+    if (path) {
       setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');
       fetch(path)
-        .then(res => res.text())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.text();
+        })
         .then(md => {
           setFetchedContent(marked.parse(md));
         })
         .catch(err => {
           console.error("Failed to load lesson:", err);
-          setFetchedContent('<p style="color:var(--red)">Failed to load lesson content. Please try again later.</p>');
+          setFetchedContent(`<p style="color:var(--red)">Failed to load lesson content (${err.message}). Path: ${path}</p>`);
         });
     } else {
-      setFetchedContent(lesson?.content ? marked.parse(lesson.content) : '');
+      setFetchedContent(lesson.content ? marked.parse(lesson.content) : '');
     }
-  }, [currentLesson, course, courseId]);
+  }, [currentLesson, courseId]); // Dependency changed from course to courseId to avoid infinite loop
 
   // TIMER LOGIC
   useEffect(() => {
-    const lesson = course.lessons[currentLesson];
+    const lesson = lessonsList[currentLesson];
     const isDone = Progress.get(courseId).includes(lesson?.id);
     const savedTime = Progress.getTimer(courseId, lesson?.id);
 
@@ -77,20 +97,20 @@ export default function Lesson() {
       setIsCompletedLocally(false);
     }
     setCompletedLessons(Progress.get(courseId));
-  }, [currentLesson, courseId, course.lessons]);
+  }, [currentLesson, courseId, lessonsList]);
 
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft(t => {
           const next = t - 1;
-          Progress.saveTimer(courseId, course.lessons[currentLesson]?.id, next);
+          Progress.saveTimer(courseId, lessonsList[currentLesson]?.id, next);
           return next;
         });
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [timeLeft, courseId, currentLesson, course.lessons]);
+  }, [timeLeft, courseId, currentLesson, lessonsList]);
 
   // SCROLL DETECTION
   const handleScroll = () => {
@@ -104,7 +124,7 @@ export default function Lesson() {
   // AUTO COMPLETE LOGIC
   useEffect(() => {
     if (timeLeft === 0 && hasReachedBottom && !isCompletedLocally) {
-      const lesson = course.lessons[currentLesson];
+      const lesson = lessonsList[currentLesson];
       const done = Progress.get(courseId).includes(lesson.id);
       if (!done) {
         Progress.mark(courseId, lesson.id);
@@ -112,7 +132,7 @@ export default function Lesson() {
         setIsCompletedLocally(true);
       }
     }
-  }, [timeLeft, hasReachedBottom, currentLesson, courseId, course.lessons, isCompletedLocally]);
+  }, [timeLeft, hasReachedBottom, currentLesson, courseId, lessonsList, isCompletedLocally]);
 
   const formatTime = (s) => {
     const mins = Math.floor(s / 60);
@@ -168,7 +188,7 @@ export default function Lesson() {
     }
   }
 
-  const lesson = course.lessons[currentLesson];
+  const lesson = lessonsList[currentLesson] || {};
 
   return (
     <div className="app-container">
@@ -210,7 +230,7 @@ export default function Lesson() {
                     <div className={`lesson-check ${done ? 'done' : ''}`}>
                       {done ? '✓' : i + 1}
                     </div>
-                    <span className="lesson-item-title">{l.title}</span>
+                    <span className="lesson-item-title">{l.title || l.name}</span>
                   </div>
                 );
               })}
@@ -278,7 +298,7 @@ export default function Lesson() {
                   ← Previous Lesson
                 </button>
                 <button className="btn-primary" onClick={nextLesson} disabled={!isCompletedLocally} style={{ opacity: isCompletedLocally ? 1 : 0.5, cursor: isCompletedLocally ? 'pointer' : 'not-allowed' }}>
-                  {currentLesson === course.lessons.length - 1 ? 'Complete Course' : 'Next Lesson →'}
+                  {currentLesson === lessonsList.length - 1 ? 'Complete Course' : 'Next Lesson →'}
                 </button>
               </div>
             </div>
