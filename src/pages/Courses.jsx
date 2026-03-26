@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { fetchCourses, Progress } from '../utils/auth';
+import { AdminStore } from '../utils/adminStore';
 
 const FILTERS = ['all','beginner','intermediate','advanced','Python','JavaScript','Java','C++','web','mobile','data','backend'];
 
@@ -15,7 +16,12 @@ export default function Courses() {
 
   useEffect(() => {
     fetchCourses().then(data => {
-      if (data?.courses) setCourses(data.courses);
+      if (data?.courses) {
+        // Merge with AdminStore overrides and filter out hidden
+        const adminCourses = AdminStore.getCourses();
+        const visibleCourses = adminCourses.filter(c => !c.hidden);
+        setCourses(visibleCourses);
+      }
     });
     const filter = searchParams.get('filter');
     if (filter) setActiveFilter(filter);

@@ -27,7 +27,8 @@ export default function Login() {
       if (res.ok) {
         Auth.setUser({ ...data.user, token: data.token });
         showToast('Welcome back! ', 'success');
-        setTimeout(() => navigate('/'), 800);
+        const target = data.user.role === 'admin' ? '/admin-dashboard' : '/';
+        setTimeout(() => navigate(target), 800);
       } else {
         setError(data.error || 'Invalid credentials. Please try again.');
       }
@@ -41,7 +42,8 @@ export default function Login() {
         };
         Auth.setUser(user);
         showToast(`${isAdminLogin ? 'Admin' : 'Demo'} login successful! `, 'success');
-        setTimeout(() => navigate('/'), 800);
+        const target = user.role === 'admin' ? '/admin-dashboard' : '/';
+        setTimeout(() => navigate(target), 800);
       } else {
         setError('Backend not running. Use a valid email and 6+ char password for demo.');
       }

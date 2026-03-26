@@ -28,14 +28,14 @@ export default function AdminRegister() {
       if (res.ok) {
         Auth.setUser({ ...data.user, token: data.token });
         showToast('Admin account created! ', 'success');
-        setTimeout(() => navigate('/courses'), 800);
+        setTimeout(() => navigate('/admin-dashboard'), 800);
       } else {
         setError(data.error || 'Registration failed.');
       }
     } catch {
       Auth.setUser({ name, email, role: 'admin' });
       showToast('Demo admin account created! ', 'success');
-      setTimeout(() => navigate('/courses'), 800);
+      setTimeout(() => navigate('/admin-dashboard'), 800);
     }
     setLoading(false);
   }

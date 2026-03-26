@@ -4,6 +4,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { Progress } from '../utils/auth';
 import { COURSES } from '../utils/courseData';
+import { AdminStore } from '../utils/adminStore';
 import { showToast } from '../components/Toast';
 import { marked } from 'marked';
 
@@ -11,7 +12,8 @@ export default function Lesson() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const courseId = parseInt(searchParams.get('course')) || 1;
-  const course = COURSES[courseId] || COURSES[1];
+  const course = AdminStore.getCourse(courseId) || COURSES[courseId] || COURSES[1];
+  const lessonsList = course.lessons_list || course.lessons || [];
 
   const [currentLesson, setCurrentLesson] = useState(0);
   const [code, setCode] = useState('');
@@ -26,15 +28,26 @@ export default function Lesson() {
   const scrollAreaRef = useRef(null);
 
   useEffect(() => {
-    const lesson = course.lessons[currentLesson];
+    // Get actual lesson objects from AdminStore or fallback
+    const lessonsList = course.lessons_list || course.lessons || [];
+    const lesson = lessonsList[currentLesson];
+    
     setCode(lesson?.starter || '// Write your code here');
     setOutput('// Output will appear here');
-    document.title = `${lesson?.title} — LearnCode`;
+    document.title = `${lesson?.title || lesson?.name} — LearnCode`;
 
-    // Fetch dynamic content if path exists
-    if (lesson?.contentPath) {
+    // 1. Check AdminStore for local content overrides
+    const stored = AdminStore.getLessonContent(courseId, lesson?.id);
+    if (stored) {
+      setFetchedContent(marked.parse(stored));
+      return;
+    }
+
+    // 2. Fallback to fetching dynamic content if path exists
+    if (lesson?.contentPath || lesson?.url) {
+      const path = lesson.contentPath || `/courses/${course.id}/${lesson.url}`;
       setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');
-      fetch(lesson.contentPath)
+      fetch(path)
         .then(res => res.text())
         .then(md => {
           setFetchedContent(marked.parse(md));
@@ -44,9 +57,9 @@ export default function Lesson() {
           setFetchedContent('<p style="color:var(--red)">Failed to load lesson content. Please try again later.</p>');
         });
     } else {
-      setFetchedContent(lesson?.content || '');
+      setFetchedContent(lesson?.content ? marked.parse(lesson.content) : '');
     }
-  }, [currentLesson, course]);
+  }, [currentLesson, course, courseId]);
 
   // TIMER LOGIC
   useEffect(() => {
@@ -118,8 +131,8 @@ export default function Lesson() {
   function prevLesson() { if (currentLesson > 0) goToLesson(currentLesson - 1); }
 
   function nextLesson() {
-    Progress.mark(courseId, course.lessons[currentLesson].id);
-    if (currentLesson < course.lessons.length - 1) {
+    Progress.mark(courseId, lessonsList[currentLesson].id);
+    if (currentLesson < lessonsList.length - 1) {
       goToLesson(currentLesson + 1);
     } else {
       showToast(' Course Complete!', 'success');
@@ -185,7 +198,7 @@ export default function Lesson() {
             </div>
             <div className="sidebar-title">Course Lessons</div>
             <div className="lesson-list">
-              {course.lessons.map((l, i) => {
+              {lessonsList.map((l, i) => {
                 const done = completedLessons.includes(l.id);
                 const active = i === currentLesson;
                 return (
@@ -218,7 +231,7 @@ export default function Lesson() {
               </div>
               
               <div className="lesson-header-glass">
-                <h1>{lesson.title}</h1>
+                <h1>{lesson.title || lesson.name}</h1>
                 <div className="header-underline"></div>
               </div>
 
