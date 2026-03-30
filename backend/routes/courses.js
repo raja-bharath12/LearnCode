@@ -58,18 +58,65 @@ router.get('/:id/lessons', async (req, res) => {
     const course = await Course.findOne({ id: parseInt(req.params.id) });
     if (!course) return res.status(404).json({ error: 'Course not found' });
 
-    // Return lesson metadata (actual content is in frontend for this demo)
-    const lessonCount = course.lessons;
-    const lessons = Array.from({ length: lessonCount }, (_, i) => ({
-      id: i + 1,
-      title: `Lesson ${i + 1}`,
-      order: i + 1,
-      completed: false
-    }));
+    // Use stored lessons_list from DB if available, else generate default
+    let lessons = course.lessons_list && course.lessons_list.length > 0
+      ? course.lessons_list 
+      : Array.from({ length: course.lessons }, (_, i) => ({
+          id: i + 1,
+          title: `Lesson ${i + 1}`,
+          order: i + 1,
+          completed: false
+        }));
 
     res.json({ courseId: course.id, lessons });
   } catch (err) {
     res.status(500).json({ error: 'Error fetching lessons' });
+  }
+});
+
+// GET /api/courses/:courseId/lesson/:lessonId/content — Get lesson content override
+router.get('/:courseId/lesson/:lessonId/content', async (req, res) => {
+  try {
+    const contentDoc = await require('../models/LessonContent').findOne({ 
+      courseId: req.params.courseId, 
+      lessonId: req.params.lessonId 
+    });
+    res.json({ content: contentDoc?.content || '' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch content' });
+  }
+});
+
+// ADMIN ONLY: Update course (visibility, lessons_list, etc.)
+router.put('/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const updates = req.body;
+    
+    const course = await Course.findOneAndUpdate({ id }, updates, { new: true });
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+    
+    res.json({ success: true, course });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update course' });
+  }
+});
+
+// ADMIN ONLY: Save lesson content
+router.post('/:courseId/lesson/:lessonId/content', async (req, res) => {
+  try {
+    const { courseId, lessonId } = req.params;
+    const { content } = req.body;
+    
+    await require('../models/LessonContent').findOneAndUpdate(
+      { courseId, lessonId },
+      { content },
+      { upsert: true, new: true }
+    );
+    
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save lesson content' });
   }
 });
 

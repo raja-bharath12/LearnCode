@@ -1,5 +1,4 @@
-// src/utils/adminStore.js
-import { MOCK_COURSES } from './auth';
+import { MOCK_COURSES, apiRequest } from './auth';
 import { COURSES } from './courseData';
 
 const STORAGE_KEY_COURSES = 'lc_admin_courses';
@@ -48,28 +47,47 @@ export const AdminStore = {
     return courses.find(c => String(c.id) === String(id));
   },
 
-  // Update a course (visibility, title, lesson list, etc.)
-  updateCourse(id, updates) {
+  // Update a course (Push to Backend + Local Storage)
+  async updateCourse(id, updates) {
     const overrides = JSON.parse(localStorage.getItem(STORAGE_KEY_COURSES)) || {};
     overrides[id] = { ...overrides[id], ...updates };
     localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(overrides));
+
+    try {
+      await apiRequest(`/courses/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates)
+      });
+    } catch (e) {
+      console.error("Failed to sync course to server:", e);
+    }
   },
 
   // --- LESSON MANAGEMENT ---
 
   // Get lesson content
   getLessonContent(courseId, lessonId) {
+    // Check localStorage first (for immediate reactivity while saving)
     const lessons = JSON.parse(localStorage.getItem(STORAGE_KEY_LESSONS)) || {};
     const key = `${courseId}_${lessonId}`;
-    return lessons[key] || ''; // Fallback to empty if not in store (fetch logic in component will handle fetching from disk)
+    return lessons[key] || '';
   },
 
-  // Save lesson content
-  saveLessonContent(courseId, lessonId, content) {
+  // Save lesson content (Push to Backend + Local Storage)
+  async saveLessonContent(courseId, lessonId, content) {
     const lessons = JSON.parse(localStorage.getItem(STORAGE_KEY_LESSONS)) || {};
     const key = `${courseId}_${lessonId}`;
     lessons[key] = content;
     localStorage.setItem(STORAGE_KEY_LESSONS, JSON.stringify(lessons));
+
+    try {
+      await apiRequest(`/courses/${courseId}/lesson/${lessonId}/content`, {
+        method: 'POST',
+        body: JSON.stringify({ content })
+      });
+    } catch (e) {
+      console.error("Failed to sync content to server:", e);
+    }
   },
 
   // Add a lesson to a course

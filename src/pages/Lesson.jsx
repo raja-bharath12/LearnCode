@@ -60,26 +60,47 @@ export default function Lesson() {
       return;
     }
 
-    // 2. Fallback to fetching dynamic content if path exists
-    const path = lesson.contentPath || lesson.url;
-    if (path) {
-      setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');
-      fetch(path)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.text();
-        })
-        .then(md => {
-          setFetchedContent(marked.parse(md));
-        })
-        .catch(err => {
-          console.error("Failed to load lesson:", err);
-          setFetchedContent(`<p style="color:var(--red)">Failed to load lesson content (${err.message}). Path: ${path}</p>`);
-        });
-    } else {
-      setFetchedContent(lesson.content ? marked.parse(lesson.content) : '');
-    }
-  }, [currentLesson, courseId]); // Dependency changed from course to courseId to avoid infinite loop
+    // 1b. Check Backend for remote content overrides
+    const fetchRemoteContent = async () => {
+      try {
+        const res = await fetch(`/api/courses/${courseId}/lesson/${lesson.id}/content`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.content) {
+            setFetchedContent(marked.parse(data.content));
+            return true;
+          }
+        }
+      } catch (e) { console.warn("Remote content fetch failed", e); }
+      return false;
+    };
+
+    const loadContent = async () => {
+      const foundRemote = await fetchRemoteContent();
+      if (foundRemote) return;
+
+      // 2. Fallback to fetching dynamic static content from disk
+      const path = lesson.contentPath || lesson.url;
+      if (path) {
+        setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');
+        fetch(path)
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.text();
+          })
+          .then(md => setFetchedContent(marked.parse(md)))
+          .catch(err => {
+            console.error("Failed to load lesson:", err);
+            setFetchedContent(`<p style="color:var(--red)">Failed to load lesson content (${err.message}). Path: ${path}</p>`);
+          });
+      } else {
+        setFetchedContent(lesson.content ? marked.parse(lesson.content) : '');
+      }
+    };
+
+    loadContent();
+    return;
+  }, [currentLesson, courseId]);
 
   // TIMER LOGIC
   useEffect(() => {

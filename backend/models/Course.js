@@ -16,6 +16,7 @@ const courseSchema = new mongoose.Schema({
   instructor: { type: String },
   rating: { type: Number },
   enrolled: { type: Number },
+  lessons_list: { type: Array, default: [] } 
 }, { timestamps: true });
 
 module.exports = mongoose.models.Course || mongoose.model('Course', courseSchema);
