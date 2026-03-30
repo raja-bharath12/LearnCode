@@ -30,6 +30,7 @@ export default function AdminLessonEdit() {
   const [lesson, setLesson] = useState(null);
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
+  const [fetchedStatus, setFetchedStatus] = useState('');
   const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
@@ -58,8 +59,10 @@ export default function AdminLessonEdit() {
     if (stored) {
       setContent(stored);
     } else {
-      const path = l.contentPath || l.url;
-      if (path) {
+      const rawPath = l.contentPath || l.url;
+      if (rawPath) {
+        // Ensure path is absolute from public root
+        const path = rawPath.startsWith('http') || rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
         setFetchedStatus('Loading...');
         fetch(path)
           .then(res => {
@@ -74,7 +77,7 @@ export default function AdminLessonEdit() {
     }
   }, [courseId, lessonId, navigate]);
 
-  const [fetchedStatus, setFetchedStatus] = useState('');
+  // Remove duplicate setFetchedStatus declaration below (already moved up)
 
   const handleSave = () => {
     setSaving(true);
