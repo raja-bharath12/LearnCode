@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { fetchCourses, API_BASE } from '../utils/auth';
+import { supabase } from '../lib/supabase';
 
 export default function Home() {
   const [courses, setCourses] = useState([]);
@@ -12,6 +13,8 @@ export default function Home() {
   const [counts, setCounts] = useState({ web: 0, data: 0, mobile: 0, backend: 0 });
 
   useEffect(() => {
+    testDB();
+    
     fetchCourses().then(data => {
       if (data?.courses) {
         setCourses(data.courses);
@@ -29,6 +32,19 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
+  async function testDB() {
+    try {
+      const { data, error } = await supabase
+        .from('notes')
+        .select('*');
+
+      console.log("SUPABASE DATA:", data);
+      console.log("SUPABASE ERROR:", error);
+    } catch (e) {
+      console.error("Supabase connection failed:", e);
+    }
+  }
+
   const featured = courses.slice(0, 6);
   const totalLessons = courses.reduce((sum, c) => sum + (c.lessons || 0), 0);
 
@@ -37,6 +53,17 @@ export default function Home() {
       <Sidebar />
       <div className="main-wrapper">
         <Header showBrand />
+
+        {/* TEST BUTTON - REMOVE LATER */}
+        <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999 }}>
+          <button 
+            onClick={testDB} 
+            className="btn-primary shimmer" 
+            style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '0.8rem', opacity: 0.8 }}
+          >
+            🧪 Test DB Connection
+          </button>
+        </div>
 
         {/* HERO */}
         <section className="hero premium-mesh-bg animate-in">

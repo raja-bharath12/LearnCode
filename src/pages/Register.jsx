@@ -19,23 +19,17 @@ export default function Register() {
     setLoading(true); setError('');
 
     try {
-      const res = await fetch(`${API_BASE}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        Auth.setUser({ ...data.user, token: data.token });
-        showToast('Account created! ', 'success');
-        setTimeout(() => navigate('/'), 800);
-      } else {
-        setError(data.error || 'Registration failed.');
-      }
-    } catch {
-      Auth.setUser({ name, email });
-      showToast('Demo account created! ', 'success');
+      await Auth.register(name, email, password);
+      showToast('Account created! ', 'success');
       setTimeout(() => navigate('/'), 800);
+    } catch (err) {
+      if (err.message.includes('Failed to fetch') || err.message.includes('Network error')) {
+        Auth.setUser({ name, email });
+        showToast('Demo account created! ', 'success');
+        setTimeout(() => navigate('/'), 800);
+        return;
+      }
+      setError(err.message || 'Registration failed.');
     }
     setLoading(false);
   }

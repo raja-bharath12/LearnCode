@@ -18,35 +18,27 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await fetch(`${API_BASE}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        Auth.setUser({ ...data.user, token: data.token });
-        showToast('Welcome back! ', 'success');
-        const target = data.user.role === 'admin' ? '/admin-dashboard' : '/';
-        setTimeout(() => navigate(target), 800);
-      } else {
-        setError(data.error || 'Invalid credentials. Please try again.');
+      const data = await Auth.login(email, password);
+      showToast('Welcome back! ', 'success');
+      const target = data.user.role === 'admin' ? '/admin-dashboard' : '/';
+      setTimeout(() => navigate(target), 800);
+    } catch (err) {
+      // Demo mode fallback if backend is down
+      if (err.message.includes('Failed to fetch') || err.message.includes('Network error')) {
+        if (email && password.length >= 6) {
+          const user = { 
+            name: email.split('@')[0], 
+            email, 
+            role: isAdminLogin ? 'admin' : 'student' 
+          };
+          Auth.setUser(user);
+          showToast(`${isAdminLogin ? 'Admin' : 'Demo'} login successful! `, 'success');
+          const target = user.role === 'admin' ? '/admin-dashboard' : '/';
+          setTimeout(() => navigate(target), 800);
+          return;
+        }
       }
-    } catch {
-      // Demo mode
-      if (email && password.length >= 6) {
-        const user = { 
-          name: email.split('@')[0], 
-          email, 
-          role: isAdminLogin ? 'admin' : 'student' 
-        };
-        Auth.setUser(user);
-        showToast(`${isAdminLogin ? 'Admin' : 'Demo'} login successful! `, 'success');
-        const target = user.role === 'admin' ? '/admin-dashboard' : '/';
-        setTimeout(() => navigate(target), 800);
-      } else {
-        setError('Backend not running. Use a valid email and 6+ char password for demo.');
-      }
+      setError(err.message || 'Invalid credentials. Please try again.');
     }
     setLoading(false);
   }

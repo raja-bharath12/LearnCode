@@ -1,13 +1,11 @@
-// routes/progress.js — User Progress Tracking Routes
+// routes/progress.js — User Progress Tracking Routes (Supabase)
 
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+const supabase = require('../supabase');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'learncode_secret_change_in_production';
-
-const Progress = require('../models/Progress');
 
 // Auth middleware
 function authMiddleware(req, res, next) {
@@ -24,21 +22,23 @@ function authMiddleware(req, res, next) {
 // GET /api/progress/:courseId
 router.get('/:courseId', authMiddleware, async (req, res) => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      return res.json({ progress: { completedLessons: [], percent: 0 } });
-    }
+    const { data: progress, error } = await supabase
+      .from('progress')
+      .select('completed_lessons, completed, last_activity')
+      .eq('user_id', req.user.id)
+      .eq('course_id', parseInt(req.params.courseId))
+      .single();
 
-    const progress = await Progress.findOne({
-      userId: req.user.id,
-      courseId: parseInt(req.params.courseId)
-    });
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = row not found
 
     res.json({
       progress: progress
-        ? { completedLessons: progress.completedLessons, completed: progress.completed, lastActivity: progress.lastActivity }
+        ? { completedLessons: progress.completed_lessons, completed: progress.completed, lastActivity: progress.last_activity }
         : { completedLessons: [], completed: false }
     });
+
   } catch (err) {
+    console.error('Progress fetch error:', err);
     res.status(500).json({ error: 'Error fetching progress.' });
   }
 });
@@ -49,33 +49,45 @@ router.post('/mark', authMiddleware, async (req, res) => {
     const { courseId, lessonId, totalLessons } = req.body;
     if (!courseId || !lessonId) return res.status(400).json({ error: 'courseId and lessonId required.' });
 
-    if (mongoose.connection.readyState !== 1) {
-      return res.json({ success: true, message: 'Demo mode — progress saved locally.' });
+    // Get current progress
+    const { data: existing } = await supabase
+      .from('progress')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .eq('course_id', courseId)
+      .single();
+
+    let completedLessons = existing?.completed_lessons || [];
+
+    if (!completedLessons.includes(lessonId)) {
+      completedLessons.push(lessonId);
     }
 
-    let progress = await Progress.findOne({ userId: req.user.id, courseId });
+    const isCompleted = totalLessons && completedLessons.length >= totalLessons;
 
-    if (!progress) {
-      progress = new Progress({ userId: req.user.id, courseId, completedLessons: [] });
+    const upsertData = {
+      user_id: req.user.id,
+      course_id: courseId,
+      completed_lessons: completedLessons,
+      last_activity: new Date().toISOString(),
+      completed: isCompleted || false,
+      ...(isCompleted ? { completed_at: new Date().toISOString() } : {})
+    };
+
+    if (!existing) {
+      upsertData.started_at = new Date().toISOString();
     }
 
-    if (!progress.completedLessons.includes(lessonId)) {
-      progress.completedLessons.push(lessonId);
-    }
+    const { error } = await supabase
+      .from('progress')
+      .upsert(upsertData, { onConflict: 'user_id,course_id' });
 
-    progress.lastActivity = new Date();
-
-    if (totalLessons && progress.completedLessons.length >= totalLessons) {
-      progress.completed = true;
-      progress.completedAt = new Date();
-    }
-
-    await progress.save();
+    if (error) throw error;
 
     res.json({
       success: true,
-      completedLessons: progress.completedLessons.length,
-      completed: progress.completed
+      completedLessons: completedLessons.length,
+      completed: isCompleted || false
     });
 
   } catch (err) {
@@ -84,23 +96,25 @@ router.post('/mark', authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/progress/summary/all — Get all progress for a user
+// GET /api/progress/summary/all — Get all progress for current user
 router.get('/summary/all', authMiddleware, async (req, res) => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      return res.json({ summary: [] });
-    }
+    const { data: progressList, error } = await supabase
+      .from('progress')
+      .select('course_id, completed_lessons, completed, last_activity')
+      .eq('user_id', req.user.id);
 
-    const progressList = await Progress.find({ userId: req.user.id });
+    if (error) throw error;
 
     res.json({
-      summary: progressList.map(p => ({
-        courseId: p.courseId,
-        completedLessons: p.completedLessons.length,
+      summary: (progressList || []).map(p => ({
+        courseId: p.course_id,
+        completedLessons: p.completed_lessons?.length || 0,
         completed: p.completed,
-        lastActivity: p.lastActivity
+        lastActivity: p.last_activity
       }))
     });
+
   } catch (err) {
     res.status(500).json({ error: 'Error fetching summary.' });
   }

@@ -1,15 +1,60 @@
-// src/utils/auth.js — Auth helpers (mirrors original Auth object)
+import { supabase } from '../lib/supabase';
 
 export const Auth = {
   getUser() {
     try { return JSON.parse(localStorage.getItem('lc_user')); } catch { return null; }
   },
   setUser(user) { localStorage.setItem('lc_user', JSON.stringify(user)); },
-  logout() { localStorage.removeItem('lc_user'); window.location.href = '/'; },
+  async logout() { 
+    await supabase.auth.signOut();
+    localStorage.removeItem('lc_user'); 
+    window.location.href = '/'; 
+  },
   isLoggedIn() { return !!this.getUser(); },
   getToken() {
     const user = this.getUser();
     return user?.token || null;
+  },
+  async login(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    
+    if (error) throw new Error(error.message);
+    
+    const userObj = {
+      id: data.user.id,
+      email: data.user.email,
+      name: data.user.user_metadata?.name || email.split('@')[0],
+      token: data.session.access_token,
+      role: data.user.user_metadata?.role || 'student'
+    };
+    
+    this.setUser(userObj);
+    return { user: userObj };
+  },
+  async register(name, email, password) {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, role: 'student' }
+      }
+    });
+    
+    if (error) throw new Error(error.message);
+    
+    const userObj = {
+      id: data.user?.id || '',
+      email: data.user?.email || email,
+      name: name,
+      token: data.session?.access_token || '',
+      role: 'student'
+    };
+    
+    this.setUser(userObj);
+    return { user: userObj };
   }
 };
 
@@ -209,16 +254,73 @@ export const Progress = {
   get(courseId) {
     try { return JSON.parse(localStorage.getItem(`lc_progress_${courseId}`)) || []; } catch { return []; }
   },
-  mark(courseId, lessonId) {
+  async mark(courseId, lessonId, totalLessons = null) {
+    // 1. Update Local
     const p = this.get(courseId);
     if (!p.includes(lessonId)) {
       p.push(lessonId);
       localStorage.setItem(`lc_progress_${courseId}`, JSON.stringify(p));
     }
+
+    // 2. Update Backend (Supabase)
+    if (Auth.isLoggedIn()) {
+      const user = Auth.getUser();
+      try {
+        await supabase
+          .from('progress')
+          .upsert({ 
+            user_id: user.id, 
+            course_id: courseId, 
+            completed_lessons: p, // Store the array
+            last_activity: new Date().toISOString()
+          }, { onConflict: 'user_id,course_id' });
+      } catch (e) {
+        console.warn('Could not sync progress to Supabase:', e);
+      }
+    }
+  },
+  async sync(courseId) {
+    if (!Auth.isLoggedIn()) return;
+    const user = Auth.getUser();
+    try {
+      const { data, error } = await supabase
+        .from('progress')
+        .select('completed_lessons')
+        .eq('user_id', user.id)
+        .eq('course_id', courseId)
+        .single();
+        
+      if (data && data.completed_lessons) {
+        localStorage.setItem(`lc_progress_${courseId}`, JSON.stringify(data.completed_lessons));
+        return data.completed_lessons;
+      }
+    } catch (e) {
+      console.error('Failed to sync progress:', e);
+    }
+    return this.get(courseId);
+  },
+  async syncAll() {
+    if (!Auth.isLoggedIn()) return;
+    const user = Auth.getUser();
+    try {
+      const { data, error } = await supabase
+        .from('progress')
+        .select('*')
+        .eq('user_id', user.id);
+        
+      if (data) {
+        data.forEach(p => {
+          localStorage.setItem(`lc_progress_${p.course_id}`, JSON.stringify(p.completed_lessons));
+        });
+      }
+    } catch (e) {
+      console.error('Failed to sync all progress:', e);
+    }
   },
   getPercent(courseId, total) {
     if (!total) return 0;
-    return Math.round((this.get(courseId).length / total) * 100);
+    const count = this.get(courseId).length;
+    return Math.min(100, Math.round((count / total) * 100));
   },
   getTimer(courseId, lessonId) {
     try {

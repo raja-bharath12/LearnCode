@@ -43,6 +43,13 @@ export default function Lesson() {
   const scrollAreaRef = useRef(null);
 
   useEffect(() => {
+    // SYNC from backend on mount
+    Progress.sync(courseId).then(p => {
+      if (p) setCompletedLessons(p);
+    });
+  }, [courseId]);
+
+  useEffect(() => {
     // Get actual lesson objects from AdminStore or fallback
     const lessonsList = course.lessons_list || (Array.isArray(course.lessons) ? course.lessons : []);
     const lesson = lessonsList[currentLesson];

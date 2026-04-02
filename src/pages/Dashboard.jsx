@@ -17,6 +17,9 @@ export default function Dashboard() {
     if (!u) { navigate('/login'); return; }
     setUser(u);
 
+    // Initial sync
+    Progress.syncAll();
+
     fetchCourses().then(data => {
       if (data?.courses) setCourses(data.courses);
     });
