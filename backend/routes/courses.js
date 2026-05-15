@@ -1,158 +1,99 @@
-// routes/courses.js — Course Routes (Supabase)
+// routes/courses.js — Course Routes (static MOCK_COURSES data)
 
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabase');
+const db = require('../db');
 
-// GET /api/courses — Get all courses
-router.get('/', async (req, res) => {
-  try {
-    const { level, language, category, search } = req.query;
+// ─── Static course data (same as frontend MOCK_COURSES) ───────
+const COURSES = [
+  { id: 1, title: "Python for Beginners", slug: "python-beginners", language: "Python", level: "Beginner", lessons: 24, duration: "8 hours", icon: "🐍", color: "#3776ab", category: "data", description: "Start your coding journey with Python — the world's most beginner-friendly language.", topics: ["Variables & Data Types", "Control Flow", "Functions", "Lists & Dicts", "File I/O", "OOP Basics"], instructor: "Dr. Sarah Chen", rating: 4.9, enrolled: 3200 },
+  { id: 2, title: "JavaScript Fundamentals", slug: "javascript-fundamentals", language: "JavaScript", level: "Beginner", lessons: 30, duration: "10 hours", icon: "⚡", color: "#f7df1e", category: "web", description: "Master the language of the web. Learn JS from scratch and start building interactive websites.", topics: ["Variables & Types", "DOM Manipulation", "Events", "Functions", "Arrays", "Async/Await"], instructor: "Alex Rivera", rating: 4.8, enrolled: 4100 },
+  { id: 3, title: "Java Complete Course", slug: "java-complete", language: "Java", level: "Intermediate", lessons: 40, duration: "15 hours", icon: "☕", color: "#f89820", category: "backend", description: "A comprehensive Java course covering OOP, data structures, and enterprise programming patterns.", topics: ["OOP Concepts", "Inheritance", "Interfaces", "Collections", "Exception Handling", "Threads"], instructor: "Prof. Mike Johnson", rating: 4.7, enrolled: 2800 },
+  { id: 4, title: "Web Dev with HTML & CSS", slug: "html-css", language: "HTML/CSS", level: "Beginner", lessons: 20, duration: "6 hours", icon: "🌐", color: "#00bcd4", category: "web", description: "Build beautiful, responsive websites from scratch with HTML5 and modern CSS3.", topics: ["HTML5 Semantics", "CSS Flexbox", "CSS Grid", "Responsive Design", "Animations", "Forms"], instructor: "Emma Wilson", rating: 4.9, enrolled: 5600 },
+  { id: 5, title: "Data Structures & Algorithms", slug: "dsa", language: "C++", level: "Intermediate", lessons: 35, duration: "14 hours", icon: "🧩", color: "#9c27b0", category: "backend", description: "Master the algorithms and data structures needed to crack coding interviews.", topics: ["Arrays & Strings", "Linked Lists", "Trees & Graphs", "Sorting", "Dynamic Programming", "Complexity"], instructor: "Dr. Raj Patel", rating: 4.8, enrolled: 3900 },
+  { id: 6, title: "React.js Crash Course", slug: "react-crash", language: "JavaScript", level: "Intermediate", lessons: 28, duration: "11 hours", icon: "⚛️", color: "#61dafb", category: "web", description: "Build modern web applications with React — the most popular frontend JavaScript library.", topics: ["Components & JSX", "State & Props", "Hooks", "Routing", "Context API", "REST APIs"], instructor: "Jake Thompson", rating: 4.9, enrolled: 4700 },
+  { id: 7, title: "Python Data Science", slug: "python-data-science", language: "Python", level: "Intermediate", lessons: 32, duration: "12 hours", icon: "📊", color: "#4caf50", category: "data", description: "Learn to analyze and visualize data with Python's most powerful libraries.", topics: ["NumPy", "Pandas", "Matplotlib", "Seaborn", "Statistics", "Machine Learning Intro"], instructor: "Dr. Priya Singh", rating: 4.8, enrolled: 3100 },
+  { id: 8, title: "C++ for Beginners", slug: "cpp-beginners", language: "C++", level: "Beginner", lessons: 26, duration: "9 hours", icon: "⚙️", color: "#00599c", category: "backend", description: "Learn C++ — the powerful language behind games, operating systems, and high-performance applications.", topics: ["Syntax & Variables", "Pointers", "Memory Management", "OOP", "STL", "File I/O"], instructor: "Carlos Mendez", rating: 4.7, enrolled: 2200 },
+  { id: 9, title: "Node.js & Express", slug: "nodejs-express", language: "JavaScript", level: "Intermediate", lessons: 24, duration: "10 hours", icon: "🟢", color: "#539e43", category: "backend", description: "Build scalable backend applications and REST APIs using Node.js and Express.", topics: ["Node.js Basics", "Express Framework", "REST APIs", "Middleware", "Authentication", "Deployment"], instructor: "Nina Kowalski", rating: 4.8, enrolled: 3400 },
+  { id: 10, title: "SQL & Databases", slug: "sql-databases", language: "SQL", level: "Beginner", lessons: 18, duration: "7 hours", icon: "🗄️", color: "#f44336", category: "backend", description: "Master SQL queries, database design, and everything you need to work with data.", topics: ["SELECT Queries", "JOINs", "Aggregations", "Indexes", "Database Design", "Transactions"], instructor: "Tom Baker", rating: 4.9, enrolled: 4200 },
+  { id: 11, title: "TypeScript Essentials", slug: "typescript", language: "TypeScript", level: "Intermediate", lessons: 22, duration: "8 hours", icon: "🔷", color: "#3178c6", category: "web", description: "Add static typing to your JavaScript for safer, more maintainable code.", topics: ["Types & Interfaces", "Generics", "Enums", "Decorators", "Modules", "Config"], instructor: "Lisa Park", rating: 4.8, enrolled: 2900 },
+  { id: 12, title: "Advanced Python", slug: "python-advanced", language: "Python", level: "Advanced", lessons: 36, duration: "14 hours", icon: "🔥", color: "#ff5722", category: "data", description: "Take your Python skills to the next level with advanced patterns and techniques.", topics: ["Decorators", "Generators", "Async/Await", "Metaclasses", "Design Patterns", "Performance"], instructor: "Dr. Sarah Chen", rating: 4.9, enrolled: 1800 },
+  { id: 13, title: "Flutter Mastery", slug: "flutter-mastery", language: "Dart", level: "Intermediate", lessons: 45, duration: "18 hours", icon: "📱", color: "#02569b", category: "mobile", description: "Build professional, multi-platform applications from a single codebase with Flutter.", topics: ["Dart Basics", "Widget Lifecycle", "State Management", "Animations", "Firebase", "App Store Prep"], instructor: "Maria Garcia", rating: 4.9, enrolled: 1500 },
+  { id: 14, title: "Swift iOS Bootcamp", slug: "swift-ios", language: "Swift", level: "Beginner", lessons: 38, duration: "16 hours", icon: "🍎", color: "#f05138", category: "mobile", description: "Start building native iOS apps with Swift and SwiftUI.", topics: ["Swift Syntax", "SwiftUI", "Combine", "Core Data", "Networking", "App Store Guidelines"], instructor: "James Cook", rating: 4.8, enrolled: 2100 },
+  { id: 15, title: "Android with Kotlin", slug: "android-kotlin", language: "Kotlin", level: "Intermediate", lessons: 42, duration: "20 hours", icon: "🤖", color: "#3ddc84", category: "mobile", description: "Master modern Android development using Kotlin, Coroutines, and Jetpack Compose.", topics: ["Kotlin Coroutines", "Jetpack Compose", "MVVM Architecture", "Hilt DI", "Room DB", "Play Store"], instructor: "Elena Volkov", rating: 4.7, enrolled: 1900 },
+  { id: 16, title: "Next.js 14 Deep Dive", slug: "nextjs-deep-dive", language: "JavaScript", level: "Advanced", lessons: 25, duration: "9 hours", icon: "▲", color: "#000000", category: "web", description: "Build incredibly fast web apps with Server Actions, App Router, and specialized caching.", topics: ["App Router", "Server Components", "Server Actions", "Streaming", "Auth.js", "Vercel Deployment"], instructor: "Tim Neutkens", rating: 4.9, enrolled: 3500 },
+  { id: 17, title: "Deep Learning with PyTorch", slug: "pytorch-dl", language: "Python", level: "Advanced", lessons: 50, duration: "25 hours", icon: "🧠", color: "#ee4c2c", category: "data", description: "Dive into neural networks, computer vision, and NLP using the industry-standard PyTorch.", topics: ["Tensors", "AutoGrad", "CNNs", "RNNs & LSTMs", "Transformers", "Model Deployment"], instructor: "Dr. Andrej Karpathy", rating: 5.0, enrolled: 1200 },
+  { id: 18, title: "Go Backend Mastery", slug: "go-backend", language: "Go", level: "Intermediate", lessons: 28, duration: "12 hours", icon: "🐹", color: "#00add8", category: "backend", description: "Learn to build high-performance distributed systems and microservices with Golang.", topics: ["Goroutines", "Channels", "Standard Library", "gRPC", "Docker & K8s", "Testing in Go"], instructor: "Rob Pike", rating: 4.8, enrolled: 2400 },
+  { id: 19, title: "Vue.js 3 Masterclass", slug: "vue-3", language: "JavaScript", level: "Intermediate", lessons: 32, duration: "13 hours", icon: "💚", color: "#42b883", category: "web", description: "The most approachable framework — master the Composition API and Pinia.", topics: ["Composition API", "Vue Router", "Pinia", "Vite", "Server Side Rendering", "Custom Hooks"], instructor: "Evan You", rating: 4.9, enrolled: 3100 },
+  { id: 20, title: "Cybersecurity Basics", slug: "cybersec", language: "Security", level: "Beginner", lessons: 15, duration: "5 hours", icon: "🔐", color: "#546e7a", category: "backend", description: "Understand the fundamentals of network security, ethical hacking, and safe coding.", topics: ["Network Security", "Encryption", "OWASP Top 10", "Social Engineering", "OSINT", "Pentesting"], instructor: "Kevin Mitnick", rating: 4.8, enrolled: 4500 },
+];
 
-    let query = supabase.from('courses').select('*');
+// GET /api/courses
+router.get('/', (req, res) => {
+  const { level, language, category, search } = req.query;
+  let courses = [...COURSES];
 
-    if (level) query = query.ilike('level', `%${level}%`);
-    if (language) query = query.ilike('language', `%${language}%`);
-    if (category) query = query.eq('category', category.toLowerCase());
-    if (search) {
-      query = query.or(`title.ilike.%${search}%,language.ilike.%${search}%`);
-    }
-
-    const { data: courses, error } = await query;
-    if (error) throw error;
-
-    res.json({ count: courses.length, courses });
-
-  } catch (err) {
-    console.error('Courses fetch error:', err);
-    res.status(500).json({ error: 'Error fetching courses' });
+  if (level) courses = courses.filter(c => c.level.toLowerCase().includes(level.toLowerCase()));
+  if (language) courses = courses.filter(c => c.language.toLowerCase().includes(language.toLowerCase()));
+  if (category) courses = courses.filter(c => c.category === category.toLowerCase());
+  if (search) {
+    const q = search.toLowerCase();
+    courses = courses.filter(c =>
+      c.title.toLowerCase().includes(q) || c.language.toLowerCase().includes(q)
+    );
   }
+
+  res.json({ count: courses.length, courses });
 });
 
-// GET /api/courses/:id — Get single course (supports numeric ID or slug)
-router.get('/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const isNumeric = !isNaN(id);
+// GET /api/courses/:id
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const course = isNaN(id)
+    ? COURSES.find(c => c.slug === id)
+    : COURSES.find(c => c.id === parseInt(id));
 
-    let query = supabase.from('courses').select('*');
-    if (isNumeric) {
-      query = query.eq('course_id', parseInt(id));
-    } else {
-      query = query.eq('slug', id);
-    }
-
-    const { data: course, error } = await query.single();
-    if (error || !course) return res.status(404).json({ error: 'Course not found' });
-
-    res.json({ course });
-
-  } catch (err) {
-    res.status(500).json({ error: 'Error fetching course' });
-  }
+  if (!course) return res.status(404).json({ error: 'Course not found.' });
+  res.json({ course });
 });
 
-// GET /api/courses/:id/lessons — Get lessons for a course
-router.get('/:id/lessons', async (req, res) => {
-  try {
-    const { data: course, error } = await supabase
-      .from('courses')
-      .select('course_id, lessons_count, lessons_list')
-      .eq('course_id', parseInt(req.params.id))
-      .single();
+// GET /api/courses/:id/lessons
+router.get('/:id/lessons', (req, res) => {
+  const course = COURSES.find(c => c.id === parseInt(req.params.id));
+  if (!course) return res.status(404).json({ error: 'Course not found.' });
 
-    if (error || !course) return res.status(404).json({ error: 'Course not found' });
+  const lessons = Array.from({ length: course.lessons }, (_, i) => ({
+    id: i + 1,
+    title: `Lesson ${i + 1}`,
+    order: i + 1,
+  }));
 
-    const lessons = course.lessons_list && course.lessons_list.length > 0
-      ? course.lessons_list
-      : Array.from({ length: course.lessons_count }, (_, i) => ({
-          id: i + 1,
-          title: `Lesson ${i + 1}`,
-          order: i + 1,
-          completed: false
-        }));
-
-    res.json({ courseId: course.course_id, lessons });
-
-  } catch (err) {
-    res.status(500).json({ error: 'Error fetching lessons' });
-  }
+  res.json({ courseId: course.id, lessons });
 });
 
-// GET /api/courses/:courseId/lesson/:lessonId/content — Get lesson content
-router.get('/:courseId/lesson/:lessonId/content', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('lesson_contents')
-      .select('content')
-      .eq('course_id', req.params.courseId)
-      .eq('lesson_id', req.params.lessonId)
-      .single();
-
-    res.json({ content: data?.content || '' });
-
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch content' });
-  }
+// GET /api/courses/:courseId/lesson/:lessonId/content
+router.get('/:courseId/lesson/:lessonId/content', (req, res) => {
+  const { courseId, lessonId } = req.params;
+  const stored = db.getLessonContent(courseId, lessonId);
+  res.json({ content: stored?.content || '' });
 });
 
-// ADMIN: Update course (visibility, lessons_list, etc.)
-router.put('/:id', async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const updates = req.body;
-
-    // Map camelCase to snake_case if needed
-    const dbUpdates = {};
-    if (updates.title !== undefined) dbUpdates.title = updates.title;
-    if (updates.language !== undefined) dbUpdates.language = updates.language;
-    if (updates.level !== undefined) dbUpdates.level = updates.level;
-    if (updates.description !== undefined) dbUpdates.description = updates.description;
-    if (updates.visible !== undefined) dbUpdates.visible = updates.visible;
-    if (updates.lessons_list !== undefined) dbUpdates.lessons_list = updates.lessons_list;
-    if (updates.lessons !== undefined) dbUpdates.lessons_count = updates.lessons;
-    if (updates.icon !== undefined) dbUpdates.icon = updates.icon;
-    if (updates.color !== undefined) dbUpdates.color = updates.color;
-    if (updates.category !== undefined) dbUpdates.category = updates.category;
-    if (updates.instructor !== undefined) dbUpdates.instructor = updates.instructor;
-    if (updates.topics !== undefined) dbUpdates.topics = updates.topics;
-
-    const { data: course, error } = await supabase
-      .from('courses')
-      .update(dbUpdates)
-      .eq('course_id', id)
-      .select()
-      .single();
-
-    if (error || !course) return res.status(404).json({ error: 'Course not found' });
-
-    res.json({ success: true, course });
-
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update course' });
-  }
+// PUT /api/courses/:id  (admin: update course metadata not needed for static, return ok)
+router.put('/:id', (req, res) => {
+  res.json({ success: true, message: 'Course metadata is static in this build.' });
 });
 
-// ADMIN: Save lesson content (upsert)
-router.post('/:courseId/lesson/:lessonId/content', async (req, res) => {
-  try {
-    const { courseId, lessonId } = req.params;
-    const { content } = req.body;
+// POST /api/courses/:courseId/lesson/:lessonId/content  (admin: save lesson content)
+router.post('/:courseId/lesson/:lessonId/content', (req, res) => {
+  const { courseId, lessonId } = req.params;
+  const { content } = req.body;
 
-    const { error } = await supabase
-      .from('lesson_contents')
-      .upsert(
-        { course_id: courseId, lesson_id: lessonId, content },
-        { onConflict: 'course_id,lesson_id' }
-      );
-
-    if (error) throw error;
-
-    res.json({ success: true });
-
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to save lesson content' });
+  if (content === undefined) {
+    return res.status(400).json({ error: 'content is required.' });
   }
+
+  db.upsertLessonContent(courseId, lessonId, content);
+  res.json({ success: true });
 });
 
 module.exports = router;

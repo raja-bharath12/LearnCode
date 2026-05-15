@@ -17,6 +17,11 @@ export default function Dashboard() {
     if (!u) { navigate('/login'); return; }
     setUser(u);
 
+    // Fetch full profile from Firestore to get dob and other fields
+    Auth.getProfile().then(profile => {
+      if (profile) setUser(prev => ({ ...prev, ...profile }));
+    }).catch(() => {});
+
     // Initial sync
     Progress.syncAll();
 
@@ -182,16 +187,18 @@ export default function Dashboard() {
                 <p style={{ color: 'var(--text3)', fontSize: '0.95rem', marginBottom: '24px' }}>{user.email}</p>
                 <div style={{ textAlign: 'left', background: 'var(--surface2)', padding: '20px', borderRadius: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)', fontWeight: 600 }}>RANK</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--accent)' }}>ELITE LEARNER</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)', fontWeight: 600 }}>NAME</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>{user.name || '—'}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)', fontWeight: 600 }}>JOINED</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>{new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)', fontWeight: 600 }}>D.O.B</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>
+                      {user.dob ? new Date(user.dob).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
+                    </span>
                   </div>
                 </div>
-                <button onClick={() => navigate('/profile')} className="btn-primary" style={{ width: '100%', marginTop: '24px', borderRadius: '16px' }}>
-                  Edit Passport
+                <button onClick={() => navigate('/profile')} className="btn-primary" style={{ width: '100%', marginTop: '24px', borderRadius: '16px', textAlign: 'center' }}>
+                  Edit
                 </button>
               </div>
             </div>

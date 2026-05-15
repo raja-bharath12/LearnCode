@@ -28,10 +28,9 @@ export default function Header({ showSearch = false, showBrand = false }) {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const handleLogout = () => {
-    Auth.logout();
+  const handleLogout = async () => {
+    await Auth.logout(navigate);
     setUser(null);
-    navigate('/login');
   };
 
   return (

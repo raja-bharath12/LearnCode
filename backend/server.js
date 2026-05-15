@@ -1,31 +1,29 @@
 // LearnCode — Backend Server
-// Node.js + Express + Supabase
+// Node.js + Express + JSON file storage (no external DB needed)
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const supabase = require('./supabase');
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
-const courseRoutes = require('./routes/courses');
+const coursesRoutes = require('./routes/courses');
 const progressRoutes = require('./routes/progress');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ===== MIDDLEWARE =====
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
-  .split(',')
-  .map(o => o.trim())
-  .filter(Boolean)
-  .concat([
+app.use(cors({
+  origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'http://127.0.0.1:5500',
-    'http://localhost:5500'
-  ]);
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
+  ],
+  credentials: true
+}));
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,58 +35,48 @@ app.use((req, res, next) => {
 
 // ===== ROUTES =====
 app.use('/api/auth', authRoutes);
-app.use('/api/courses', courseRoutes);
+app.use('/api/courses', coursesRoutes);
 app.use('/api/progress', progressRoutes);
 
-// Stats
-app.get('/api/stats', async (req, res) => {
+// ===== STATS =====
+app.get('/api/stats', (req, res) => {
   try {
-    const { count, error } = await supabase
-      .from('users')
-      .select('id', { count: 'exact', head: true });
-
-    if (error) throw error;
-    res.json({ users: count || 0 });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch stats' });
+    const db = require('./db');
+    const users = db.getUsers();
+    res.json({ users: users.length, courses: 20 });
+  } catch {
+    res.json({ users: 0, courses: 20 });
   }
 });
 
-// Health check
-app.get('/api/health', async (req, res) => {
-  let dbStatus = 'unknown';
-  try {
-    const { error } = await supabase.from('users').select('id').limit(1);
-    dbStatus = error ? 'error' : 'connected';
-  } catch {
-    dbStatus = 'disconnected';
-  }
+// ===== HEALTH =====
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     message: 'LearnCode API is running',
     timestamp: new Date().toISOString(),
-    db: dbStatus,
-    backend: 'supabase'
+    db: 'json-file',
+    backend: 'express'
   });
 });
 
 // ===== ERROR HANDLER =====
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('[ERROR]', err.stack);
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
 // 404
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` });
 });
 
 // ===== START =====
 app.listen(PORT, () => {
   console.log(`\n🚀 LearnCode API running on http://localhost:${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/api/health`);
-  console.log(`   Database:     Supabase (${process.env.SUPABASE_URL})`);
-  console.log(`   Environment:  ${process.env.NODE_ENV || 'development'}\n`);
+  console.log(`   Health: http://localhost:${PORT}/api/health`);
+  console.log(`   Storage: JSON files in ./data/`);
+  console.log(`   Env: ${process.env.NODE_ENV || 'development'}\n`);
 });
 
 module.exports = app;

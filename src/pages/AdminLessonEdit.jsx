@@ -1,26 +1,23 @@
 // src/pages/AdminLessonEdit.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import Editor from '@monaco-editor/react';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
+import RichEditor from '../components/RichEditor';
 import { AdminStore } from '../utils/adminStore';
 import { Auth } from '../utils/auth';
+import { showToast } from '../components/Toast';
 
-// Configure marked with highlight.js
 marked.setOptions({
-  highlight: function(code, lang) {
+  highlight: (code, lang) => {
     if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(code, { language: lang }).value;
-      } catch (__) {}
+      try { return hljs.highlight(code, { language: lang }).value; } catch (__) {}
     }
     return hljs.highlightAuto(code).value;
   },
   breaks: true,
-  gfm: true
+  gfm: true,
 });
 
 export default function AdminLessonEdit() {
@@ -30,158 +27,171 @@ export default function AdminLessonEdit() {
   const [lesson, setLesson] = useState(null);
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
-  const [fetchedStatus, setFetchedStatus] = useState('');
-  const [showPreview, setShowPreview] = useState(true);
+  const [wordCount, setWordCount] = useState(0);
+  const scrollRef = useRef(null);
 
+  // Update word count whenever content changes
+  useEffect(() => {
+    const words = content.replace(/[#*`>~_\-]/g, '').trim().split(/\s+/).filter(Boolean).length;
+    setWordCount(words);
+  }, [content]);
+
+  /* ── Load content ─────────────────────────────────── */
   useEffect(() => {
     const user = Auth.getUser();
-    if (!user || user.role !== 'admin') {
-      navigate('/login');
-      return;
-    }
-    
+    if (!user || user.role !== 'admin') { navigate('/login'); return; }
+
     const c = AdminStore.getCourse(courseId);
-    if (!c) {
-      navigate('/admin/courses');
-      return;
-    }
+    if (!c) { navigate('/admin/courses'); return; }
     setCourse(c);
-    
+
     const l = (c.lessons_list || []).find(it => String(it.id) === String(lessonId));
-    if (!l) {
-      navigate(`/admin/course/${courseId}`);
-      return;
-    }
+    if (!l) { navigate(`/admin/course/${courseId}`); return; }
     setLesson(l);
 
-    // Load content from AdminStore (override) or fetch from source
     const stored = AdminStore.getLessonContent(courseId, lessonId);
     if (stored) {
       setContent(stored);
     } else {
       const rawPath = l.contentPath || l.url;
       if (rawPath) {
-        // Ensure path is absolute from public root
         const path = rawPath.startsWith('http') || rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
-        setFetchedStatus('Loading...');
         fetch(path)
-          .then(res => {
-            if (!res.ok) throw new Error('Not found');
-            return res.text();
-          })
+          .then(r => { if (!r.ok) throw new Error(); return r.text(); })
           .then(text => setContent(text))
-          .catch(() => setContent('# ' + l.title + '\nStart writing...'));
+          .catch(() => setContent(`# ${l.title}\n\nStart writing your lesson content here.\n\n## Introduction\n\nAdd an introduction.\n\n## Key Concepts\n\nList the key concepts.\n`));
       } else {
-        setContent('# ' + l.title + '\nStart writing...');
+        setContent(`# ${l.title}\n\nStart writing your lesson content here.\n\n## Introduction\n\nAdd an introduction.\n`);
       }
     }
   }, [courseId, lessonId, navigate]);
 
-  // Remove duplicate setFetchedStatus declaration below (already moved up)
-
-  const handleSave = () => {
+  /* ── Save ─────────────────────────────────────────── */
+  async function handleSave() {
     setSaving(true);
-    AdminStore.saveLessonContent(courseId, lessonId, content);
-    setTimeout(() => {
-      setSaving(false);
-    }, 800);
-  };
+    await AdminStore.saveLessonContent(courseId, lessonId, content);
+    setSaving(false);
+    showToast('✅ Lesson saved!', 'success');
+  }
 
   if (!course || !lesson) return null;
 
+  const renderMd = (text) => ({ __html: marked.parse(text || '') });
+
   return (
-    <div className="app-container" style={{ height: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg)' }}>
       <Sidebar />
-      <div className="main-wrapper" style={{ display: 'flex', flexDirection: 'column' }}>
-        <Header showBrand={false} />
-        
-        {/* EDITOR CONTROLS */}
-        <div style={{ 
-          padding: '12px 30px', 
-          background: 'var(--surface1)', 
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginLeft: '80px', overflow: 'hidden' }}>
+
+        {/* ── TOP BAR ── */}
+        <div style={{
+          padding: '10px 24px',
+          background: 'var(--bg-top)',
           borderBottom: '1px solid var(--border)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
-          zIndex: 10
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          zIndex: 20, flexShrink: 0, gap: '16px',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <Link to={`/admin/course/${courseId}`} className="glass-pill" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
-              ✕ Close
-            </Link>
-            <div style={{ borderLeft: '1px solid var(--border)', paddingLeft: '20px' }}>
-              <div style={{ fontSize: '0.65rem', color: 'var(--text3)', fontWeight: 800 }}>COURSE: {course.title.toUpperCase()}</div>
-              <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>Editing: <span className="gradient-text">{lesson.title}</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <Link to={`/admin/course/${courseId}`}
+              style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text3)', textDecoration: 'none', padding: '6px 14px', border: '1px solid var(--border)', borderRadius: '8px' }}
+            >✕ Close</Link>
+            <div style={{ borderLeft: '1px solid var(--border)', paddingLeft: '16px' }}>
+              <div style={{ fontSize: '0.6rem', color: 'var(--text3)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                {course.title}
+              </div>
+              <div style={{ fontWeight: 900, fontSize: '0.95rem' }}>
+                Editing: <span style={{ background: 'linear-gradient(135deg, var(--accent), #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{lesson.title}</span>
+              </div>
             </div>
           </div>
-          
-          <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <button 
-              className="glass-pill"
-              onClick={() => setShowPreview(!showPreview)}
-              style={{ padding: '8px 16px', fontSize: '0.75rem', background: showPreview ? 'var(--accent-light)' : 'transparent', color: showPreview ? 'var(--accent)' : 'inherit' }}
-            >
-              {showPreview ? 'Hide Preview' : 'Show Preview'}
-            </button>
-            <div style={{ fontSize: '0.75rem', color: saving ? 'var(--accent)' : 'var(--text3)' }}>
-              {saving ? 'Saving...' : 'Draft saved locally'}
-            </div>
-            <button 
-              className="btn-primary shimmer" 
+
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text3)', fontWeight: 600 }}>
+              {wordCount} words
+            </span>
+            <button
               onClick={handleSave}
               disabled={saving}
-              style={{ padding: '10px 24px', borderRadius: '12px', minWidth: '120px' }}
+              style={{
+                padding: '10px 28px',
+                background: saving ? 'var(--border)' : 'var(--accent)',
+                color: 'white', border: 'none', borderRadius: '12px',
+                fontWeight: 800, cursor: saving ? 'not-allowed' : 'pointer',
+                fontSize: '0.9rem',
+                boxShadow: saving ? 'none' : '0 6px 18px rgba(44,88,255,0.35)',
+                transition: 'all 0.2s',
+              }}
             >
-              {saving ? '...' : 'Save Draft'}
+              {saving ? '💾 Saving…' : '💾 Save Lesson'}
             </button>
           </div>
         </div>
 
-        {/* EDITOR & PREVIEW AREA */}
+        {/* ── SPLIT BODY ── */}
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-          {/* PREVIEW PANE (NOW ON LEFT) */}
-          {showPreview && (
-            <div style={{ 
-              flex: 1, 
-              background: 'var(--surface-alt)', 
-              overflowY: 'auto', 
-              padding: '60px',
-              color: 'var(--text1)',
-              borderRight: '1px solid var(--border)'
-            }}>
-              <div className="markdown-content">
-                 <div dangerouslySetInnerHTML={{ __html: marked.parse(content || '') }} />
-              </div>
-            </div>
-          )}
 
-          {/* MONACO EDITOR (NOW ON RIGHT) */}
-          <div style={{ flex: 1, position: 'relative' }}>
-            <Editor
-              height="100%"
-              defaultLanguage="markdown"
-              theme="vs-dark"
-              value={content}
-              onChange={(val) => setContent(val || '')}
-              options={{
-                fontSize: 16,
-                minimap: { enabled: false },
-                wordWrap: 'on',
-                padding: { top: 40, right: 40, bottom: 40, left: 40 },
-                lineNumbers: 'on',
-                fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                lineHeight: 28,
-                scrollbar: {
-                  vertical: 'visible',
-                  horizontal: 'hidden'
-                }
-              }}
-            />
+          {/* LEFT — Live Preview */}
+          <div ref={scrollRef} style={{
+            flex: 1,
+            overflowY: 'auto',
+            borderRight: '2px solid var(--border)',
+            background: 'var(--bg)',
+          }}>
+            <div style={{
+              padding: '24px 40px 12px',
+              borderBottom: '1px solid var(--border)',
+              background: 'var(--surface)',
+              position: 'sticky', top: 0, zIndex: 5,
+            }}>
+              <span style={{
+                fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase',
+                letterSpacing: '1.5px', color: 'var(--accent)',
+                background: 'var(--accent-light)', padding: '3px 10px', borderRadius: '100px',
+              }}>
+                👁 Live Student Preview
+              </span>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 900, margin: '8px 0 0', color: 'var(--text)' }}>
+                {lesson.title}
+              </h2>
+              <div style={{ height: '3px', width: '48px', background: 'linear-gradient(90deg, var(--accent), #7c3aed)', borderRadius: '100px', marginTop: '6px' }} />
+            </div>
+            <div className="markdown-content" style={{ padding: '32px 40px 80px' }}>
+              <div dangerouslySetInnerHTML={renderMd(content)} />
+            </div>
           </div>
+
+          {/* RIGHT — Rich Word-like Editor */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+            {/* Editor title bar */}
+            <div style={{
+              padding: '8px 16px',
+              background: 'var(--surface2)',
+              borderBottom: '1px solid var(--border)',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              flexShrink: 0,
+            }}>
+              <span style={{
+                fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase',
+                letterSpacing: '1.5px', color: '#f59e0b',
+                background: 'rgba(245,158,11,0.12)', padding: '3px 10px', borderRadius: '100px',
+              }}>
+                ✏️ Rich Text Editor
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text3)', fontWeight: 600 }}>
+                Formatting auto-saves as Markdown
+              </span>
+            </div>
+
+            {/* The Word-like editor fills remaining height */}
+            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              <RichEditor value={content} onChange={setContent} />
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
-

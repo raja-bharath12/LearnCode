@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { Auth, API_BASE } from '../utils/auth';
+import { Auth } from '../utils/auth';
 import Header from '../components/Header';
 import { showToast } from '../components/Toast';
 
@@ -61,27 +61,15 @@ export default function Profile() {
     e.preventDefault();
     setSaving(true);
     try {
-      const u = Auth.getUser();
-      const res = await fetch(`${API_BASE}/auth/profile`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${u?.token || 'demo'}` },
-        body: JSON.stringify({ name: sName })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        Auth.setUser({ ...u, name: data.user.name });
-      } else {
-        Auth.setUser({ ...u, name: sName });
-      }
-    } catch {
-      const u = Auth.getUser();
-      Auth.setUser({ ...u, name: sName });
+      await Auth.updateProfile({ name: sName, phone: sPhone, gender: sGender, dob: sDob });
+      saveProfileData({ phone: sPhone, gender: sGender, dob: sDob });
+      setProfile(prev => ({ ...prev, phone: sPhone, gender: sGender, dob: sDob }));
+      setUser(prev => ({ ...prev, name: sName }));
+      window.dispatchEvent(new CustomEvent('userUpdate'));
+      showStatus('✅ Profile updated successfully!', 'success');
+    } catch (e) {
+      showStatus('❌ Failed to save profile', 'error');
     }
-    saveProfileData({ phone: sPhone, gender: sGender, dob: sDob });
-    setProfile(prev => ({ ...prev, phone: sPhone, gender: sGender, dob: sDob }));
-    setUser(prev => ({ ...prev, name: sName }));
-    window.dispatchEvent(new CustomEvent('userUpdate'));
-    showStatus(' Profile updated successfully!', 'success');
     setSaving(false);
   }
 

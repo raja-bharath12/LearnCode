@@ -1,96 +1,113 @@
-import { MOCK_COURSES, apiRequest } from './auth';
+// src/utils/adminStore.js — Firestore-backed admin data store
+
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { MOCK_COURSES } from './auth';
 import { COURSES } from './courseData';
 
-const STORAGE_KEY_COURSES = 'lc_admin_courses';
-const STORAGE_KEY_LESSONS = 'lc_admin_lesson_content';
+const LS_COURSES  = 'lc_admin_courses';
+const LS_LESSONS  = 'lc_admin_lesson_content';
 
 export const AdminStore = {
-  // --- COURSE MANAGEMENT ---
-  
-  // Get all courses (merging mock data with local overrides)
+
+  // ─── COURSES ────────────────────────────────────────────────
+
   getCourses() {
-    const overrides = JSON.parse(localStorage.getItem(STORAGE_KEY_COURSES)) || {};
+    const overrides = JSON.parse(localStorage.getItem(LS_COURSES)) || {};
     return MOCK_COURSES.map(course => {
       const override = overrides[course.id] || {};
       const staticData = COURSES[course.id] || {};
       const staticLessons = (staticData.lessons || []).map(l => ({
-        id: l.id,
-        title: l.title,
-        contentPath: l.contentPath
+        id: l.id, title: l.title, contentPath: l.contentPath
       }));
-      
-      // If override has a lessons_list, we use it, but we MUST ensure each lesson 
-      // has its title and contentPath (inherited from static if missing)
+
       let lessonsList = override.lessons_list || staticLessons;
-      
-      // Patch missing titles or paths in overrides (migration/cleanup)
       lessonsList = lessonsList.map(l => {
-        const staticL = staticLessons.find(sl => String(sl.id) === String(l.id));
+        const sl = staticLessons.find(s => String(s.id) === String(l.id));
         return {
           ...l,
-          title: l.title || l.name || staticL?.title || 'Untitled Lesson',
-          contentPath: l.contentPath || l.url || staticL?.contentPath || ''
+          title: l.title || l.name || sl?.title || 'Untitled Lesson',
+          contentPath: l.contentPath || l.url || sl?.contentPath || '',
         };
       });
 
-      return {
-        ...course,
-        ...override,
-        lessons_list: lessonsList
-      };
+      return { ...course, ...override, lessons_list: lessonsList };
     });
   },
 
-  // Get a single course
   getCourse(id) {
-    const courses = this.getCourses();
-    return courses.find(c => String(c.id) === String(id));
+    return this.getCourses().find(c => String(c.id) === String(id));
   },
 
-  // Update a course (Push to Backend + Local Storage)
   async updateCourse(id, updates) {
-    const overrides = JSON.parse(localStorage.getItem(STORAGE_KEY_COURSES)) || {};
+    // 1. Local
+    const overrides = JSON.parse(localStorage.getItem(LS_COURSES)) || {};
     overrides[id] = { ...overrides[id], ...updates };
-    localStorage.setItem(STORAGE_KEY_COURSES, JSON.stringify(overrides));
+    localStorage.setItem(LS_COURSES, JSON.stringify(overrides));
 
+    // 2. Firestore: courses/{id}
     try {
-      await apiRequest(`/courses/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(updates)
-      });
+      await setDoc(doc(db, 'courses', String(id)), {
+        ...updates,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
     } catch (e) {
-      console.error("Failed to sync course to server:", e);
+      console.warn('Firestore course update failed:', e);
     }
   },
 
-  // --- LESSON MANAGEMENT ---
+  // ─── LESSON CONTENT ─────────────────────────────────────────
 
-  // Get lesson content
   getLessonContent(courseId, lessonId) {
-    // Check localStorage first (for immediate reactivity while saving)
-    const lessons = JSON.parse(localStorage.getItem(STORAGE_KEY_LESSONS)) || {};
-    const key = `${courseId}_${lessonId}`;
-    return lessons[key] || '';
+    const lessons = JSON.parse(localStorage.getItem(LS_LESSONS)) || {};
+    return lessons[`${courseId}_${lessonId}`] || '';
   },
 
-  // Save lesson content (Push to Backend + Local Storage)
   async saveLessonContent(courseId, lessonId, content) {
-    const lessons = JSON.parse(localStorage.getItem(STORAGE_KEY_LESSONS)) || {};
+    // 1. Local immediately
+    const lessons = JSON.parse(localStorage.getItem(LS_LESSONS)) || {};
     const key = `${courseId}_${lessonId}`;
     lessons[key] = content;
-    localStorage.setItem(STORAGE_KEY_LESSONS, JSON.stringify(lessons));
+    localStorage.setItem(LS_LESSONS, JSON.stringify(lessons));
 
+    // 2. Firestore: lesson_contents/{courseId_lessonId}
     try {
-      await apiRequest(`/courses/${courseId}/lesson/${lessonId}/content`, {
-        method: 'POST',
-        body: JSON.stringify({ content })
-      });
+      await setDoc(doc(db, 'lesson_contents', `${courseId}_${lessonId}`), {
+        courseId: String(courseId),
+        lessonId: String(lessonId),
+        content,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
     } catch (e) {
-      console.error("Failed to sync content to server:", e);
+      console.warn('Firestore lesson content save failed:', e);
     }
   },
 
-  // Add a lesson to a course
+  // Load lesson content from Firestore (called by Lesson.jsx)
+  async fetchLessonContent(courseId, lessonId) {
+    // Check local cache first
+    const cached = this.getLessonContent(courseId, lessonId);
+    if (cached) return cached;
+
+    // Fetch from Firestore
+    try {
+      const snap = await getDoc(doc(db, 'lesson_contents', `${courseId}_${lessonId}`));
+      if (snap.exists()) {
+        const content = snap.data().content || '';
+        // Cache locally
+        const lessons = JSON.parse(localStorage.getItem(LS_LESSONS)) || {};
+        lessons[`${courseId}_${lessonId}`] = content;
+        localStorage.setItem(LS_LESSONS, JSON.stringify(lessons));
+        return content;
+      }
+    } catch (e) {
+      console.warn('Firestore lesson content fetch failed:', e);
+    }
+    return '';
+  },
+
+  // ─── LESSONS ────────────────────────────────────────────────
+
   addLesson(courseId, lesson) {
     const course = this.getCourse(courseId);
     if (!course) return;
@@ -98,11 +115,10 @@ export const AdminStore = {
     this.updateCourse(courseId, { lessons_list: newLessons, lessons: newLessons.length });
   },
 
-  // Remove a lesson from a course
   removeLesson(courseId, lessonId) {
     const course = this.getCourse(courseId);
     if (!course) return;
     const newLessons = (course.lessons_list || []).filter(l => l.id !== lessonId);
     this.updateCourse(courseId, { lessons_list: newLessons, lessons: newLessons.length });
-  }
+  },
 };

@@ -16,6 +16,8 @@ import StudentDetail from './pages/StudentDetail';
 import AdminCourseManage from './pages/AdminCourseManage';
 import AdminCourseEdit from './pages/AdminCourseEdit';
 import AdminLessonEdit from './pages/AdminLessonEdit';
+import AdminAnnouncements from './pages/AdminAnnouncements';
+import AdminSettings from './pages/AdminSettings';
 import About from './pages/About';
 import Exams from './pages/Exams';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -40,6 +42,8 @@ export default function App() {
         <Route path="/admin/course/:id" element={<ProtectedRoute><AdminCourseEdit /></ProtectedRoute>} />
         <Route path="/admin/course/:courseId/lesson/:lessonId" element={<ProtectedRoute><AdminLessonEdit /></ProtectedRoute>} />
         <Route path="/admin/student/:id" element={<ProtectedRoute><StudentDetail /></ProtectedRoute>} />
+        <Route path="/admin/announcements" element={<ProtectedRoute><AdminAnnouncements /></ProtectedRoute>} />
+        <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
         <Route path="/exams" element={<ProtectedRoute><Exams /></ProtectedRoute>} />

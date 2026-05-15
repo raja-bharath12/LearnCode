@@ -147,51 +147,66 @@ export default function AdminDashboard() {
                     background: 'var(--accent)', 
                     color: 'white', 
                     border: 'none', 
-                    padding: '16px', 
+                    padding: '16px 20px', 
                     borderRadius: '16px', 
                     fontWeight: 800, 
                     textAlign: 'left',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px'
+                    gap: '12px',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
                   }}
                 >
                   <span style={{ fontSize: '1.2rem' }}>➕</span> Add New Course
+                  <span style={{ marginLeft: 'auto', opacity: 0.7, fontSize: '0.85rem' }}>→</span>
                 </button>
-                <button style={{ 
-                  background: 'var(--surface2)', 
-                  color: 'var(--text1)', 
-                  border: '1px solid var(--border)', 
-                  padding: '16px', 
-                  borderRadius: '16px', 
-                  fontWeight: 800, 
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}>
+                <button 
+                  onClick={() => navigate('/admin/announcements')}
+                  style={{ 
+                    background: 'var(--surface2)', 
+                    color: 'var(--text)', 
+                    border: '1px solid var(--border)', 
+                    padding: '16px 20px', 
+                    borderRadius: '16px', 
+                    fontWeight: 800, 
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text)'; }}
+                >
                   <span style={{ fontSize: '1.2rem' }}>📢</span> Post Announcement
+                  <span style={{ marginLeft: 'auto', opacity: 0.5, fontSize: '0.85rem' }}>→</span>
                 </button>
-                <button style={{ 
-                  background: 'var(--surface2)', 
-                  color: 'var(--text1)', 
-                  border: '1px solid var(--border)', 
-                  padding: '16px', 
-                  borderRadius: '16px', 
-                  fontWeight: 800, 
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}>
+                <button 
+                  onClick={() => navigate('/admin/settings')}
+                  style={{ 
+                    background: 'var(--surface2)', 
+                    color: 'var(--text)', 
+                    border: '1px solid var(--border)', 
+                    padding: '16px 20px', 
+                    borderRadius: '16px', 
+                    fontWeight: 800, 
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text)'; }}
+                >
                   <span style={{ fontSize: '1.2rem' }}>⚙️</span> Academy Settings
+                  <span style={{ marginLeft: 'auto', opacity: 0.5, fontSize: '0.85rem' }}>→</span>
                 </button>
-                
-                <div style={{ marginTop: '20px', padding: '20px', background: 'var(--accent-light)', borderRadius: '20px', border: '1px dashed var(--accent)' }}>
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text2)', lineHeight: '1.6' }}>
-                    <strong>Note:</strong> Some administrative features are currently in read-only demo mode while the main server is offline.
-                  </p>
-                </div>
               </div>
             </div>
           </div>

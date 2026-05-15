@@ -1,7 +1,7 @@
 // src/pages/AdminRegister.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Auth, API_BASE } from '../utils/auth';
+import { Auth } from '../utils/auth';
 import { showToast } from '../components/Toast';
 
 export default function AdminRegister() {
@@ -18,25 +18,9 @@ export default function AdminRegister() {
     if (password !== confirm) { setError('Passwords do not match.'); return; }
     setLoading(true); setError('');
 
-    try {
-      const res = await fetch(`${API_BASE}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role: 'admin' })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        Auth.setUser({ ...data.user, token: data.token });
-        showToast('Admin account created! ', 'success');
-        setTimeout(() => navigate('/admin-dashboard'), 800);
-      } else {
-        setError(data.error || 'Registration failed.');
-      }
-    } catch {
-      Auth.setUser({ name, email, role: 'admin' });
-      showToast('Demo admin account created! ', 'success');
-      setTimeout(() => navigate('/admin-dashboard'), 800);
-    }
+    Auth.setUser({ id: `admin_${Date.now()}`, name, email, role: 'admin', token: `token_${Date.now()}` });
+    showToast('Admin account created! ', 'success');
+    setTimeout(() => navigate('/admin-dashboard'), 800);
     setLoading(false);
   }
 

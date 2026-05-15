@@ -56,13 +56,13 @@ export default function Courses() {
 
         <section className="section">
           <div className="container">
-            <div className="filter-bar animate-in" style={{ padding: '0 0 48px', justifyContent: 'flex-start', border: 'none', gap: '12px' }}>
+            <div className="filter-bar animate-in" style={{ padding: '0 0 48px', justifyContent: 'flex-start', border: 'none', gap: '12px', flexWrap: 'nowrap', overflowX: 'auto', paddingRight: '24px' }}>
               {FILTERS.map((f, i) => (
                 <button
                   key={f}
                   className={`glass-pill${activeFilter === f ? ' active' : ''}`}
                   onClick={() => setActiveFilter(f)}
-                  style={{ border: 'none', cursor: 'pointer' }}
+                  style={{ border: 'none', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
@@ -81,8 +81,25 @@ export default function Courses() {
                   >
                     <div className="course-card-top" style={{ background: `${c.color || 'var(--accent)'}15`, padding: '32px', borderBottom: '1px solid var(--border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }}>
-                          {c.icon || c.title.charAt(0)}
+                        <div style={{
+                          width: '64px',
+                          height: '64px',
+                          borderRadius: '20px',
+                          background: `linear-gradient(135deg, ${c.color || '#2c58ff'}, ${c.color || '#2c58ff'}99)`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '1.6rem',
+                          fontWeight: 900,
+                          color: 'white',
+                          letterSpacing: '-1px',
+                          fontFamily: 'var(--font-body)',
+                          boxShadow: `0 8px 24px ${c.color || '#2c58ff'}55, 0 2px 8px rgba(0,0,0,0.2)`,
+                          textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                          border: '1px solid rgba(255,255,255,0.15)',
+                          flexShrink: 0,
+                        }}>
+                          {c.icon || c.title.charAt(0).toUpperCase()}
                         </div>
                         <span className={`course-level level-${(c.level || 'Beginner').toLowerCase()}`} style={{ height: 'fit-content' }}>
                           {c.level || 'Beginner'}

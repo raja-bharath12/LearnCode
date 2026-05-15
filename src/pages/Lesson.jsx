@@ -43,10 +43,9 @@ export default function Lesson() {
   const scrollAreaRef = useRef(null);
 
   useEffect(() => {
-    // SYNC from backend on mount
-    Progress.sync(courseId).then(p => {
-      if (p) setCompletedLessons(p);
-    });
+    // SYNC from localStorage on mount
+    const p = Progress.sync(courseId);
+    if (p) setCompletedLessons(Progress.get(courseId));
   }, [courseId]);
 
   useEffect(() => {
@@ -67,26 +66,8 @@ export default function Lesson() {
       return;
     }
 
-    // 1b. Check Backend for remote content overrides
-    const fetchRemoteContent = async () => {
-      try {
-        const res = await fetch(`/api/courses/${courseId}/lesson/${lesson.id}/content`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.content) {
-            setFetchedContent(marked.parse(data.content));
-            return true;
-          }
-        }
-      } catch (e) { console.warn("Remote content fetch failed", e); }
-      return false;
-    };
-
-    const loadContent = async () => {
-      const foundRemote = await fetchRemoteContent();
-      if (foundRemote) return;
-
-      // 2. Fallback to fetching dynamic static content from disk
+    const loadContent = () => {
+      // Fallback to fetching static content from disk
       const path = lesson.contentPath || lesson.url;
       if (path) {
         setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');

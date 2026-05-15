@@ -1,7 +1,7 @@
 // src/pages/Register.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Auth, API_BASE } from '../utils/auth';
+import { Auth } from '../utils/auth';
 import { showToast } from '../components/Toast';
 
 export default function Register() {
@@ -20,16 +20,41 @@ export default function Register() {
 
     try {
       await Auth.register(name, email, password);
-      showToast('Account created! ', 'success');
+      showToast('Account created! 🎉', 'success');
       setTimeout(() => navigate('/'), 800);
     } catch (err) {
-      if (err.message.includes('Failed to fetch') || err.message.includes('Network error')) {
-        Auth.setUser({ name, email });
-        showToast('Demo account created! ', 'success');
-        setTimeout(() => navigate('/'), 800);
+      const msg = err.message || '';
+
+      // Friendly Firebase error messages
+      if (msg.includes('email-already-in-use')) {
+        setError('This email is already registered. Please sign in instead.');
+        setLoading(false);
         return;
       }
-      setError(err.message || 'Registration failed.');
+      if (msg.includes('weak-password')) {
+        setError('Password must be at least 6 characters.');
+        setLoading(false);
+        return;
+      }
+      if (msg.includes('invalid-email')) {
+        setError('Please enter a valid email address.');
+        setLoading(false);
+        return;
+      }
+
+      // Demo fallback if offline
+      const isOffline = ['Failed to fetch','NetworkError','Load failed'].some(
+        m => msg.toLowerCase().includes(m.toLowerCase())
+      );
+      if (isOffline) {
+        Auth.setUser({ id: `demo_${Date.now()}`, name, email, role: 'student', token: 'demo_token' });
+        showToast('Demo account created — offline mode 🔌', 'success');
+        setTimeout(() => navigate('/'), 800);
+        setLoading(false);
+        return;
+      }
+
+      setError(msg || 'Registration failed. Please try again.');
     }
     setLoading(false);
   }

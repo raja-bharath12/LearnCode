@@ -327,7 +327,7 @@ body {
 
 /* ===== BUTTONS ===== */
 .btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   background: var(--accent); color: var(--bg);
   font-family: var(--font-body); font-size: 0.95rem; font-weight: 700;
   padding: 14px 28px; border-radius: var(--radius);
@@ -563,6 +563,12 @@ body {
   padding: 24px 0 40px;
   margin-top: -40px;
   justify-content: center;
+  flex-wrap: nowrap;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.filter-bar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 .filter-btn {
   padding: 10px 24px;
