@@ -2,20 +2,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { Auth, MOCK_STUDENTS, MOCK_COURSES, fetchCourses } from '../utils/auth';
+import { Auth, fetchStudentById, fetchCourses } from '../utils/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  AreaChart,
-  Area
-} from 'recharts';
+
+
 
 export default function StudentDetail() {
   const { id } = useParams();
@@ -29,59 +20,33 @@ export default function StudentDetail() {
     if (!u || u.role !== 'admin') { navigate('/login'); return; }
     setUser(u);
 
-    const s = MOCK_STUDENTS.find(item => item.id === id);
-    if (!s) { navigate('/admin-dashboard'); return; }
-    setStudent(s);
+    fetchStudentById(id).then(s => {
+      if (!s) { navigate('/admin-dashboard'); return; }
+      setStudent(s);
+    });
 
     fetchCourses().then(data => {
       if (data?.courses) setCourses(data.courses);
-      else setCourses(MOCK_COURSES);
     });
   }, [id]);
 
   if (!user || !student) return null;
 
-  // Enrolled courses for this student
-  const studentCourses = courses.filter(c => student.stats.courses.includes(c.id));
-
-  // Helper to generate a consistent but random-looking progress for demo students
-  const getMockProgress = (studentId, courseId) => {
-    const seed = (studentId.charCodeAt(1) || 0) + courseId;
-    return (seed * 17) % 100;
-  };
-
-  // Helper to generate mock activity data from registration date to today
-  const getActivityData = (student) => {
-    const start = new Date(student.createdAt);
-    const end = new Date();
-    const data = [];
-    const seed = (student.id.charCodeAt(1) || 0);
-
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      data.push({
-        name: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        minutes: Math.max(10, (seed * (data.length + 1) * 7) % 150 + Math.random() * 20)
-      });
+  // Build a map of courseId -> real progress % from Firestore progress docs
+  const progressMap = {};
+  (student.progressDocs || []).forEach(p => {
+    const course = courses.find(c => c.id === p.courseId);
+    if (course && course.lessons) {
+      progressMap[p.courseId] = Math.min(100, Math.round((p.completedLessons?.length || 0) / course.lessons * 100));
     }
-    // If range is too small, show at least 7 days
-    while (data.length < 7) {
-      const prev = new Date(start);
-      prev.setDate(prev.getDate() - (7 - data.length));
-      data.unshift({
-        name: prev.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        minutes: 0
-      });
-    }
-    return data;
-  };
+  });
 
-  const activityData = getActivityData(student);
+  // Courses this student has any progress on
+  const activeCourseIds = (student.progressDocs || []).map(p => p.courseId);
+  const studentCourses = courses.filter(c => activeCourseIds.includes(c.id));
 
-  const totalMinutes = activityData.reduce((acc, curr) => acc + curr.minutes, 0);
-  const formatTime = (mins) => {
-    const h = Math.floor(mins / 60);
-    const m = Math.round(mins % 60);
-    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  const formatDate = (iso) => {
+    try { return new Date(iso).toLocaleDateString(); } catch { return '—'; }
   };
 
   return (
@@ -104,56 +69,34 @@ export default function StudentDetail() {
         </div>
 
         <div className="container" style={{ paddingBottom: '80px', marginTop: '-40px' }}>
-          {/* ACTIVITY CHART SECTION */}
+          {/* COURSE PROGRESS OVERVIEW */}
           <div className="animate-in" style={{ marginBottom: '40px' }}>
             <h3 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span>⌛</span> Total Time Contribution (Since Registration)
+              <span>📈</span> Course Progress Summary
             </h3>
-            <div className="dashboard-card" style={{ height: '350px', padding: '30px 20px 20px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={activityData}>
-                  <defs>
-                    <linearGradient id="colorMinutes" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: 'var(--text3)', fontSize: 10 }}
-                    dy={10}
-                    interval="preserveStartEnd"
-                    minTickGap={30}
-                  />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: 'var(--text3)', fontSize: 12 }}
-                    unit="m"
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      background: 'var(--surface1)', 
-                      border: '1px solid var(--border)', 
-                      borderRadius: '12px',
-                      boxShadow: '0 10px 30px rgba(0,0,0,0.2)' 
-                    }}
-                    itemStyle={{ color: 'var(--accent)', fontWeight: 800 }}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="minutes" 
-                    stroke="var(--accent)" 
-                    strokeWidth={4}
-                    fillOpacity={1} 
-                    fill="url(#colorMinutes)" 
-                    animationDuration={2000}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+            <div className="dashboard-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '30px' }}>
+              {studentCourses.length === 0 ? (
+                <p style={{ textAlign: 'center', color: 'var(--text3)', padding: '20px' }}>No course activity recorded yet.</p>
+              ) : (
+                studentCourses.map(c => {
+                  const pct = progressMap[c.id] ?? 0;
+                  return (
+                    <div key={c.id}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span style={{ fontWeight: 800 }}>{c.title}</span>
+                        <span style={{ color: pct === 100 ? 'var(--green)' : 'var(--accent)', fontWeight: 900 }}>{pct}%</span>
+                      </div>
+                      <div className="progress-bar" style={{ height: '10px', background: 'var(--surface2)', borderRadius: '20px', overflow: 'hidden' }}>
+                        <div className="progress-fill" style={{
+                          width: `${pct}%`,
+                          background: pct === 100 ? 'var(--green)' : 'linear-gradient(90deg, var(--accent), #7c3aed)',
+                          boxShadow: '0 0 10px rgba(44,88,255,0.2)'
+                        }} />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -166,7 +109,7 @@ export default function StudentDetail() {
               <div className="dashboard-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {studentCourses.length > 0 ? (
                   studentCourses.map(c => {
-                    const progress = getMockProgress(student.id, c.id);
+                    const progress = progressMap[c.id] ?? 0;
                     return (
                       <div key={c.id} className="gradient-border-card" style={{ padding: '24px', background: 'var(--surface1)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -195,7 +138,7 @@ export default function StudentDetail() {
                     );
                   })
                 ) : (
-                  <p style={{ textAlign: 'center', color: 'var(--text3)', padding: '40px' }}>This student has not enrolled in any courses yet.</p>
+                  <p style={{ textAlign: 'center', color: 'var(--text3)', padding: '40px' }}>This student has not started any courses yet.</p>
                 )}
               </div>
             </div>
@@ -218,22 +161,32 @@ export default function StudentDetail() {
                 }}>
                   {student.name.charAt(0)}
                 </div>
-                <h4 style={{ margin: '0 0 8px' }}>{student.name}</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
+                <h4 style={{ margin: '0 0 4px' }}>{student.name}</h4>
+                <p style={{ color: 'var(--text3)', fontSize: '0.85rem', marginBottom: '16px' }}>{student.email}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '12px 16px', borderRadius: '12px' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>Commitment</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>High</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>Joined</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>{formatDate(student.createdAt)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '12px 16px', borderRadius: '12px' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>Quiz Accuracy</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>92%</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>Courses Active</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>{studentCourses.length}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '12px 16px', borderRadius: '12px' }}>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>Total Active</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>{formatTime(totalMinutes)}</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>Completed</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--green)' }}>
+                      {Object.values(progressMap).filter(p => p === 100).length}
+                    </span>
                   </div>
+                  {student.dob && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '12px 16px', borderRadius: '12px' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text3)' }}>D.O.B</span>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>
+                        {new Date(student.dob).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <button className="btn-primary" style={{ width: '100%', marginTop: '32px', borderRadius: '12px' }}>Send Message</button>
               </div>
             </div>
           </div>

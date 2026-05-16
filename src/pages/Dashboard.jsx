@@ -11,32 +11,40 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [courses, setCourses] = useState([]);
   const [activeTab, setActiveTab] = useState('overview');
+  const [progressTick, setProgressTick] = useState(0); // incremented after Firestore sync
 
   useEffect(() => {
     const u = Auth.getUser();
     if (!u) { navigate('/login'); return; }
     setUser(u);
 
-    // Fetch full profile from Firestore to get dob and other fields
+    // Fetch full profile from Firestore
     Auth.getProfile().then(profile => {
       if (profile) setUser(prev => ({ ...prev, ...profile }));
     }).catch(() => {});
 
-    // Initial sync
-    Progress.syncAll();
-
-    fetchCourses().then(data => {
-      if (data?.courses) setCourses(data.courses);
-    });
+    // Sync Firestore progress into localStorage FIRST, then load courses
+    // so Progress.getPercent() reads the real synced values on first render
+    Progress.syncAll()
+      .then(() => setProgressTick(t => t + 1)) // force re-render with synced data
+      .catch(() => {})
+      .finally(() => {
+        fetchCourses().then(data => {
+          if (data?.courses) setCourses(data.courses);
+        });
+      });
   }, []);
 
   if (!user) return null;
 
+  // Re-computed every time courses load OR after Firestore sync completes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const completedCourses = courses.filter(c => Progress.getPercent(c.id, c.lessons) === 100);
   const ongoingCourses = courses.filter(c => {
     const p = Progress.getPercent(c.id, c.lessons);
     return p > 0 && p < 100;
   });
+  void progressTick; // consumed so eslint doesn't warn about unused var
 
   const stats = [
     { label: 'Completed', value: completedCourses.length, icon: '🏆', color: '#22c55e' },
@@ -74,11 +82,11 @@ export default function Dashboard() {
 
         <div className="container dashboard-body" style={{ paddingBottom: '60px' }}>
           {/* STATS GRID */}
-          <div className="stats-grid" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-            gap: '24px', 
-            marginBottom: '48px' 
+          <div className="stats-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '24px',
+            marginBottom: '48px'
           }}>
             {stats.map((s, idx) => (
               <div key={s.label} className="dashboard-card animate-in" style={{ animationDelay: `${idx * 0.1}s` }}>
@@ -110,8 +118,8 @@ export default function Dashboard() {
                           <span style={{ color: 'var(--accent)', fontWeight: 900 }}>{p}%</span>
                         </div>
                         <div className="progress-bar" style={{ height: '12px', background: 'var(--surface2)', borderRadius: '20px', overflow: 'hidden' }}>
-                          <div className="progress-fill" style={{ 
-                            width: `${p}%`, 
+                          <div className="progress-fill" style={{
+                            width: `${p}%`,
                             background: 'linear-gradient(90deg, var(--accent), #7c3aed)',
                             boxShadow: '0 0 10px rgba(44, 88, 255, 0.3)'
                           }}></div>
@@ -131,13 +139,13 @@ export default function Dashboard() {
                   </h3>
                   <div className="dashboard-card">
                     {completedCourses.map(c => (
-                      <div key={c.id} style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center', 
-                        marginBottom: '16px', 
-                        padding: '16px', 
-                        background: 'var(--accent-light)', 
+                      <div key={c.id} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '16px',
+                        padding: '16px',
+                        background: 'var(--accent-light)',
                         borderRadius: '16px',
                         border: '1px solid var(--border)'
                       }}>
@@ -147,12 +155,12 @@ export default function Dashboard() {
                           </div>
                           <span style={{ fontWeight: 800 }}>{c.title}</span>
                         </div>
-                        <span style={{ 
-                          color: 'var(--green)', 
-                          fontWeight: 900, 
-                          fontSize: '0.7rem', 
-                          background: 'white', 
-                          padding: '6px 14px', 
+                        <span style={{
+                          color: 'var(--green)',
+                          fontWeight: 900,
+                          fontSize: '0.7rem',
+                          background: 'white',
+                          padding: '6px 14px',
                           borderRadius: '100px',
                           boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
                         }}>CERTIFIED</span>
@@ -166,17 +174,17 @@ export default function Dashboard() {
             <div className="animate-in" style={{ flex: '1', minWidth: '300px', animationDelay: '0.4s' }}>
               <h3 style={{ marginBottom: '24px' }}>Expert Identity</h3>
               <div className="dashboard-card" style={{ textAlign: 'center' }}>
-                <div style={{ 
-                  width: '100px', 
-                  height: '100px', 
-                  borderRadius: '30px', 
-                  background: 'linear-gradient(135deg, var(--accent), #7c3aed)', 
-                  color: 'white', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  fontSize: '2.5rem', 
-                  fontWeight: 900, 
+                <div style={{
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '30px',
+                  background: 'linear-gradient(135deg, var(--accent), #7c3aed)',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2.5rem',
+                  fontWeight: 900,
                   margin: '0 auto 20px',
                   boxShadow: '0 10px 25px rgba(44, 88, 255, 0.4)',
                   transform: 'rotate(-5deg)'

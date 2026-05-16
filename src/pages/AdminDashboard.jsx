@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { Auth, MOCK_STUDENTS, fetchCourses } from '../utils/auth';
+import { Auth, fetchCourses, fetchStudents } from '../utils/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AdminStore } from '../utils/adminStore';
@@ -11,7 +11,8 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [students, setStudents] = useState(MOCK_STUDENTS || []);
+  const [students, setStudents] = useState([]);
+  const [loadingStudents, setLoadingStudents] = useState(true);
 
   useEffect(() => {
     const u = Auth.getUser();
@@ -20,13 +21,21 @@ export default function AdminDashboard() {
 
     const data = AdminStore.getCourses();
     setCourses(data);
+
+    // Fetch real students from Firestore
+    fetchStudents()
+      .then(list => setStudents(list))
+      .catch(() => setStudents([]))
+      .finally(() => setLoadingStudents(false));
   }, []);
 
   if (!user) return null;
 
+  const activeCourses = courses.filter(c => !c.hidden);
+
   const stats = [
     { label: 'Total Students', value: students.length, icon: '👥', color: '#6366f1', path: null },
-    { label: 'Active Courses', value: courses.length, icon: '📚', color: '#8b5cf6', path: '/admin/courses' },
+    { label: 'Active Courses', value: activeCourses.length, icon: '📚', color: '#8b5cf6', path: '/admin/courses' },
   ];
 
   return (
@@ -107,30 +116,46 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {students.map((student, idx) => (
-                      <tr key={idx} style={{ borderBottom: idx === students.length - 1 ? 'none' : '1px solid var(--border)' }}>
-                        <td style={{ padding: '20px 24px', fontWeight: 800 }}>{student.name}</td>
-                        <td style={{ padding: '20px 24px', color: 'var(--text2)' }}>{student.email}</td>
-                        <td style={{ padding: '20px 24px', color: 'var(--text3)' }}>{new Date(student.createdAt).toLocaleDateString()}</td>
-                        <td style={{ padding: '20px 24px' }}>
-                          <span style={{ 
-                            background: 'var(--accent-light)', 
-                            color: 'var(--accent)', 
-                            padding: '4px 12px', 
-                            borderRadius: '100px', 
-                            fontSize: '0.75rem', 
-                            fontWeight: 900 
-                          }}>
-                            {student.stats.attendedCourses} Courses
-                          </span>
-                        </td>
-                        <td style={{ padding: '20px 24px' }}>
-                          <Link to={`/admin/student/${student.id}`} className="start-link" style={{ fontSize: '0.85rem', fontWeight: 800 }}>
-                            Detail →
-                          </Link>
+                    {loadingStudents ? (
+                      <tr>
+                        <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: 'var(--text3)' }}>
+                          ⏳ Loading students...
                         </td>
                       </tr>
-                    ))}
+                    ) : students.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: 'var(--text3)' }}>
+                          No students registered yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      students.map((student, idx) => (
+                        <tr key={student.id} style={{ borderBottom: idx === students.length - 1 ? 'none' : '1px solid var(--border)' }}>
+                          <td style={{ padding: '20px 24px', fontWeight: 800 }}>{student.name}</td>
+                          <td style={{ padding: '20px 24px', color: 'var(--text2)' }}>{student.email}</td>
+                          <td style={{ padding: '20px 24px', color: 'var(--text3)' }}>
+                            {new Date(student.createdAt).toLocaleDateString()}
+                          </td>
+                          <td style={{ padding: '20px 24px' }}>
+                            <span style={{ 
+                              background: 'var(--accent-light)', 
+                              color: 'var(--accent)', 
+                              padding: '4px 12px', 
+                              borderRadius: '100px', 
+                              fontSize: '0.75rem', 
+                              fontWeight: 900 
+                            }}>
+                              {student.courseCount} Courses
+                            </span>
+                          </td>
+                          <td style={{ padding: '20px 24px' }}>
+                            <Link to={`/admin/student/${student.id}`} className="start-link" style={{ fontSize: '0.85rem', fontWeight: 800 }}>
+                              Detail →
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

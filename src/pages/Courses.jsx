@@ -47,10 +47,132 @@ export default function Courses() {
         <Header showBrand />
 
         <div className="page-header premium-mesh-bg animate-in">
-          <div className="container" style={{ textAlign: 'left' }}>
-            <span className="section-tag">Explore Curriculum</span>
-            <h1 className="text-glow">Learn Any Language, <span className="gradient-text">Free Forever</span></h1>
-            <p style={{ maxWidth: '700px', fontSize: '1.2rem' }}>Master the most in-demand tech skills with our industry-leading, structured learning paths.</p>
+          <div className="container">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px' }}>
+              {/* LEFT — text */}
+              <div style={{ textAlign: 'left', maxWidth: '560px' }}>
+                <span className="section-tag">Explore Curriculum</span>
+                <h1 className="text-glow" style={{ margin: '12px 0' }}>
+                  Learn Any Language, <span className="gradient-text">Free Forever</span>
+                </h1>
+                <p style={{ fontSize: '1.1rem', color: 'var(--text2)', lineHeight: '1.7', margin: 0 }}>
+                  Master the most in-demand tech skills with our industry-leading, structured learning paths.
+                </p>
+              </div>
+
+              {/* RIGHT — clockwise orbiting tech badges */}
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {(() => {
+                const LANGS = [
+                  { label: 'Python',  icon: '🐍', color: '#3776ab' },
+                  { label: 'JS',      icon: '⚡', color: '#f7df1e' },
+                  { label: 'Java',    icon: '☕', color: '#f89820' },
+                  { label: 'C++',     icon: '⚙️', color: '#00599c' },
+                  { label: 'React',   icon: '⚛️', color: '#61dafb' },
+                  { label: 'SQL',     icon: '🗄️', color: '#f44336' },
+                  { label: 'HTML',    icon: '🌐', color: '#e44d26' },
+                  { label: 'Node',    icon: '🟢', color: '#68a063' },
+                ];
+                const N = LANGS.length;
+                const SIZE = 280;   // container px
+                const R    = 108;   // orbit radius
+                const C    = SIZE / 2;
+                const BADGE = 52;
+
+                return (
+                  <div style={{ position: 'relative', width: SIZE, height: SIZE, flexShrink: 0 }}>
+                    {/* LearnCode logo in center */}
+                    <div style={{
+                      position: 'absolute',
+                      top: C - 32, left: C - 32,
+                      width: 64, height: 64,
+                      borderRadius: '20px',
+                      background: 'linear-gradient(135deg, #2c58ff, #6366f1)',
+                      boxShadow: '0 0 32px #2c58ff80, 0 0 64px #6366f130, 0 8px 24px rgba(44,88,255,0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 900,
+                      fontSize: '1.4rem',
+                      fontFamily: 'monospace',
+                      letterSpacing: '-1px',
+                      zIndex: 10,
+                      border: '2px solid rgba(255,255,255,0.2)',
+                    }}>
+                      {'</>'}
+                    </div>
+
+                    {/* orbit ring (faint) */}
+                    <div style={{
+                      position: 'absolute',
+                      top: C - R - 1, left: C - R - 1,
+                      width: R * 2 + 2, height: R * 2 + 2,
+                      borderRadius: '50%',
+                      border: '1px dashed rgba(255,255,255,0.12)',
+                    }} />
+
+                    {/* rotating wrapper */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      animation: 'orbit-cw 16s linear infinite',
+                    }}>
+                      {LANGS.map((lang, i) => {
+                        const angle = (i / N) * 2 * Math.PI - Math.PI / 2;
+                        const cx = C + R * Math.cos(angle);
+                        const cy = C + R * Math.sin(angle);
+                        return (
+                          <div
+                            key={lang.label}
+                            style={{
+                              position: 'absolute',
+                              top: cy - BADGE / 2,
+                              left: cx - BADGE / 2,
+                              width: BADGE,
+                              height: BADGE,
+                              animation: 'counter-cw 16s linear infinite',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}
+                          >
+                            <div style={{
+                              width: BADGE,
+                              height: BADGE,
+                              borderRadius: '16px',
+                              background: `linear-gradient(135deg, ${lang.color}30, ${lang.color}12)`,
+                              border: `1.5px solid ${lang.color}60`,
+                              boxShadow: `0 0 16px ${lang.color}50`,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '1.35rem',
+                              backdropFilter: 'blur(10px)',
+                              cursor: 'default',
+                            }}>
+                              {lang.icon}
+                            </div>
+                            <span style={{
+                              fontSize: '0.58rem',
+                              fontWeight: 800,
+                              color: 'rgba(255,255,255,0.6)',
+                              letterSpacing: '0.5px',
+                              textTransform: 'uppercase',
+                              whiteSpace: 'nowrap',
+                            }}>
+                              {lang.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+              </div>
+
+            </div>
           </div>
         </div>
 

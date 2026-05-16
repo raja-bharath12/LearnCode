@@ -178,30 +178,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* TESTIMONIALS */}
-        <section className="section section-dark">
-          <div className="container">
-            <div className="section-header animate-in">
-              <span className="section-tag">Community</span>
-              <h2 className="text-glow">What Our Learners Say</h2>
-            </div>
-            <div className="testimonials-grid">
-              {[
-                { init: 'AK', name: 'Arjun Kumar', role: 'Frontend Dev @ Startup', quote: '"LearnCode helped me go from zero to landing my first developer job in 8 months. The projects made all the difference."' },
-                { init: 'PS', name: 'Priya Sharma', role: 'Data Analyst', quote: '"I tried many platforms. LearnCode is the only one that felt like it was designed for actual learning, not just content consumption."' },
-                { init: 'MR', name: 'Mohamed Rafi', role: 'CS Student', quote: '"The in-browser code editor is amazing. No setup headaches — I can code on my phone during my commute!"' },
-              ].map((t, i) => (
-                <div key={i} className="dashboard-card animate-in" style={{ animationDelay: `${i * 0.1}s`, textAlign: 'left' }}>
-                  <p style={{ fontStyle: 'italic', color: 'var(--text)', fontSize: '1rem', lineHeight: '1.7', marginBottom: '24px' }}>{t.quote}</p>
-                  <div className="testimonial-author">
-                    <div className={`avatar av${i+1}`} style={{ width: '50px', height: '50px', borderRadius: '15px' }}>{t.init}</div>
-                    <div><strong style={{ fontWeight: 800 }}>{t.name}</strong><br /><small style={{ color: 'var(--text3)' }}>{t.role}</small></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* CTA BANNER */}
         <section className="cta-banner premium-mesh-bg animate-in">

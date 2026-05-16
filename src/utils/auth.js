@@ -258,3 +258,70 @@ export const Progress = {
 
 // Keep apiRequest stub so adminStore doesn't break
 export async function apiRequest() { return { ok: false }; }
+
+// ─── Fetch all real students from Firestore ───────────────────
+export async function fetchStudents() {
+  try {
+    const q = query(collection(db, 'users'), where('role', '==', 'student'));
+    const snap = await getDocs(q);
+    const students = snap.docs.map(d => {
+      const data = d.data();
+      return {
+        id: d.id,
+        name: data.name || data.email?.split('@')[0] || 'Unknown',
+        email: data.email || '',
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+        role: data.role,
+        dob: data.dob || '',
+        courseCount: 0,   // will be populated below
+        progressDocs: [], // will be populated below
+      };
+    });
+
+    // Fetch progress for each student to compute course counts
+    await Promise.all(students.map(async (s) => {
+      try {
+        const pq = query(collection(db, 'progress'), where('userId', '==', s.id));
+        const pSnap = await getDocs(pq);
+        s.courseCount = pSnap.size;
+        s.progressDocs = pSnap.docs.map(d => d.data());
+      } catch {
+        s.courseCount = 0;
+        s.progressDocs = [];
+      }
+    }));
+
+    return students;
+  } catch (e) {
+    console.warn('fetchStudents failed:', e.message);
+    return [];
+  }
+}
+
+// ─── Fetch a single student + their progress from Firestore ──
+export async function fetchStudentById(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'users', uid));
+    if (!snap.exists()) return null;
+    const data = snap.data();
+    const student = {
+      id: snap.id,
+      name: data.name || data.email?.split('@')[0] || 'Unknown',
+      email: data.email || '',
+      createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+      role: data.role,
+      dob: data.dob || '',
+      progressDocs: [],
+    };
+
+    // Fetch all progress docs for this student
+    const pq = query(collection(db, 'progress'), where('userId', '==', uid));
+    const pSnap = await getDocs(pq);
+    student.progressDocs = pSnap.docs.map(d => d.data());
+
+    return student;
+  } catch (e) {
+    console.warn('fetchStudentById failed:', e.message);
+    return null;
+  }
+}

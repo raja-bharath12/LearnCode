@@ -1,5 +1,5 @@
 // src/pages/Lesson.jsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { Progress } from '../utils/auth';
@@ -28,7 +28,11 @@ export default function Lesson() {
   const navigate = useNavigate();
   const courseId = parseInt(searchParams.get('course')) || 1;
   const course = AdminStore.getCourse(courseId) || COURSES[courseId] || COURSES[1];
-  const lessonsList = course.lessons_list || (Array.isArray(course.lessons) ? course.lessons : []);
+  // Memoised so its reference stays stable across renders (prevents timer reset)
+  const lessonsList = useMemo(
+    () => course.lessons_list || (Array.isArray(course.lessons) ? course.lessons : []),
+    [courseId] // only recompute when the course changes
+  );
 
   const [currentLesson, setCurrentLesson] = useState(0);
   const [code, setCode] = useState('');
@@ -37,6 +41,7 @@ export default function Lesson() {
   const [fullscreen, setFullscreen] = useState(false);
   const [fetchedContent, setFetchedContent] = useState('');
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
+  const [isTimerActive, setIsTimerActive] = useState(false);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const [isCompletedLocally, setIsCompletedLocally] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(Progress.get(courseId));
@@ -90,7 +95,7 @@ export default function Lesson() {
     return;
   }, [currentLesson, courseId]);
 
-  // TIMER LOGIC
+  // TIMER INIT — runs when the lesson or course changes
   useEffect(() => {
     const lesson = lessonsList[currentLesson];
     const isDone = Progress.get(courseId).includes(lesson?.id);
@@ -98,28 +103,35 @@ export default function Lesson() {
 
     if (isDone) {
       setTimeLeft(0);
+      setIsTimerActive(false);
       setHasReachedBottom(true);
       setIsCompletedLocally(true);
     } else {
-      setTimeLeft(savedTime !== null ? savedTime : 120);
+      const t = savedTime !== null ? savedTime : 120;
+      setTimeLeft(t);
+      setIsTimerActive(t > 0);
       setHasReachedBottom(false);
       setIsCompletedLocally(false);
     }
     setCompletedLessons(Progress.get(courseId));
   }, [currentLesson, courseId, lessonsList]);
 
+  // TIMER COUNTDOWN — stable interval that doesn't restart every second
   useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setInterval(() => {
-        setTimeLeft(t => {
-          const next = t - 1;
-          Progress.saveTimer(courseId, lessonsList[currentLesson]?.id, next);
-          return next;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [timeLeft, courseId, currentLesson, lessonsList]);
+    if (!isTimerActive) return;
+    const interval = setInterval(() => {
+      setTimeLeft(t => {
+        const next = t - 1;
+        const lesson = lessonsList[currentLesson];
+        if (lesson?.id !== undefined) {
+          Progress.saveTimer(courseId, lesson.id, next);
+        }
+        if (next <= 0) setIsTimerActive(false);
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isTimerActive, courseId, currentLesson, lessonsList]);
 
   // SCROLL DETECTION
   const handleScroll = () => {
