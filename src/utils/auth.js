@@ -162,6 +162,7 @@ export const MOCK_STUDENTS = [
 ];
 
 export async function fetchCourses({ includeHidden = false } = {}) {
+  await AdminStore.syncCourses();
   const all = AdminStore.getCourses();
   const courses = includeHidden ? all : all.filter(c => !c.hidden);
   return { courses };

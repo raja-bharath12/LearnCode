@@ -18,8 +18,10 @@ export default function AdminCourseManage() {
       navigate('/login');
       return;
     }
-    setCourses(AdminStore.getCourses());
-    setLoading(false);
+    AdminStore.syncCourses().then(() => {
+      setCourses(AdminStore.getCourses());
+      setLoading(false);
+    });
   }, [navigate]);
 
   const toggleVisibility = (id, currentHidden) => {

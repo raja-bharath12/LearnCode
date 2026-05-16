@@ -21,6 +21,9 @@ export default function AdminDashboard() {
 
     const data = AdminStore.getCourses();
     setCourses(data);
+    AdminStore.syncCourses().then(() => {
+      setCourses(AdminStore.getCourses());
+    });
 
     // Fetch real students from Firestore
     fetchStudents()

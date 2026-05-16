@@ -21,14 +21,16 @@ export default function AdminCourseEdit() {
       navigate('/login');
       return;
     }
-    const c = AdminStore.getCourse(id);
-    if (!c) {
-      navigate('/admin/courses');
-      return;
-    }
-    setCourse(c);
-    setLessons(c.lessons_list || []);
-    setMetadata({ title: c.title, language: c.language, description: c.description || '' });
+    AdminStore.syncCourses().then(() => {
+      const c = AdminStore.getCourse(id);
+      if (!c) {
+        navigate('/admin/courses');
+        return;
+      }
+      setCourse(c);
+      setLessons(c.lessons_list || []);
+      setMetadata({ title: c.title, language: c.language, description: c.description || '' });
+    });
   }, [id, navigate]);
 
   const saveMetadata = () => {

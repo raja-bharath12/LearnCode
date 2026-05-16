@@ -1,6 +1,6 @@
 // src/utils/adminStore.js — Firestore-backed admin data store
 
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, getDocs, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { MOCK_COURSES } from './auth';
 import { COURSES } from './courseData';
@@ -11,6 +11,22 @@ const LS_LESSONS  = 'lc_admin_lesson_content';
 export const AdminStore = {
 
   // ─── COURSES ────────────────────────────────────────────────
+
+  async syncCourses() {
+    try {
+      const snap = await getDocs(collection(db, 'courses'));
+      const overrides = JSON.parse(localStorage.getItem(LS_COURSES)) || {};
+      snap.forEach(doc => {
+        const data = doc.data();
+        if (data.updatedAt) delete data.updatedAt; // Don't store timestamp object in local storage
+        overrides[doc.id] = { ...overrides[doc.id], ...data };
+      });
+      localStorage.setItem(LS_COURSES, JSON.stringify(overrides));
+    } catch (e) {
+      console.warn('Firestore courses sync failed:', e);
+    }
+  },
+
 
   getCourses() {
     const overrides = JSON.parse(localStorage.getItem(LS_COURSES)) || {};
