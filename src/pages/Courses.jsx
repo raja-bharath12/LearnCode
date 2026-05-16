@@ -40,6 +40,30 @@ export default function Courses() {
     );
   });
 
+  // Orbit data — pre-computed so JSX stays clean
+  const ORBIT_LANGS = [
+    { label: 'Python', icon: '🐍', color: '#3776ab' },
+    { label: 'JS',     icon: '⚡',    color: '#f7df1e' },
+    { label: 'Java',   icon: '☕',    color: '#f89820' },
+    { label: 'C++',    icon: '⚙️',  color: '#00599c' },
+    { label: 'React',  icon: '⚛️',  color: '#61dafb' },
+    { label: 'SQL',    icon: '🗄️',  color: '#f44336' },
+    { label: 'HTML',   icon: '🌐',   color: '#e44d26' },
+    { label: 'Node',   icon: '🟢',   color: '#68a063' },
+  ];
+  const ORBIT_SIZE = 280;
+  const ORBIT_R    = 108;
+  const ORBIT_C    = ORBIT_SIZE / 2;
+  const BADGE_SIZE = 52;
+  const orbitBadges = ORBIT_LANGS.map((lang, i) => {
+    const angle = (i / ORBIT_LANGS.length) * 2 * Math.PI - Math.PI / 2;
+    return {
+      ...lang,
+      top:  ORBIT_C + ORBIT_R * Math.sin(angle) - BADGE_SIZE / 2,
+      left: ORBIT_C + ORBIT_R * Math.cos(angle) - BADGE_SIZE / 2,
+    };
+  });
+
   return (
     <div className="app-container">
       <Sidebar />
@@ -62,114 +86,69 @@ export default function Courses() {
 
               {/* RIGHT — clockwise orbiting tech badges */}
               <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {(() => {
-                const LANGS = [
-                  { label: 'Python',  icon: '🐍', color: '#3776ab' },
-                  { label: 'JS',      icon: '⚡', color: '#f7df1e' },
-                  { label: 'Java',    icon: '☕', color: '#f89820' },
-                  { label: 'C++',     icon: '⚙️', color: '#00599c' },
-                  { label: 'React',   icon: '⚛️', color: '#61dafb' },
-                  { label: 'SQL',     icon: '🗄️', color: '#f44336' },
-                  { label: 'HTML',    icon: '🌐', color: '#e44d26' },
-                  { label: 'Node',    icon: '🟢', color: '#68a063' },
-                ];
-                const N = LANGS.length;
-                const SIZE = 280;   // container px
-                const R    = 108;   // orbit radius
-                const C    = SIZE / 2;
-                const BADGE = 52;
+                <div style={{ position: 'relative', width: ORBIT_SIZE, height: ORBIT_SIZE, flexShrink: 0 }}>
 
-                return (
-                  <div style={{ position: 'relative', width: SIZE, height: SIZE, flexShrink: 0 }}>
-                    {/* LearnCode logo in center */}
-                    <div style={{
-                      position: 'absolute',
-                      top: C - 32, left: C - 32,
-                      width: 64, height: 64,
-                      borderRadius: '20px',
-                      background: 'linear-gradient(135deg, #2c58ff, #6366f1)',
-                      boxShadow: '0 0 32px #2c58ff80, 0 0 64px #6366f130, 0 8px 24px rgba(44,88,255,0.5)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 900,
-                      fontSize: '1.4rem',
-                      fontFamily: 'monospace',
-                      letterSpacing: '-1px',
-                      zIndex: 10,
-                      border: '2px solid rgba(255,255,255,0.2)',
-                    }}>
-                      {'</>'}
-                    </div>
-
-                    {/* orbit ring (faint) */}
-                    <div style={{
-                      position: 'absolute',
-                      top: C - R - 1, left: C - R - 1,
-                      width: R * 2 + 2, height: R * 2 + 2,
-                      borderRadius: '50%',
-                      border: '1px dashed rgba(255,255,255,0.12)',
-                    }} />
-
-                    {/* rotating wrapper */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      animation: 'orbit-cw 16s linear infinite',
-                    }}>
-                      {LANGS.map((lang, i) => {
-                        const angle = (i / N) * 2 * Math.PI - Math.PI / 2;
-                        const cx = C + R * Math.cos(angle);
-                        const cy = C + R * Math.sin(angle);
-                        return (
-                          <div
-                            key={lang.label}
-                            style={{
-                              position: 'absolute',
-                              top: cy - BADGE / 2,
-                              left: cx - BADGE / 2,
-                              width: BADGE,
-                              height: BADGE,
-                              animation: 'counter-cw 16s linear infinite',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              gap: '4px',
-                            }}
-                          >
-                            <div style={{
-                              width: BADGE,
-                              height: BADGE,
-                              borderRadius: '16px',
-                              background: `linear-gradient(135deg, ${lang.color}30, ${lang.color}12)`,
-                              border: `1.5px solid ${lang.color}60`,
-                              boxShadow: `0 0 16px ${lang.color}50`,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '1.35rem',
-                              backdropFilter: 'blur(10px)',
-                              cursor: 'default',
-                            }}>
-                              {lang.icon}
-                            </div>
-                            <span style={{
-                              fontSize: '0.58rem',
-                              fontWeight: 800,
-                              color: 'rgba(255,255,255,0.6)',
-                              letterSpacing: '0.5px',
-                              textTransform: 'uppercase',
-                              whiteSpace: 'nowrap',
-                            }}>
-                              {lang.label}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                  {/* LearnCode logo in center */}
+                  <div style={{
+                    position: 'absolute',
+                    top: ORBIT_C - 32, left: ORBIT_C - 32,
+                    width: 64, height: 64,
+                    borderRadius: '20px',
+                    background: 'linear-gradient(135deg, #2c58ff, #6366f1)',
+                    boxShadow: '0 0 32px #2c58ff80, 0 0 64px #6366f130, 0 8px 24px rgba(44,88,255,0.5)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'white', fontWeight: 900, fontSize: '1.4rem',
+                    fontFamily: 'monospace', letterSpacing: '-1px',
+                    zIndex: 10, border: '2px solid rgba(255,255,255,0.2)',
+                  }}>
+                    &lt;/&gt;
                   </div>
-                );
-              })()}
+
+                  {/* orbit ring */}
+                  <div style={{
+                    position: 'absolute',
+                    top: ORBIT_C - ORBIT_R - 1, left: ORBIT_C - ORBIT_R - 1,
+                    width: ORBIT_R * 2 + 2, height: ORBIT_R * 2 + 2,
+                    borderRadius: '50%',
+                    border: '1px dashed rgba(255,255,255,0.12)',
+                  }} />
+
+                  {/* rotating ring wrapper */}
+                  <div style={{ position: 'absolute', inset: 0, animation: 'orbit-cw 16s linear infinite' }}>
+                    {orbitBadges.map(lang => (
+                      <div
+                        key={lang.label}
+                        style={{
+                          position: 'absolute',
+                          top: lang.top, left: lang.left,
+                          width: BADGE_SIZE, height: BADGE_SIZE,
+                          animation: 'counter-cw 16s linear infinite',
+                          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+                        }}
+                      >
+                        <div style={{
+                          width: BADGE_SIZE, height: BADGE_SIZE,
+                          borderRadius: '16px',
+                          background: `linear-gradient(135deg, ${lang.color}30, ${lang.color}12)`,
+                          border: `1.5px solid ${lang.color}60`,
+                          boxShadow: `0 0 16px ${lang.color}50`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '1.35rem', backdropFilter: 'blur(10px)', cursor: 'default',
+                        }}>
+                          {lang.icon}
+                        </div>
+                        <span style={{
+                          fontSize: '0.58rem', fontWeight: 800,
+                          color: 'rgba(255,255,255,0.6)',
+                          letterSpacing: '0.5px', textTransform: 'uppercase', whiteSpace: 'nowrap',
+                        }}>
+                          {lang.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
               </div>
 
             </div>
