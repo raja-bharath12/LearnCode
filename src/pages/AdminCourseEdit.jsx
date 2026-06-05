@@ -16,12 +16,14 @@ export default function AdminCourseEdit() {
   const [metadata, setMetadata] = useState({ title: '', language: '', description: '' });
 
   useEffect(() => {
+    let isMounted = true;
     const user = Auth.getUser();
     if (!user || user.role !== 'admin') {
       navigate('/login');
       return;
     }
     AdminStore.syncCourses().then(() => {
+      if (!isMounted) return;
       const c = AdminStore.getCourse(id);
       if (!c) {
         navigate('/admin/courses');
@@ -29,8 +31,9 @@ export default function AdminCourseEdit() {
       }
       setCourse(c);
       setLessons(c.lessons_list || []);
-      setMetadata({ title: c.title, language: c.language, description: c.description || '' });
+      setMetadata({ title: c.title || '', language: c.language || '', description: c.description || '' });
     });
+    return () => { isMounted = false; };
   }, [id, navigate]);
 
   const saveMetadata = () => {

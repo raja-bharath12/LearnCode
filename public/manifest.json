@@ -1,0 +1,24 @@
+{
+  "short_name": "LearnCode",
+  "name": "LearnCode — Free Programming Courses",
+  "description": "Interactive online code editor and comprehensive programming lessons for web development and software engineering.",
+  "icons": [
+    {
+      "src": "/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#f8faff",
+  "theme_color": "#2c58ff",
+  "display": "standalone",
+  "orientation": "any"
+}
