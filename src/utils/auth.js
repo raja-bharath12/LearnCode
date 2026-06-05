@@ -82,12 +82,18 @@ export const Auth = {
     const ADMIN_EMAILS = ['bharathraja171@gmail.com'];
     const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
 
+    if (profile.isBlocked && !isAdmin) {
+      await signOut(auth);
+      throw new Error('Your account has been temporarily blocked by an administrator.');
+    }
+
     const token = await cred.user.getIdToken();
     const userObj = {
       id: uid,
       name: profile.name || cred.user.displayName || email.split('@')[0],
       email,
       role: isAdmin ? 'admin' : (profile.role || 'student'),
+      isBlocked: profile.isBlocked || false,
       token,
     };
 
@@ -312,6 +318,7 @@ export async function fetchStudentById(uid) {
       createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
       role: data.role,
       dob: data.dob || '',
+      isBlocked: !!data.isBlocked,
       progressDocs: [],
     };
 

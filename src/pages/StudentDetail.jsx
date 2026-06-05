@@ -1,10 +1,11 @@
-// src/pages/StudentDetail.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { Auth, fetchStudentById, fetchCourses } from '../utils/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { db } from '../lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 
 
@@ -31,6 +32,23 @@ export default function StudentDetail() {
   }, [id]);
 
   if (!user || !student) return null;
+
+  const handleToggleBlock = async () => {
+    const action = student.isBlocked ? 'unblock' : 'block';
+    if (window.confirm(`Are you sure you want to ${action} this student?`)) {
+      try {
+        await updateDoc(doc(db, 'users', student.id), { isBlocked: !student.isBlocked });
+        setStudent({ ...student, isBlocked: !student.isBlocked });
+        import('../components/Toast').then(({ showToast }) => showToast(`Student ${action}ed successfully.`, 'success'));
+      } catch (e) {
+        import('../components/Toast').then(({ showToast }) => showToast(`Failed to ${action} student.`, 'error'));
+      }
+    }
+  };
+
+  const handleExportPDF = () => {
+    window.print();
+  };
 
   // Build a map of courseId -> real progress % from Firestore progress docs
   const progressMap = {};
@@ -63,8 +81,34 @@ export default function StudentDetail() {
               </Link>
               <span className="section-tag">Student Intelligence</span>
             </div>
-            <h1 className="text-glow"><span className="gradient-text">{student.name}</span></h1>
-            <p style={{ color: 'var(--text2)' }}>{student.email} • Joined {new Date(student.createdAt).toLocaleDateString()}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px' }}>
+              <div>
+                <h1 className="text-glow"><span className="gradient-text">{student.name}</span></h1>
+                <p style={{ color: 'var(--text2)' }}>
+                  {student.email} • Joined {new Date(student.createdAt).toLocaleDateString()}
+                  {student.isBlocked && <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '10px' }}>[BLOCKED]</span>}
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button onClick={handleExportPDF} className="btn-alt" style={{ padding: '10px 20px', fontSize: '0.9rem', borderRadius: '12px', background: 'var(--surface2)' }}>
+                  📄 Export PDF
+                </button>
+                <button 
+                  onClick={handleToggleBlock} 
+                  className="btn-primary" 
+                  style={{ 
+                    padding: '10px 20px', 
+                    fontSize: '0.9rem', 
+                    borderRadius: '12px', 
+                    background: student.isBlocked ? '#22c55e' : '#ef4444', 
+                    border: 'none',
+                    boxShadow: 'none'
+                  }}
+                >
+                  {student.isBlocked ? '✅ Unblock Student' : '🚫 Block Student'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

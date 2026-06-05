@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { Progress } from '../utils/auth';
+import { Auth, Progress } from '../utils/auth';
 import { COURSES } from '../utils/courseData';
 import { AdminStore } from '../utils/adminStore';
 import { showToast } from '../components/Toast';
@@ -26,6 +26,20 @@ marked.setOptions({
 export default function Lesson() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const user = Auth.getUser();
+  let maintenanceMode = false;
+  try { maintenanceMode = JSON.parse(localStorage.getItem('lc_academy_settings'))?.maintenanceMode; } catch {}
+
+  useEffect(() => {
+    if (maintenanceMode && user?.role !== 'admin') {
+      showToast('Platform is under maintenance. Lessons and exams are temporarily unavailable.', 'error');
+      navigate('/courses');
+    }
+  }, [navigate, maintenanceMode, user?.role]);
+
+  if (maintenanceMode && user?.role !== 'admin') return null;
+
   const courseId = parseInt(searchParams.get('course')) || 1;
   const course = AdminStore.getCourse(courseId) || COURSES[courseId] || COURSES[1];
   // Memoised so its reference stays stable across renders (prevents timer reset)

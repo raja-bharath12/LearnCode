@@ -12,9 +12,10 @@ const SETTINGS_KEY = 'lc_academy_settings';
 function getSettings() {
   try {
     return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {
-      academyName: 'LearnCode Academy',
-      tagline: 'Master Any Language, Free Forever',
-      supportEmail: 'support@learncode.dev',
+      pointsPerLesson: 50,
+      streakMultiplier: 1.5,
+      enableLeaderboard: true,
+      issueCertificates: true,
       allowRegistrations: true,
       requireEmailVerification: false,
       maintenanceMode: false,
@@ -55,13 +56,16 @@ export default function AdminSettings() {
 
   const sections = [
     {
-      title: '🏫 Academy Identity',
-      icon: '🏫',
+      title: '🏆 Gamification & Rewards',
+      icon: '🏆',
       fields: [
-        { key: 'academyName', label: 'Academy Name', type: 'text', placeholder: 'LearnCode Academy' },
-        { key: 'tagline', label: 'Tagline', type: 'text', placeholder: 'Your academy tagline...' },
-        { key: 'supportEmail', label: 'Support Email', type: 'email', placeholder: 'support@academy.com' },
+        { key: 'pointsPerLesson', label: 'Points Per Lesson', type: 'number', placeholder: '50' },
+        { key: 'streakMultiplier', label: 'Streak Multiplier', type: 'number', placeholder: '1.5' },
       ],
+      toggles: [
+        { key: 'enableLeaderboard', label: 'Enable Leaderboards', desc: 'Allow students to see global rankings' },
+        { key: 'issueCertificates', label: 'Auto-Issue Certificates', desc: 'Generate certificates upon course completion' },
+      ]
     },
     {
       title: '🔐 Access Control',
@@ -157,21 +161,6 @@ export default function AdminSettings() {
                 ))}
               </div>
             ))}
-
-            {/* Danger Zone */}
-            <div className="animate-in dashboard-card" style={{ padding: '36px', border: '1px solid rgba(239,68,68,0.3)', animationDelay: '0.3s' }}>
-              <h3 style={{ marginBottom: '24px', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '10px', paddingBottom: '16px', borderBottom: '1px solid rgba(239,68,68,0.2)' }}>
-                🚨 Danger Zone
-              </h3>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                <button type="button" onClick={() => showToast('Reset not available in demo mode', 'error')} style={{ padding: '12px 24px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', fontSize: '0.9rem' }}>
-                  Reset All Progress Data
-                </button>
-                <button type="button" onClick={() => showToast('Export not available in demo mode', 'error')} style={{ padding: '12px 24px', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.3)', color: '#eab308', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', fontSize: '0.9rem' }}>
-                  Export All Student Data
-                </button>
-              </div>
-            </div>
 
             <button
               type="submit"

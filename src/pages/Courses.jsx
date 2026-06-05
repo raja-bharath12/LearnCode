@@ -1,10 +1,9 @@
-// src/pages/Courses.jsx
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { fetchCourses, Progress } from '../utils/auth';
+import { fetchCourses, Progress, Auth } from '../utils/auth';
 import { AdminStore } from '../utils/adminStore';
 
 const FILTERS = ['all','beginner','intermediate','advanced','Python','JavaScript','Java','C++','web','mobile','data','backend'];
@@ -179,6 +178,17 @@ export default function Courses() {
                     to={`/lesson?course=${c.id}`}
                     className="dashboard-card animate-in"
                     style={{ animationDelay: `${idx * 0.05}s`, padding: 0, overflow: 'hidden' }}
+                    onClick={(e) => {
+                      const user = Auth.getUser();
+                      let settings = {};
+                      try { settings = JSON.parse(localStorage.getItem('lc_academy_settings')) || {}; } catch {}
+                      if (settings.maintenanceMode && user?.role !== 'admin') {
+                        e.preventDefault();
+                        import('../components/Toast').then(({ showToast }) => {
+                          showToast('Platform is under maintenance. Lessons and exams are temporarily unavailable.', 'error');
+                        });
+                      }
+                    }}
                   >
                     <div className="course-card-top" style={{ background: `${c.color || 'var(--accent)'}15`, padding: '32px', borderBottom: '1px solid var(--border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -6,6 +6,7 @@ import { Auth, fetchCourses, fetchStudents } from '../utils/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AdminStore } from '../utils/adminStore';
+import { jsPDF } from 'jspdf';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function AdminDashboard() {
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
   const [loadingStudents, setLoadingStudents] = useState(true);
+  const [exportingPdf, setExportingPdf] = useState(false);
 
   useEffect(() => {
     const u = Auth.getUser();
@@ -31,6 +33,327 @@ export default function AdminDashboard() {
       .catch(() => setStudents([]))
       .finally(() => setLoadingStudents(false));
   }, []);
+
+  const handleExportPDF = () => {
+    if (students.length === 0) return;
+    setExportingPdf(true);
+    try {
+      const doc = new jsPDF('p', 'mm', 'a4');
+      
+      students.forEach((student, i) => {
+        if (i > 0) {
+          doc.addPage();
+        }
+        
+        // --- Page Decorative Framing ---
+        // Draw thin framing border (at 10mm margins)
+        doc.setDrawColor(226, 232, 240); // #e2e8f0
+        doc.setLineWidth(0.3);
+        doc.rect(10, 10, 190, 277, 'S');
+
+        // Corner decorative ticks
+        doc.setDrawColor(148, 163, 184); // #94a3b8
+        doc.setLineWidth(0.5);
+        // Top-left
+        doc.line(8, 10, 13, 10);
+        doc.line(10, 8, 10, 13);
+        // Top-right
+        doc.line(197, 10, 202, 10);
+        doc.line(200, 8, 200, 13);
+        // Bottom-left
+        doc.line(8, 287, 13, 287);
+        doc.line(10, 284, 10, 289);
+        // Bottom-right
+        doc.line(197, 287, 202, 287);
+        doc.line(200, 284, 200, 289);
+
+        // Top solid accent strip
+        doc.setFillColor(44, 88, 255); // #2c58ff
+        doc.rect(10, 10, 190, 3, 'F');
+
+        // --- 1. Page Header ---
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184); // #94a3b8
+        doc.text('LEARNCODE ACADEMY', 15, 20);
+
+        doc.setFont('Helvetica', 'normal');
+        doc.text('OFFICIAL RECORD // STUDENT PROGRESS REPORT', 195, 20, { align: 'right' });
+
+        doc.setDrawColor(226, 232, 240); // #e2e8f0
+        doc.setLineWidth(0.5);
+        doc.line(15, 23, 195, 23);
+        
+        // --- 2. Student Profile Hero Card ---
+        doc.setFillColor(248, 250, 252);
+        doc.setDrawColor(226, 232, 240);
+        doc.roundedRect(15, 28, 180, 42, 3, 3, 'FD');
+        
+        doc.setFillColor(44, 88, 255);
+        doc.roundedRect(15, 28, 3, 42, 3, 3, 'F');
+        doc.rect(17, 28, 1, 42, 'F'); // align square corner edge
+        
+        // Initial Avatar Circle
+        const avatarInitial = student.name.charAt(0).toUpperCase();
+        doc.setFillColor(224, 231, 255); // soft indigo background
+        doc.circle(30, 49, 8, 'F');
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(79, 70, 229); // #4f46e5
+        doc.text(avatarInitial, 30, 52.8, { align: 'center' });
+        
+        // Typography metadata columns
+        // Col 1 (x = 44)
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(100, 116, 139); // #64748b
+        doc.text('STUDENT PROFILE', 44, 35);
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(15, 23, 42); // #0f172a
+        doc.text(student.name, 44, 42);
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text('EMAIL ADDRESS', 44, 51);
+        
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(51, 65, 85); // #334155
+        doc.text(student.email, 44, 57);
+        
+        // Col 2 (x = 115)
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text('ENROLLMENT DATE', 115, 35);
+        
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(51, 65, 85);
+        const joinedDate = new Date(student.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        doc.text(joinedDate, 115, 42);
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text('DATE OF BIRTH', 115, 51);
+        
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(51, 65, 85);
+        const dobText = student.dob ? new Date(student.dob).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'NOT RECORDED';
+        doc.text(dobText, 115, 57);
+        
+        // --- 3. Academy Statistics Metrics Grid ---
+        const progressDocs = student.progressDocs || [];
+        const studentCourses = courses.filter(c => progressDocs.some(p => p.courseId === c.id));
+        
+        const completedCoursesCount = studentCourses.filter(c => {
+          const pDoc = progressDocs.find(p => p.courseId === c.id);
+          const totalLessons = c.lessons || c.lessons_list?.length || 0;
+          const completedCount = pDoc?.completedLessons?.length || 0;
+          return totalLessons > 0 && completedCount >= totalLessons;
+        }).length;
+
+        let avgProgress = 0;
+        if (studentCourses.length > 0) {
+          const totalPct = studentCourses.reduce((sum, c) => {
+            const pDoc = progressDocs.find(p => p.courseId === c.id);
+            const totalLessons = c.lessons || c.lessons_list?.length || 0;
+            const completedCount = pDoc?.completedLessons?.length || 0;
+            const pct = totalLessons > 0 ? Math.min(100, Math.round((completedCount / totalLessons) * 100)) : 0;
+            return sum + pct;
+          }, 0);
+          avgProgress = Math.round(totalPct / studentCourses.length);
+        }
+
+        // Card 1
+        doc.setFillColor(241, 245, 249); // #f1f5f9
+        doc.setDrawColor(226, 232, 240);
+        doc.roundedRect(15, 76, 56, 20, 2, 2, 'FD');
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(7);
+        doc.setTextColor(100, 116, 139);
+        doc.text('ACTIVE ENROLLMENTS', 43, 82, { align: 'center' });
+        doc.setFontSize(13);
+        doc.setTextColor(15, 23, 42);
+        doc.text(String(studentCourses.length), 43, 91, { align: 'center' });
+
+        // Card 2
+        doc.setFillColor(241, 245, 249);
+        doc.roundedRect(77, 76, 56, 20, 2, 2, 'FD');
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(7);
+        doc.setTextColor(100, 116, 139);
+        doc.text('COURSES COMPLETED', 105, 82, { align: 'center' });
+        doc.setFontSize(13);
+        doc.setTextColor(completedCoursesCount > 0 ? 22 : 15, completedCoursesCount > 0 ? 163 : 23, completedCoursesCount > 0 ? 74 : 42);
+        doc.text(String(completedCoursesCount), 105, 91, { align: 'center' });
+
+        // Card 3
+        doc.setFillColor(241, 245, 249);
+        doc.roundedRect(139, 76, 56, 20, 2, 2, 'FD');
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(7);
+        doc.setTextColor(100, 116, 139);
+        doc.text('AVERAGE PROGRESS', 167, 82, { align: 'center' });
+        doc.setFontSize(13);
+        doc.setTextColor(79, 70, 229);
+        doc.text(`${avgProgress}%`, 167, 91, { align: 'center' });
+        
+        // --- 4. Course Telemetry Table Section ---
+        doc.setFillColor(44, 88, 255);
+        doc.rect(15, 104, 3, 5, 'F');
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(15, 23, 42);
+        doc.text('DETAILED COURSE TELEMETRY & PROGRESS', 21, 108);
+
+        // Table Header
+        doc.setFillColor(30, 41, 59); // #1e293b
+        doc.roundedRect(15, 112, 180, 7, 1.5, 1.5, 'F');
+        doc.rect(15, 115, 180, 4, 'F'); // flatten bottom
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(7.5);
+        doc.setTextColor(255, 255, 255);
+        doc.text('COURSE TITLE', 18, 117);
+        doc.text('LANGUAGE', 68, 117);
+        doc.text('TIME SPENT', 86, 117);
+        doc.text('PROGRESS', 106, 117);
+        doc.text('TEST STATUS', 136, 117);
+        doc.text('STATUS', 158, 117);
+        doc.text('STATS', 192, 117, { align: 'right' });
+        
+        let rowY = 119;
+        if (studentCourses.length === 0) {
+          doc.setFillColor(248, 250, 252);
+          doc.setDrawColor(226, 232, 240);
+          doc.roundedRect(15, rowY, 180, 20, 2, 2, 'FD');
+          doc.setFont('Helvetica', 'italic');
+          doc.setFontSize(9.5);
+          doc.setTextColor(148, 163, 184);
+          doc.text('No active course participation registered for this student.', 105, rowY + 12, { align: 'center' });
+        } else {
+          studentCourses.forEach((c, idx) => {
+            const pDoc = progressDocs.find(p => p.courseId === c.id);
+            const totalLessons = c.lessons || c.lessons_list?.length || 0;
+            const completedCount = pDoc?.completedLessons?.length || 0;
+            const pct = totalLessons > 0 ? Math.min(100, Math.round((completedCount / totalLessons) * 100)) : 0;
+            
+            // Zebra row background
+            if (idx % 2 === 1) {
+              doc.setFillColor(248, 250, 252);
+              doc.rect(15, rowY, 180, 11, 'F');
+            }
+            
+            // Bottom line border
+            doc.setDrawColor(241, 245, 249);
+            doc.setLineWidth(0.3);
+            doc.line(15, rowY + 11, 195, rowY + 11);
+            
+            // Title
+            const displayTitle = c.title.length > 25 ? c.title.substring(0, 23) + '...' : c.title;
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(8.5);
+            doc.setTextColor(15, 23, 42);
+            doc.text(displayTitle, 18, rowY + 7);
+            
+            // Language
+            doc.setFont('Helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(71, 85, 105);
+            doc.text(c.language || 'N/A', 68, rowY + 7);
+            
+            // Time Spent
+            const hrs = (completedCount * 0.25).toFixed(1);
+            doc.setFont('Helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(71, 85, 105);
+            doc.text(`${hrs} hrs`, 86, rowY + 7);
+            
+            // Progress Bar Background Capsule
+            doc.setFillColor(226, 232, 240);
+            doc.roundedRect(106, rowY + 4.5, 16, 2.5, 0.5, 0.5, 'F');
+            
+            // Progress Bar Fill Capsule
+            if (pct > 0) {
+              if (pct === 100) {
+                doc.setFillColor(34, 197, 94); // var(--green)
+              } else {
+                doc.setFillColor(44, 88, 255); // var(--accent)
+              }
+              const fillWidth = Math.max(0.8, 16 * (pct / 100));
+              doc.roundedRect(106, rowY + 4.5, fillWidth, 2.5, 0.5, 0.5, 'F');
+            }
+            
+            // Progress Text
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(7.5);
+            doc.setTextColor(100, 116, 139);
+            doc.text(`${pct}%`, 124, rowY + 7);
+            
+            // Test Status Badge
+            const isTestReady = pct === 100;
+            const testText = isTestReady ? 'READY' : 'LOCKED';
+            
+            doc.setFillColor(isTestReady ? 220 : 241, isTestReady ? 252 : 245, isTestReady ? 231 : 249); // green fill vs grey fill
+            doc.roundedRect(136, rowY + 4, 18, 4.5, 1, 1, 'F');
+            
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(6);
+            doc.setTextColor(isTestReady ? 21 : 100, isTestReady ? 128 : 116, isTestReady ? 61 : 139); // green text vs grey text
+            doc.text(testText, 145, rowY + 7.2, { align: 'center' });
+            
+            // Course Status Badge (COMPLETED vs ACTIVE vs LOCKED)
+            const isComp = pct === 100;
+            const badgeText = isComp ? 'COMPLETED' : (pct > 0 ? 'ACTIVE' : 'LOCKED');
+            
+            doc.setFillColor(isComp ? 220 : (pct > 0 ? 224 : 241), isComp ? 252 : (pct > 0 ? 231 : 245), isComp ? 231 : (pct > 0 ? 255 : 249)); // green vs blue vs grey
+            doc.roundedRect(158, rowY + 4, 18, 4.5, 1, 1, 'F');
+            
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(6);
+            doc.setTextColor(isComp ? 21 : (pct > 0 ? 79 : 100), isComp ? 128 : (pct > 0 ? 70 : 116), isComp ? 61 : (pct > 0 ? 229 : 139));
+            doc.text(badgeText, 167, rowY + 7.2, { align: 'center' });
+            
+            // Completion Stats Numbers
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(7.5);
+            doc.setTextColor(100, 116, 139);
+            doc.text(`${completedCount}/${totalLessons}`, 192, rowY + 7, { align: 'right' });
+            
+            rowY += 11;
+          });
+        }
+        
+        // --- 5. Footer ---
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(0.5);
+        doc.line(15, 272, 195, 272);
+        
+        doc.setFont('Helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(148, 163, 184);
+        doc.text(`Report Generated on ${new Date().toLocaleString()}`, 15, 278);
+        
+        doc.setFont('Helvetica', 'bold');
+        doc.text(`PAGE ${i + 1} OF ${students.length}`, 195, 278, { align: 'right' });
+      });
+      
+      doc.save('learncode-student-roster.pdf');
+    } catch (e) {
+      console.error('PDF export failed:', e);
+      alert('Failed to generate PDF. Check console for details.');
+    } finally {
+      setExportingPdf(false);
+    }
+  };
 
   if (!user) return null;
 
@@ -105,7 +428,19 @@ export default function AdminDashboard() {
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span>📋</span> Student Roster
                 </h3>
-                <button className="btn-secondary" style={{ padding: '8px 20px', fontSize: '0.85rem' }}>Export Data</button>
+                <button
+                  className="btn-premium-export"
+                  onClick={handleExportPDF}
+                  disabled={exportingPdf || loadingStudents || students.length === 0}
+                >
+                  {exportingPdf ? (
+                    <>⏳ Exporting...</>
+                  ) : (
+                    <>
+                      <span>📄</span> Export Roster
+                    </>
+                  )}
+                </button>
               </div>
               <div className="dashboard-card" style={{ padding: '0', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>

@@ -1688,3 +1688,65 @@ body {
 .hljs-function, .hljs-title { color: #60a5fa; }
 .hljs-attr { color: #fb923c; }
 .hljs-tag { color: #ef4444; }
+
+/* ===== PREMIUM EXPORT BUTTON ===== */
+.btn-premium-export {
+  background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(44, 88, 255, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-premium-export:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(44, 88, 255, 0.4), 0 0 12px rgba(124, 58, 237, 0.3);
+}
+
+.btn-premium-export:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-premium-export:disabled {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text3);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Subtle shine sweep animation */
+.btn-premium-export::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.13) 77%,
+    rgba(255, 255, 255, 0.5) 92%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
+.btn-premium-export:hover:not(:disabled)::after {
+  transform: rotate(30deg) translate(25%, 25%);
+}
+
