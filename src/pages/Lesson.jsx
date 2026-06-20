@@ -187,7 +187,10 @@ export default function Lesson() {
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = 0;
+      // Force an immediate jump to the top
+      scrollAreaRef.current.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      // Fallback for older browsers
+      setTimeout(() => { if (scrollAreaRef.current) scrollAreaRef.current.scrollTop = 0; }, 0);
       
       // Auto-verify if the content is too short to scroll
       setTimeout(() => {
@@ -320,9 +323,9 @@ export default function Lesson() {
                     <div 
                       className="module-header" 
                       onClick={() => goToLesson(i)}
-                      style={{ padding: '12px', background: active ? 'rgba(44, 88, 255, 0.1)' : 'transparent', borderLeft: active ? '3px solid var(--accent)' : '3px solid transparent' }}
+                      style={{ padding: '12px', background: active ? 'var(--surface2)' : 'transparent', borderLeft: active ? '3px solid var(--text)' : '3px solid transparent' }}
                     >
-                      <div className="module-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', color: active ? 'var(--accent)' : 'var(--text)' }}>
+                      <div className="module-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', color: active ? 'var(--text)' : 'var(--text)', fontWeight: active ? '700' : '500' }}>
                         <div className={`lesson-check ${done ? 'done' : ''}`} style={{ 
                           width: '22px', height: '22px', fontSize: '0.65rem', 
                           display: 'flex', alignItems: 'center', justifyContent: 'center', 
@@ -353,24 +356,25 @@ export default function Lesson() {
                                 setCurrentSubIndex(sIdx);
                               }
                             }}
-                            style={{ 
-                              paddingLeft: '44px', 
-                              paddingTop: '8px', 
-                              paddingBottom: '8px', 
-                              fontSize: '0.8rem', 
-                              color: isSubActive ? 'var(--accent)' : 'var(--text2)',
-                              borderLeft: '2px solid var(--border)',
-                              marginLeft: '22px',
-                              cursor: 'pointer',
-                              background: isSubActive ? 'rgba(44,88,255,0.05)' : 'transparent',
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
-                            onMouseLeave={e => { if (!isSubActive) e.currentTarget.style.color = 'var(--text2)' }}
+                              style={{ 
+                                paddingLeft: '44px', 
+                                paddingTop: '8px', 
+                                paddingBottom: '8px', 
+                                fontSize: '0.8rem', 
+                                color: isSubActive ? 'var(--text)' : 'var(--text2)',
+                                fontWeight: isSubActive ? '600' : '400',
+                                borderLeft: '2px solid var(--border)',
+                                marginLeft: '22px',
+                                cursor: 'pointer',
+                                background: isSubActive ? 'var(--surface2)' : 'transparent',
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
+                              onMouseLeave={e => { if (!isSubActive) e.currentTarget.style.color = 'var(--text2)' }}
                           >
                             <span style={{ 
-                              color: isSubVerified ? 'var(--green)' : 'var(--accent)', 
+                              color: isSubVerified ? 'var(--green)' : 'var(--text3)', 
                               marginRight: '8px', 
                               opacity: (isSubActive || isSubVerified) ? 1 : 0.5,
                               fontWeight: isSubVerified ? 800 : 'normal'

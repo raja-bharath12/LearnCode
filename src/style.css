@@ -961,70 +961,90 @@ body {
 .auth-switch { text-align: center; margin-top: 24px; color: var(--text2); font-size: 0.9rem; }
 .auth-switch a { color: var(--accent); font-weight: 600; }
 
-/* ===== LESSON PAGE ===== */
+/* ===== SIMPLE PREMIUM LESSON PAGE ===== */
 .lesson-layout { 
   display: flex; height: calc(100vh - var(--top-height)); margin-top: 0; 
-  background-image: var(--mesh-gradient);
-  background-attachment: fixed;
+  background-color: var(--bg);
 }
+
 .lesson-sidebar {
   width: 340px; 
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   display: flex; flex-direction: column; overflow: hidden;
-  margin: 16px; border-radius: 24px;
-  box-shadow: var(--glass-shadow);
   flex-shrink: 0;
+  margin: 16px;
+  border-radius: 24px;
 }
 .lesson-sidebar-header {
-  padding: 24px 20px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 12px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
 }
 .back-to-courses {
-  font-size: 0.75rem; color: var(--accent); font-weight: 700;
-  text-transform: uppercase; letter-spacing: 1px;
+  font-size: 0.75rem; color: var(--accent); font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+.back-to-courses:hover { 
+  color: var(--text);
+  transform: translateX(-4px);
 }
 .course-title-sidebar {
-  font-size: 1.25rem; font-weight: 800; color: var(--text);
-  margin-top: 12px;
+  font-size: 1.3rem; font-weight: 800; color: var(--text);
+  margin-top: 16px;
+  letter-spacing: -0.5px;
 }
 .sidebar-title { 
   font-size: 0.7rem; font-weight: 800; text-transform: uppercase; 
-  letter-spacing: 1.5px; color: var(--text3); padding: 0 20px; margin-bottom: 16px; 
+  letter-spacing: 1.5px; color: var(--text3); padding: 0 24px; margin-bottom: 16px; 
 }
 .lesson-list {
-  overflow-y: auto; flex: 1; padding: 0 12px 24px;
+  overflow-y: auto; flex: 1; padding: 0 16px 24px;
 }
 .lesson-item {
   display: flex;
   align-items: center;
-  padding: 14px 18px;
+  padding: 14px 16px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border-radius: 16px;
   margin-bottom: 6px;
   border: 1px solid transparent;
   background: transparent;
 }
 .lesson-item:hover { 
-  background: var(--accent-light); 
-  transform: translateX(6px);
-  box-shadow: 0 4px 12px rgba(44, 88, 255, 0.1);
+  background: rgba(44, 88, 255, 0.05);
+  border-color: rgba(44, 88, 255, 0.1);
+  transform: translateX(4px);
 }
-.lesson-item.active { background: var(--accent-light); border-color: var(--accent); }
+.lesson-item.active { 
+  background: var(--surface2);
+  border-color: var(--border); 
+}
 .lesson-check {
-  width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border);
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; color: var(--text3); margin-right: 12px; flex-shrink: 0;
+  font-size: 0.75rem; color: var(--text3); margin-right: 14px; flex-shrink: 0;
+  transition: all 0.3s ease;
+  background: var(--surface);
+}
+.lesson-item.active .lesson-check {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .lesson-check.done {
-  background: var(--green); border: none; color: white;
+  background: var(--green);
+  border: none; color: white;
 }
 .lesson-item-title {
-  font-size: 0.9rem; font-weight: 500; color: var(--text);
+  font-size: 0.95rem; font-weight: 500; color: var(--text2);
+  transition: all 0.3s ease;
+}
+.lesson-item:hover .lesson-item-title {
+  color: var(--text);
 }
 .lesson-item.active .lesson-item-title {
   color: var(--accent); font-weight: 700;
@@ -1036,44 +1056,39 @@ body {
 }
 
 .markdown-content {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .workbench-container {
-  animation: fadeInUp 0.8s ease-out forwards;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* PREMIUM LESSON STYLES */
+/* SIMPLE LESSON STYLES */
 .glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 24px;
 }
 
 .lesson-header-glass {
-  padding: 50px 48px;
-  background: linear-gradient(135deg, rgba(44, 88, 255, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+  padding: 60px 48px 40px;
+  background: transparent;
   border-bottom: 1px solid var(--border);
-  border-radius: 0 0 32px 32px;
-  margin-bottom: 32px;
+  border-radius: 0 0 40px 40px;
+  margin-bottom: 40px;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
+
 .lesson-header-glass h1 {
-  font-size: 2.8rem;
+  font-size: 3rem;
   font-weight: 900;
-  letter-spacing: -1px;
-  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 20px rgba(44, 88, 255, 0.1);
+  letter-spacing: -1.5px;
+  color: var(--text);
+  line-height: 1.2;
 }
 
 .lesson-content {
@@ -1083,7 +1098,12 @@ body {
   flex: 1; overflow-y: auto;
 }
 .verified-badge { color: var(--green); }
-.header-underline { width: 60px; height: 4px; background: var(--accent); border-radius: 2px; margin-top: 24px; }
+.header-underline { 
+  width: 60px; height: 5px; 
+  background: var(--accent); 
+  border-radius: 4px; 
+  margin-top: 24px; 
+}
 .markdown-content { 
   padding: 0 48px 48px;
   max-width: 900px;
@@ -1093,17 +1113,29 @@ body {
   color: var(--text);
 }
 
-.markdown-content h2 { margin: 48px 0 24px; font-weight: 800; font-size: 1.75rem; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-.markdown-content h3 { margin: 36px 0 18px; font-weight: 700; font-size: 1.4rem; color: var(--text); }
-.markdown-content p { margin-bottom: 24px; }
+.markdown-content h2 { 
+  margin: 60px 0 24px; 
+  font-weight: 800; 
+  font-size: 1.8rem; 
+  color: var(--text); 
+  padding-bottom: 16px; 
+  position: relative;
+}
+.markdown-content h2::after {
+  content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+.markdown-content h3 { margin: 40px 0 16px; font-weight: 700; font-size: 1.4rem; color: var(--text); }
+.markdown-content p { margin-bottom: 24px; color: var(--text2); }
 .markdown-content ul, .markdown-content ol { margin-bottom: 24px; padding-left: 0; list-style: none; }
-.markdown-content ul li, .markdown-content ol li { position: relative; padding-left: 32px; margin-bottom: 16px; }
+.markdown-content ul li, .markdown-content ol li { position: relative; padding-left: 36px; margin-bottom: 16px; color: var(--text2); }
 .markdown-content ul li::before {
-  content: '✦';
+  content: '→';
   position: absolute;
-  left: 8px;
+  left: 4px;
+  top: 0;
   color: var(--accent);
-  font-size: 1rem;
+  font-weight: 800;
 }
 .markdown-content ol { counter-reset: custom-counter; }
 .markdown-content ol li::before {
@@ -1117,48 +1149,56 @@ body {
 }
 .markdown-content blockquote {
   border-left: 4px solid var(--accent);
-  padding: 16px 24px;
-  background: var(--surface2);
+  padding: 24px 32px;
+  background: linear-gradient(90deg, rgba(44, 88, 255, 0.05), transparent);
   border-radius: 0 16px 16px 0;
-  margin: 32px 0;
+  margin: 40px 0;
   font-style: italic;
-  color: var(--text2);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1.6;
 }
 .markdown-content strong { color: var(--text); font-weight: 800; }
-.markdown-content code { background: var(--surface2); padding: 4px 8px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); border: 1px solid var(--border); }
-.markdown-content pre { 
-  background: #1e293b; 
-  padding: 24px; 
-  border-radius: 20px; 
-  margin: 32px 0; 
-  overflow-x: auto; 
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.2);
+.markdown-content code { 
+  background: rgba(44, 88, 255, 0.08); 
+  padding: 4px 8px; 
+  border-radius: 8px; 
+  font-family: var(--font-mono); 
+  font-size: 0.85em; 
+  color: var(--accent); 
+  border: 1px solid rgba(44, 88, 255, 0.15); 
 }
-.markdown-content pre code { background: transparent; padding: 0; color: #e2e8f0; font-size: 0.95rem; border: none; }
+.markdown-content pre { 
+  background: var(--bg-sidebar); 
+  padding: 24px; 
+  border-radius: 12px; 
+  margin: 40px 0; 
+  overflow-x: auto; 
+  border: 1px solid var(--border);
+}
+.markdown-content pre code { background: transparent; padding: 0; color: var(--text); font-size: 0.95rem; border: none; }
 
-/* Workbench Editor */
+/* Simple Workbench Editor */
 .workbench-container {
   margin: 60px auto;
   max-width: 900px;
   width: calc(100% - 96px);
-  padding: 1px;
-  background: linear-gradient(135deg, var(--accent), #7c3aed);
-  border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(44, 88, 255, 0.2);
-  transition: transform 0.3s ease;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
 }
 
 .workbench-container:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 60px rgba(44, 88, 255, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 
 .workbench-inner {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 19px;
+  background: var(--surface);
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1219,35 +1259,41 @@ body {
   margin: 0 auto;
   width: 100%;
   border-top: 1px solid var(--border);
-  gap: 24px;
+  gap: 16px;
 }
 
 .lesson-nav button {
   flex: 1;
-  padding: 16px 24px;
-  font-size: 1.1rem;
-  border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 14px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-weight: 600;
 }
 
 .lesson-nav .btn-primary {
   background: linear-gradient(135deg, var(--accent), #7c3aed);
-  box-shadow: 0 10px 24px rgba(44, 88, 255, 0.3);
+  color: white;
+  box-shadow: 0 10px 30px rgba(44, 88, 255, 0.3);
+  border: none;
 }
 
 .lesson-nav .btn-primary:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 32px rgba(44, 88, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(44, 88, 255, 0.4);
+  filter: brightness(1.1);
 }
 
 .lesson-nav .btn-ghost {
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  background: transparent;
 }
 
 .lesson-nav .btn-ghost:hover:not(:disabled) {
   background: var(--surface2);
+  color: var(--text);
   border-color: var(--text3);
-  transform: translateY(-2px);
 }
 
 
