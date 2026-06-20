@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { Auth, Progress, fetchCourses } from '../utils/auth';
+import { Auth, Progress, fetchCourses, fetchStudents } from '../utils/auth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [courses, setCourses] = useState([]);
   const [activeTab, setActiveTab] = useState('overview');
   const [progressTick, setProgressTick] = useState(0); // incremented after Firestore sync
+  const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
     const u = Auth.getUser();
@@ -35,6 +36,41 @@ export default function Dashboard() {
       });
   }, []);
 
+  useEffect(() => {
+    if (courses.length > 0) {
+      fetchStudents().then(students => {
+        if (!students) return;
+        const scoredStudents = students.map(s => {
+          let score = 0;
+          const docs = s.progressDocs || [];
+          const sEnrolledCount = docs.length;
+          score += sEnrolledCount * 10;
+          
+          let sCompletedCount = 0;
+          docs.forEach(p => {
+            const course = courses.find(c => c.id === p.courseId);
+            if (course) {
+              const cLessons = p.completedLessons?.length || 0;
+              score += cLessons * 5;
+              if (cLessons === course.lessons) {
+                sCompletedCount++;
+              }
+            } else {
+              score += (p.completedLessons?.length || 0) * 5;
+              if (p.completed) sCompletedCount++;
+            }
+          });
+          score += sCompletedCount * 20;
+          
+          return { ...s, score };
+        });
+        
+        scoredStudents.sort((a, b) => b.score - a.score);
+        setLeaderboard(scoredStudents.slice(0, 5));
+      }).catch(err => console.error("Error fetching students:", err));
+    }
+  }, [courses]);
+
   if (!user) return null;
 
   // Re-computed every time courses load OR after Firestore sync completes
@@ -46,10 +82,29 @@ export default function Dashboard() {
   });
   void progressTick; // consumed so eslint doesn't warn about unused var
 
+  // Calculate User Score
+  let userScore = 0;
+  let enrolledCount = 0;
+  let completedCount = 0;
+  let totalCompletedLessons = 0;
+
+  courses.forEach(c => {
+    const pArray = Progress.get(c.id) || [];
+    const p = pArray.length;
+    if (p > 0) {
+      enrolledCount++;
+      totalCompletedLessons += p;
+      if (p === c.lessons) {
+        completedCount++;
+      }
+    }
+  });
+  userScore = (enrolledCount * 10) + (totalCompletedLessons * 5) + (completedCount * 20);
+
   const stats = [
     { label: 'Completed', value: completedCourses.length, icon: '🏆', color: '#22c55e' },
     { label: 'Ongoing', value: ongoingCourses.length, icon: '⚡', color: '#eab308' },
-    { label: 'Exams Ready', value: completedCourses.length, icon: '🎯', color: '#8b5cf6' },
+    { label: 'Total Score', value: userScore, icon: '⭐', color: '#8b5cf6' },
   ];
 
   const getGreeting = () => {
@@ -208,6 +263,57 @@ export default function Dashboard() {
                 <button onClick={() => navigate('/profile')} className="btn-primary" style={{ width: '100%', marginTop: '24px', borderRadius: '16px', textAlign: 'center' }}>
                   Edit
                 </button>
+              </div>
+
+              {/* SCOREBOARD */}
+              <div className="animate-in" style={{ marginTop: '40px', animationDelay: '0.5s' }}>
+                <h3 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span>⭐</span> Top Students
+                </h3>
+                <div className="dashboard-card" style={{ padding: '24px' }}>
+                  {leaderboard.length > 0 ? (
+                    leaderboard.map((student, idx) => (
+                      <div key={student.id} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '12px 0',
+                        borderBottom: idx < leaderboard.length - 1 ? '1px solid var(--border)' : 'none'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'var(--surface2)',
+                            color: idx < 3 ? 'white' : 'var(--text2)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 800,
+                            fontSize: '0.9rem'
+                          }}>
+                            {idx + 1}
+                          </div>
+                          <div>
+                            <span style={{ fontWeight: 700, display: 'block', fontSize: '0.95rem' }}>
+                              {student.name} {student.id === user.id && '(You)'}
+                            </span>
+                          </div>
+                        </div>
+                        <span style={{
+                          color: 'var(--accent)',
+                          fontWeight: 900,
+                          fontSize: '1rem'
+                        }}>
+                          {student.score} pts
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ textAlign: 'center', color: 'var(--text3)', margin: 0 }}>Loading scoreboard...</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>

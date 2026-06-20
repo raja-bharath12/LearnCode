@@ -278,6 +278,7 @@ export async function fetchStudents() {
         name: data.name || data.email?.split('@')[0] || 'Unknown',
         email: data.email || '',
         createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+        lastLogin: data.lastLogin?.toDate?.()?.toISOString() || data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
         role: data.role,
         dob: data.dob || '',
         courseCount: 0,   // will be populated below
