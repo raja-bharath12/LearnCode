@@ -162,7 +162,7 @@ export default function AdminLessonEdit() {
           </div>
 
           {/* RIGHT — Rich Word-like Editor */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div className="premium-mesh-bg" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--surface)' }}>
 
             {/* Editor title bar */}
             <div style={{

@@ -7,10 +7,24 @@ import { fetchCourses, Progress } from '../utils/auth';
 
 export default function Exams() {
   const [courses, setCourses] = useState([]);
+  const [stats, setStats] = useState({ completed: 0, inProgress: 0 });
 
   useEffect(() => {
     fetchCourses().then(data => {
-      if (data?.courses) setCourses(data.courses);
+      if (data?.courses) {
+        setCourses(data.courses);
+        
+        let completed = 0;
+        let inProgress = 0;
+        
+        data.courses.forEach(c => {
+          const pct = Progress.getPercent(c.id, c.lessons);
+          if (pct === 100) completed++;
+          else if (pct > 0) inProgress++;
+        });
+        
+        setStats({ completed, inProgress });
+      }
     });
   }, []);
 
@@ -20,11 +34,36 @@ export default function Exams() {
       <div className="main-wrapper">
         <Header showBrand />
 
-        <div className="page-header">
+        <div className="page-header premium-mesh-bg animate-in">
           <div className="container">
-            <span className="section-tag">Academic Records</span>
-            <h1>Course <span className="gradient-text">Exams & Completion</span></h1>
-            <p>View your completed courses and eligibility for certificates.</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px' }}>
+              
+              {/* LEFT — text */}
+              <div style={{ textAlign: 'left', maxWidth: '560px' }}>
+                <span className="section-tag">Academic Records</span>
+                <h1 className="text-glow" style={{ margin: '12px 0' }}>
+                  Course <span className="gradient-text">Exams & Completion</span>
+                </h1>
+                <p style={{ fontSize: '1.1rem', color: 'var(--text2)', lineHeight: '1.7', margin: 0 }}>
+                  View your completed courses and eligibility for certificates.
+                </p>
+              </div>
+
+              {/* RIGHT — stats */}
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <div style={{ background: 'var(--surface2)', padding: '20px 30px', borderRadius: '16px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: '140px' }}>
+                    <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#22c55e', lineHeight: 1 }}>{stats.completed}</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text2)', fontWeight: 600, marginTop: '12px', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center' }}>Exam Ready</span>
+                  </div>
+                  <div style={{ background: 'var(--surface2)', padding: '20px 30px', borderRadius: '16px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: '140px' }}>
+                    <span style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--accent)', lineHeight: 1 }}>{stats.inProgress}</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text2)', fontWeight: 600, marginTop: '12px', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center' }}>In Progress</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
 

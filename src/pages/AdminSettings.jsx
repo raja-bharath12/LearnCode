@@ -12,8 +12,8 @@ const SETTINGS_KEY = 'lc_academy_settings';
 function getSettings() {
   try {
     return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {
-      pointsPerLesson: 50,
-      streakMultiplier: 1.5,
+      pointsForEnroll: 10,
+      pointsForTest: 20,
       enableLeaderboard: true,
       issueCertificates: true,
       allowRegistrations: true,
@@ -59,8 +59,8 @@ export default function AdminSettings() {
       title: '🏆 Gamification & Rewards',
       icon: '🏆',
       fields: [
-        { key: 'pointsPerLesson', label: 'Points Per Lesson', type: 'number', placeholder: '50' },
-        { key: 'streakMultiplier', label: 'Streak Multiplier', type: 'number', placeholder: '1.5' },
+        { key: 'pointsForEnroll', label: 'Points For Course Enroll', type: 'number', placeholder: '10' },
+        { key: 'pointsForTest', label: 'Points For Course Completed', type: 'number', placeholder: '20' },
       ],
       toggles: [
         { key: 'enableLeaderboard', label: 'Enable Leaderboards', desc: 'Allow students to see global rankings' },

@@ -24,11 +24,16 @@ export default function Leaderboard() {
         const students = await fetchStudents();
         if (!students) return;
 
+        let settings = {};
+        try { settings = JSON.parse(localStorage.getItem('lc_academy_settings')) || {}; } catch {}
+        const ptsEnroll = settings.pointsForEnroll !== undefined ? Number(settings.pointsForEnroll) : 10;
+        const ptsTest = settings.pointsForTest !== undefined ? Number(settings.pointsForTest) : 20;
+
         const scoredStudents = students.map(s => {
           let score = 0;
           const docs = s.progressDocs || [];
           const sEnrolledCount = docs.length;
-          score += sEnrolledCount * 10;
+          score += sEnrolledCount * ptsEnroll;
 
           let sCompletedCount = 0;
           docs.forEach(p => {
@@ -44,7 +49,7 @@ export default function Leaderboard() {
               if (p.completed) sCompletedCount++;
             }
           });
-          score += sCompletedCount * 20;
+          score += sCompletedCount * ptsTest;
 
           return { ...s, score };
         });

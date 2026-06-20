@@ -14,6 +14,28 @@ export default function AdminCourseEdit() {
   const [lessons, setLessons] = useState([]);
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
   const [metadata, setMetadata] = useState({ title: '', language: '', description: '' });
+  const [draggedIdx, setDraggedIdx] = useState(null);
+
+  const handleDragStart = (e, idx) => {
+    setDraggedIdx(idx);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, idx) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, targetIdx) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === targetIdx) return;
+    const nextLessons = [...lessons];
+    const draggedItem = nextLessons.splice(draggedIdx, 1)[0];
+    nextLessons.splice(targetIdx, 0, draggedItem);
+    setLessons(nextLessons);
+    AdminStore.updateCourse(id, { lessons_list: nextLessons });
+    setDraggedIdx(null);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -62,6 +84,8 @@ export default function AdminCourseEdit() {
       setLessons([...lessons, newLesson]);
     }
   };
+
+
 
   if (!course) return null;
 
@@ -128,40 +152,92 @@ export default function AdminCourseEdit() {
                   {lessons.map((lesson, idx) => (
                     <div 
                       key={lesson.id} 
-                      className="gradient-border-card" 
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, idx)}
+                      onDragOver={(e) => handleDragOver(e, idx)}
+                      onDrop={(e) => handleDrop(e, idx)}
                       style={{ 
-                        padding: '16px 24px', 
-                        background: 'var(--surface1)', 
+                        padding: '20px 24px', 
+                        background: draggedIdx === idx ? 'var(--surface2)' : 'var(--surface)', 
+                        border: draggedIdx === idx ? '1px dashed var(--accent)' : '1px solid var(--border)',
+                        opacity: draggedIdx === idx ? 0.5 : 1,
+                        borderRadius: '16px',
                         display: 'flex', 
                         justifyContent: 'space-between', 
-                        alignItems: 'center' 
+                        alignItems: 'center',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (draggedIdx === null) {
+                          e.currentTarget.style.borderColor = 'var(--accent)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 8px 24px rgba(44,88,255,0.08)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (draggedIdx === null) {
+                          e.currentTarget.style.borderColor = 'var(--border)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <span style={{ color: 'var(--text3)', fontWeight: 800, fontSize: '0.8rem' }}>{idx + 1}</span>
-                        <span style={{ fontWeight: 800 }}>{lesson.title}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                        <div 
+                          style={{ 
+                            cursor: 'grab', color: 'var(--text3)', 
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                            padding: '4px', opacity: 0.6, transition: 'opacity 0.2s'
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                          onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
+                          title="Drag to reorder"
+                        >
+                          <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
+                            <circle cx="2" cy="2" r="1.5" />
+                            <circle cx="8" cy="2" r="1.5" />
+                            <circle cx="2" cy="8" r="1.5" />
+                            <circle cx="8" cy="8" r="1.5" />
+                            <circle cx="2" cy="14" r="1.5" />
+                            <circle cx="8" cy="14" r="1.5" />
+                          </svg>
+                        </div>
+                        <span style={{ 
+                          width: '32px', height: '32px', borderRadius: '8px', 
+                          background: 'var(--surface2)', color: 'var(--text3)', 
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                          fontWeight: 800, fontSize: '0.85rem' 
+                        }}>
+                          {idx + 1}
+                        </span>
+                        <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text)', marginLeft: '4px' }}>{lesson.title}</span>
                       </div>
-                      <div style={{ display: 'flex', gap: '10px' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <Link 
                           to={`/admin/course/${course.id}/lesson/${lesson.id}`} 
-                          className="btn-alt" 
-                          style={{ padding: '6px 14px', fontSize: '0.75rem', borderRadius: '8px' }}
+                          style={{ 
+                            padding: '8px 16px', fontSize: '0.85rem', borderRadius: '8px', 
+                            background: 'var(--surface2)', color: 'var(--text)', 
+                            border: '1px solid var(--border)', fontWeight: 700, 
+                            textDecoration: 'none', transition: 'all 0.2s' 
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-light)'; e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--surface2)'; e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                         >
-                          Edit Content
+                          ✏️ Edit
                         </Link>
                         <button 
                           onClick={() => removeLesson(lesson.id)}
-                          className="btn-danger-alt" 
                           style={{ 
-                            padding: '6px 14px', 
-                            fontSize: '0.75rem', 
-                            borderRadius: '8px', 
-                            background: 'rgba(239, 68, 68, 0.1)', 
-                            color: '#ef4444', 
-                            border: '1px solid rgba(239, 68, 68, 0.2)' 
+                            padding: '8px 16px', fontSize: '0.85rem', borderRadius: '8px', 
+                            background: 'rgba(239, 68, 68, 0.05)', color: 'var(--red)', 
+                            border: '1px solid rgba(239, 68, 68, 0.2)', fontWeight: 700, 
+                            cursor: 'pointer', transition: 'all 0.2s' 
                           }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.2)'; }}
                         >
-                          Delete
+                          🗑 Delete
                         </button>
                       </div>
                     </div>

@@ -187,7 +187,9 @@ export default function Courses() {
                         import('../components/Toast').then(({ showToast }) => {
                           showToast('Platform is under maintenance. Lessons and exams are temporarily unavailable.', 'error');
                         });
+                        return;
                       }
+                      Progress.enroll(c.id);
                     }}
                   >
                     <div className="course-card-top" style={{ background: `${c.color || 'var(--accent)'}15`, padding: '32px', borderBottom: '1px solid var(--border)' }}>
@@ -243,7 +245,7 @@ export default function Courses() {
                     <div className="course-card-footer" style={{ padding: '20px 32px', background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>
                       <span className="free-badge shimer">PREMIUM FREE</span>
                       <span className="start-link" style={{ fontWeight: 800, color: 'var(--accent)' }}>
-                        {progress > 0 ? 'Continue Voyage →' : 'Start Journey →'}
+                        {Progress.isEnrolled(c.id) ? 'Continue Voyage →' : 'Start Journey →'}
                       </span>
                     </div>
                   </Link>

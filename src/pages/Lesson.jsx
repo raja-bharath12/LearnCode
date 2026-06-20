@@ -49,105 +49,121 @@ export default function Lesson() {
   );
 
   const [currentLesson, setCurrentLesson] = useState(0);
+  const [currentSubIndex, setCurrentSubIndex] = useState(0);
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('// Output will appear here');
   const [outputColor, setOutputColor] = useState('var(--green)');
   const [fullscreen, setFullscreen] = useState(false);
-  const [fetchedContent, setFetchedContent] = useState('');
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
-  const [isTimerActive, setIsTimerActive] = useState(false);
+  const [rawMarkdown, setRawMarkdown] = useState('');
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const [isCompletedLocally, setIsCompletedLocally] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(Progress.get(courseId));
+  const [verifiedSubs, setVerifiedSubs] = useState(new Set());
   const scrollAreaRef = useRef(null);
 
   useEffect(() => {
-    // SYNC from localStorage on mount
     const p = Progress.sync(courseId);
     if (p) setCompletedLessons(Progress.get(courseId));
   }, [courseId]);
 
   useEffect(() => {
-    // Get actual lesson objects from AdminStore or fallback
-    const lessonsList = course.lessons_list || (Array.isArray(course.lessons) ? course.lessons : []);
     const lesson = lessonsList[currentLesson];
     
     setCode(lesson?.starter || '// Write your code here');
     setOutput('// Output will appear here');
     document.title = `${lesson?.title} — LearnCode`;
     
+    // Reset section pagination
+    setCurrentSubIndex(0);
+    setHasReachedBottom(false);
+    setVerifiedSubs(new Set());
+    
     if (!lesson) return;
 
-    // 1. Check AdminStore for local content overrides
     const stored = AdminStore.getLessonContent(courseId, lesson.id);
     if (stored) {
-      setFetchedContent(marked.parse(stored));
+      setRawMarkdown(stored);
       return;
     }
 
     const loadContent = () => {
-      // Fallback to fetching static content from disk
       const path = lesson.contentPath || lesson.url;
       if (path) {
-        setFetchedContent('<p style="color:var(--text3)">Loading lesson content...</p>');
+        setRawMarkdown('# Loading...');
         fetch(path)
           .then(res => {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return res.text();
           })
-          .then(md => setFetchedContent(marked.parse(md)))
+          .then(md => setRawMarkdown(md))
           .catch(err => {
             console.error("Failed to load lesson:", err);
-            setFetchedContent(`<p style="color:var(--red)">Failed to load lesson content (${err.message}). Path: ${path}</p>`);
+            setRawMarkdown(`# Error loading content\n${err.message}`);
           });
       } else {
-        setFetchedContent(lesson.content ? marked.parse(lesson.content) : '');
+        setRawMarkdown(lesson.content || '');
       }
     };
 
     loadContent();
-    return;
-  }, [currentLesson, courseId]);
+  }, [currentLesson, courseId, lessonsList]);
 
-  // TIMER INIT — runs when the lesson or course changes
+  const subDivisions = useMemo(() => {
+    if (!rawMarkdown) return [];
+    const lines = rawMarkdown.split('\n');
+    const sections = [];
+    let cur = { title: 'Main Lesson Content', content: '' };
+    let inCode = false;
+
+    for (const line of lines) {
+      if (line.startsWith('```')) inCode = !inCode;
+      if (!inCode && line.startsWith('## ')) {
+        if (cur.content.trim() || cur.title !== 'Main Lesson Content') {
+          sections.push(cur);
+        }
+        cur = { title: line.replace('## ', '').trim(), content: line + '\n' };
+      } else {
+        cur.content += line + '\n';
+      }
+    }
+    if (cur.content.trim() || cur.title !== 'Main Lesson Content') {
+      sections.push(cur);
+    }
+    
+    // Improve first section title if possible
+    if (sections.length > 0 && sections[0].title === 'Main Lesson Content') {
+      const m = sections[0].content.match(/^#\s+(.+)$/m);
+      if (m) sections[0].title = m[1];
+    }
+    
+    return sections.length ? sections : [{ title: 'Content', content: rawMarkdown }];
+  }, [rawMarkdown]);
+
+  const htmlContent = useMemo(() => {
+    const currentSection = subDivisions[currentSubIndex] || { content: '' };
+    return marked.parse(currentSection.content);
+  }, [subDivisions, currentSubIndex]);
+
   useEffect(() => {
     const lesson = lessonsList[currentLesson];
     const isDone = Progress.get(courseId).includes(lesson?.id);
-    const savedTime = Progress.getTimer(courseId, lesson?.id);
 
     if (isDone) {
-      setTimeLeft(0);
-      setIsTimerActive(false);
       setHasReachedBottom(true);
       setIsCompletedLocally(true);
     } else {
-      const t = savedTime !== null ? savedTime : 120;
-      setTimeLeft(t);
-      setIsTimerActive(t > 0);
       setHasReachedBottom(false);
       setIsCompletedLocally(false);
     }
     setCompletedLessons(Progress.get(courseId));
   }, [currentLesson, courseId, lessonsList]);
 
-  // TIMER COUNTDOWN — stable interval that doesn't restart every second
   useEffect(() => {
-    if (!isTimerActive) return;
-    const interval = setInterval(() => {
-      setTimeLeft(t => {
-        const next = t - 1;
-        const lesson = lessonsList[currentLesson];
-        if (lesson?.id !== undefined) {
-          Progress.saveTimer(courseId, lesson.id, next);
-        }
-        if (next <= 0) setIsTimerActive(false);
-        return next;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isTimerActive, courseId, currentLesson, lessonsList]);
+    if (hasReachedBottom && currentSubIndex >= 0) {
+      setVerifiedSubs(prev => new Set(prev).add(currentSubIndex));
+    }
+  }, [hasReachedBottom, currentSubIndex]);
 
-  // SCROLL DETECTION
   const handleScroll = () => {
     if (!scrollAreaRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
@@ -156,9 +172,9 @@ export default function Lesson() {
     }
   };
 
-  // AUTO COMPLETE LOGIC
   useEffect(() => {
-    if (timeLeft === 0 && hasReachedBottom && !isCompletedLocally) {
+    // Only mark lesson as completed if ALL sub-divisions are verified
+    if (verifiedSubs.size === subDivisions.length && subDivisions.length > 0 && !isCompletedLocally) {
       const lesson = lessonsList[currentLesson];
       const done = Progress.get(courseId).includes(lesson.id);
       if (!done) {
@@ -167,31 +183,55 @@ export default function Lesson() {
         setIsCompletedLocally(true);
       }
     }
-  }, [timeLeft, hasReachedBottom, currentLesson, courseId, lessonsList, isCompletedLocally]);
-
-  const formatTime = (s) => {
-    const mins = Math.floor(s / 60);
-    const secs = s % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  }, [verifiedSubs.size, subDivisions.length, currentLesson, courseId, lessonsList, isCompletedLocally]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = 0;
+      
+      // Auto-verify if the content is too short to scroll
+      setTimeout(() => {
+        if (scrollAreaRef.current) {
+          const { scrollHeight, clientHeight } = scrollAreaRef.current;
+          const lesson = lessonsList[currentLesson];
+          const isDone = Progress.get(courseId).includes(lesson?.id);
+          
+          if (isDone || scrollHeight <= clientHeight + 50) {
+            setHasReachedBottom(true);
+          } else {
+            setHasReachedBottom(false);
+          }
+        }
+      }, 100);
     }
-  }, [currentLesson, courseId]);
+  }, [currentLesson, currentSubIndex, courseId, lessonsList, htmlContent]);
 
-  function goToLesson(i) { setCurrentLesson(i); }
+  function goToLesson(i) { 
+    setCurrentLesson(i); 
+    setHasReachedBottom(false);
+  }
 
-  function prevLesson() { if (currentLesson > 0) goToLesson(currentLesson - 1); }
+  function prevLesson() { 
+    if (currentSubIndex > 0) {
+      setHasReachedBottom(false);
+      setCurrentSubIndex(currentSubIndex - 1);
+    } else if (currentLesson > 0) {
+      goToLesson(currentLesson - 1); 
+    }
+  }
 
   function nextLesson() {
-    Progress.mark(courseId, lessonsList[currentLesson].id);
-    if (currentLesson < lessonsList.length - 1) {
-      goToLesson(currentLesson + 1);
+    if (currentSubIndex < subDivisions.length - 1) {
+      setHasReachedBottom(false);
+      setCurrentSubIndex(currentSubIndex + 1);
     } else {
-      showToast(' Course Complete!', 'success');
-      navigate('/courses');
+      Progress.mark(courseId, lessonsList[currentLesson].id);
+      if (currentLesson < lessonsList.length - 1) {
+        goToLesson(currentLesson + 1);
+      } else {
+        showToast(' Course Complete!', 'success');
+        navigate('/courses');
+      }
     }
   }
 
@@ -224,12 +264,31 @@ export default function Lesson() {
   }
 
   const lesson = lessonsList[currentLesson] || {};
+  
+  // Calculate button state
+  const isLastSection = currentSubIndex === subDivisions.length - 1;
+  const allVerified = verifiedSubs.size === subDivisions.length;
+  
+  let nextBtnText = isLastSection 
+    ? (currentLesson === lessonsList.length - 1 ? 'Complete Course' : 'Next Lesson →')
+    : 'Next Section →';
+  
+  let isNextDisabled = false;
+  if (!isCompletedLocally) {
+    if (isLastSection) {
+      isNextDisabled = !allVerified;
+      if (isNextDisabled && hasReachedBottom) {
+        nextBtnText = 'Verify Skipped Sections';
+      }
+    } else {
+      isNextDisabled = !hasReachedBottom;
+    }
+  }
 
   return (
     <div className="app-container">
       <Sidebar />
       <div className="main-wrapper">
-        {/* TOP HEADER */}
         <header className="top-header">
           <div className="container header-container">
             <div className="search-bar">
@@ -245,7 +304,6 @@ export default function Lesson() {
         </header>
 
         <div className="lesson-layout">
-          {/* LESSON SIDEBAR */}
           <aside className="lesson-sidebar glass-panel">
             <div className="lesson-sidebar-header">
               <Link to="/courses" className="back-to-courses">← Back to Courses</Link>
@@ -256,46 +314,92 @@ export default function Lesson() {
               {lessonsList.map((l, i) => {
                 const done = completedLessons.includes(l.id);
                 const active = i === currentLesson;
+                
                 return (
-                  <div
-                    key={l.id}
-                    className={`lesson-item${active ? ' active' : ''}`}
-                    onClick={() => goToLesson(i)}
-                  >
-                    <div className={`lesson-check ${done ? 'done' : ''}`}>
-                      {done ? '✓' : i + 1}
+                  <div key={l.id} className={`module-group ${active ? 'expanded' : ''}`}>
+                    <div 
+                      className="module-header" 
+                      onClick={() => goToLesson(i)}
+                      style={{ padding: '12px', background: active ? 'rgba(44, 88, 255, 0.1)' : 'transparent', borderLeft: active ? '3px solid var(--accent)' : '3px solid transparent' }}
+                    >
+                      <div className="module-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', color: active ? 'var(--accent)' : 'var(--text)' }}>
+                        <div className={`lesson-check ${done ? 'done' : ''}`} style={{ 
+                          width: '22px', height: '22px', fontSize: '0.65rem', 
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                          borderRadius: '6px', background: done ? 'var(--green)' : 'var(--surface2)', 
+                          color: done ? '#fff' : 'var(--text3)' 
+                        }}>
+                          {done ? '✓' : i + 1}
+                        </div>
+                        {l.title || l.name}
+                      </div>
+                      {active && subDivisions.length > 1 && <span className="module-chevron">⌄</span>}
                     </div>
-                    <span className="lesson-item-title">{l.title || l.name}</span>
+                    
+                    {active && subDivisions.length > 1 && (
+                      <div className="module-lessons">
+                        {subDivisions.map((sub, sIdx) => {
+                          const isSubActive = sIdx === currentSubIndex;
+                          const isSubVerified = isCompletedLocally || verifiedSubs.has(sIdx);
+                          
+                          return (
+                          <div 
+                            key={sIdx} 
+                            className="lesson-item"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (sIdx !== currentSubIndex) {
+                                setHasReachedBottom(false);
+                                setCurrentSubIndex(sIdx);
+                              }
+                            }}
+                            style={{ 
+                              paddingLeft: '44px', 
+                              paddingTop: '8px', 
+                              paddingBottom: '8px', 
+                              fontSize: '0.8rem', 
+                              color: isSubActive ? 'var(--accent)' : 'var(--text2)',
+                              borderLeft: '2px solid var(--border)',
+                              marginLeft: '22px',
+                              cursor: 'pointer',
+                              background: isSubActive ? 'rgba(44,88,255,0.05)' : 'transparent',
+                              display: 'flex',
+                              alignItems: 'center'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
+                            onMouseLeave={e => { if (!isSubActive) e.currentTarget.style.color = 'var(--text2)' }}
+                          >
+                            <span style={{ 
+                              color: isSubVerified ? 'var(--green)' : 'var(--accent)', 
+                              marginRight: '8px', 
+                              opacity: (isSubActive || isSubVerified) ? 1 : 0.5,
+                              fontWeight: isSubVerified ? 800 : 'normal'
+                            }}>
+                              {isSubVerified ? '✓' : '-'}
+                            </span>
+                            {sub.title}
+                          </div>
+                        )})}
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
           </aside>
 
-          {/* MAIN CONTENT */}
           <main className="lesson-content">
-
             <div className="lesson-scroll-area" ref={scrollAreaRef} onScroll={handleScroll}>
-              
-              {/* STICKY TIMER */}
-              <div className="premium-status-hud animate-in">
-                <div className="hud-timer">
-                  <span className="hud-icon">⏱️</span>
-                  <span>{formatTime(timeLeft)}</span>
-                </div>
-              </div>
               
               <div className="lesson-header-glass">
                 <h1>{lesson.title || lesson.name}</h1>
                 <div className="header-underline"></div>
               </div>
 
-              {/* OVERVIEW PANE */}
               <div className="markdown-content">
-                <div dangerouslySetInnerHTML={{ __html: fetchedContent }} />
+                <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
               </div>
 
-              {/* WORKBENCH EDITOR */}
               <div className="workbench-container">
                 <div className="workbench-inner">
                   <div className="workbench-header">
@@ -329,11 +433,19 @@ export default function Lesson() {
               </div>
 
               <div className="lesson-nav">
-                <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0}>
-                  ← Previous Lesson
+                <button className="btn-ghost" onClick={prevLesson} disabled={currentLesson === 0 && currentSubIndex === 0}>
+                  ← Previous
                 </button>
-                <button className="btn-primary" onClick={nextLesson} disabled={!isCompletedLocally} style={{ opacity: isCompletedLocally ? 1 : 0.5, cursor: isCompletedLocally ? 'pointer' : 'not-allowed' }}>
-                  {currentLesson === lessonsList.length - 1 ? 'Complete Course' : 'Next Lesson →'}
+                <div className="pagination-indicator" style={{ color: 'var(--text3)', fontSize: '0.85rem' }}>
+                  {subDivisions.length > 1 ? `Section ${currentSubIndex + 1} of ${subDivisions.length}` : ''}
+                </div>
+                <button 
+                  className="btn-primary" 
+                  onClick={nextLesson} 
+                  disabled={isNextDisabled} 
+                  style={{ opacity: isNextDisabled ? 0.5 : 1, cursor: isNextDisabled ? 'not-allowed' : 'pointer' }}
+                >
+                  {nextBtnText}
                 </button>
               </div>
             </div>

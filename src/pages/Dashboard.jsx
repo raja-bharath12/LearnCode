@@ -40,11 +40,17 @@ export default function Dashboard() {
     if (courses.length > 0) {
       fetchStudents().then(students => {
         if (!students) return;
+        
+        let settings = {};
+        try { settings = JSON.parse(localStorage.getItem('lc_academy_settings')) || {}; } catch {}
+        const ptsEnroll = settings.pointsForEnroll !== undefined ? Number(settings.pointsForEnroll) : 10;
+        const ptsTest = settings.pointsForTest !== undefined ? Number(settings.pointsForTest) : 20;
+
         const scoredStudents = students.map(s => {
           let score = 0;
           const docs = s.progressDocs || [];
           const sEnrolledCount = docs.length;
-          score += sEnrolledCount * 10;
+          score += sEnrolledCount * ptsEnroll;
           
           let sCompletedCount = 0;
           docs.forEach(p => {
@@ -60,7 +66,7 @@ export default function Dashboard() {
               if (p.completed) sCompletedCount++;
             }
           });
-          score += sCompletedCount * 20;
+          score += sCompletedCount * ptsTest;
           
           return { ...s, score };
         });
@@ -78,7 +84,7 @@ export default function Dashboard() {
   const completedCourses = courses.filter(c => Progress.getPercent(c.id, c.lessons) === 100);
   const ongoingCourses = courses.filter(c => {
     const p = Progress.getPercent(c.id, c.lessons);
-    return p > 0 && p < 100;
+    return Progress.isEnrolled(c.id) && p < 100;
   });
   void progressTick; // consumed so eslint doesn't warn about unused var
 
@@ -91,7 +97,7 @@ export default function Dashboard() {
   courses.forEach(c => {
     const pArray = Progress.get(c.id) || [];
     const p = pArray.length;
-    if (p > 0) {
+    if (Progress.isEnrolled(c.id)) {
       enrolledCount++;
       totalCompletedLessons += p;
       if (p === c.lessons) {
@@ -99,7 +105,12 @@ export default function Dashboard() {
       }
     }
   });
-  userScore = (enrolledCount * 10) + (totalCompletedLessons * 5) + (completedCount * 20);
+  let userSettings = {};
+  try { userSettings = JSON.parse(localStorage.getItem('lc_academy_settings')) || {}; } catch {}
+  const uPtsEnroll = userSettings.pointsForEnroll !== undefined ? Number(userSettings.pointsForEnroll) : 10;
+  const uPtsTest = userSettings.pointsForTest !== undefined ? Number(userSettings.pointsForTest) : 20;
+
+  userScore = (enrolledCount * uPtsEnroll) + (totalCompletedLessons * 5) + (completedCount * uPtsTest);
 
   const stats = [
     { label: 'Completed', value: completedCourses.length, icon: '🏆', color: '#22c55e' },

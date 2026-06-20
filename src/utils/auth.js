@@ -181,6 +181,34 @@ export const Progress = {
     try { return JSON.parse(localStorage.getItem(`lc_progress_${courseId}`)) || []; } catch { return []; }
   },
 
+  async enroll(courseId) {
+    localStorage.setItem(`lc_enrolled_${courseId}`, 'true');
+    const user = Auth.getUser();
+    if (user?.id) {
+      try {
+        const ref = doc(db, 'progress', `${user.id}_${courseId}`);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          const p = this.get(courseId);
+          await setDoc(ref, {
+            userId: user.id,
+            courseId: Number(courseId),
+            completedLessons: p,
+            completed: false,
+            lastActivity: serverTimestamp(),
+          });
+        }
+      } catch (e) {
+        console.warn('Firestore enroll failed:', e);
+      }
+    }
+  },
+
+  isEnrolled(courseId) {
+    if (localStorage.getItem(`lc_enrolled_${courseId}`) === 'true') return true;
+    return this.get(courseId).length > 0;
+  },
+
   async mark(courseId, lessonId, totalLessons = null) {
     // 1. Immediate local update
     const p = this.get(courseId);
@@ -217,6 +245,7 @@ export const Progress = {
         const data = snap.data();
         const lessons = data.completedLessons || [];
         localStorage.setItem(`lc_progress_${courseId}`, JSON.stringify(lessons));
+        localStorage.setItem(`lc_enrolled_${courseId}`, 'true');
         return lessons;
       }
     } catch (e) {
@@ -236,6 +265,7 @@ export const Progress = {
         if (data.completedLessons) {
           localStorage.setItem(`lc_progress_${data.courseId}`, JSON.stringify(data.completedLessons));
         }
+        localStorage.setItem(`lc_enrolled_${data.courseId}`, 'true');
       });
     } catch (e) {
       console.warn('Firestore syncAll failed:', e);
